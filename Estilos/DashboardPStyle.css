@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Times New Roman', Times, serif;
-    background-color: #D8D8C0;
+    background-color: #FFFFFF;
     color: #000000;
     line-height: 1.6;
 }
@@ -81,11 +81,20 @@ body {
 }
 
 /* Hero Section */
+.hero-wrapper {
+    padding: 20px 40px 0 40px;
+    background-color: #FFFFFF;
+}
+
 .hero {
     background: #1693A5;
     color: #FFFFFF;
     padding: 35px 0 25px 0;
     text-align: center;
+    margin: 0 auto;
+    border-radius: 12px;
+    max-width: 1400px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .hero-content {
@@ -119,6 +128,7 @@ body {
 .main-actions {
     padding: 30px 0 35px 0;
     background-color: #FFFFFF;
+    margin-top: 0;
 }
 
 .actions-grid {
@@ -211,7 +221,7 @@ body {
 /* Features Section */
 .features {
     padding: 35px 0 45px;
-    background-color: #D8D8C0;
+    background-color: #FFFFFF;
 }
 
 .features-grid {
