@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProyectoSistemaCotizacion.Controladores;
+using ProyectoSistemaCotizacion.Modelos;
+using System;
 using System.Web.UI;
 
 namespace SistemaCotizacionAPF.Vistas
@@ -13,30 +15,28 @@ namespace SistemaCotizacionAPF.Vistas
         // Evento Click para btnIniciarSesion - Solo muestra mensaje por ahora
         protected void btnIniciarSesion_Click(object sender, EventArgs e)
         {
-            // Validar que la página sea válida
             if (!Page.IsValid)
-            {
                 return;
-            }
 
-            // Obtener credenciales ingresadas
-            string usuario = txtUsuario.Text.Trim();
-            string contrasena = txtContrasena.Text.Trim();
+            mdlUsuario datos = new mdlUsuario();
 
-            // Validación simple - Solo visual por ahora
-            if (usuario == "admin" && contrasena == "admin123")
+            datos.Correo = txtUsuario.Text.Trim();
+            datos.Contrasena = txtContrasena.Text.Trim();
+
+            ctrUsuario controlador = new ctrUsuario();
+
+            if (controlador.ValidarIngreso(datos))
             {
-                MostrarMensaje("¡Bienvenido Administrador! (Funcionalidad en desarrollo)", "exito");
-                // TODO: Redirigir a DashboardAdmin.aspx cuando esté listo
-            }
-            else if (usuario == "allison" && contrasena == "123456")
-            {
-                MostrarMensaje("¡Bienvenida Allison! (Funcionalidad en desarrollo)", "exito");
-                // TODO: Redirigir a DashboardCliente.aspx cuando esté listo
+                Session["Usuario"] = datos;
+
+                MostrarMensaje("¡Bienvenido " + datos.NombreCompleto + "!", "exito");
+
+                
+                Response.AddHeader("REFRESH", "1.5;URL=Dashboard.aspx");
             }
             else
             {
-                MostrarMensaje("Usuario o contraseña incorrectos. Intenta con los usuarios de prueba.", "error");
+                MostrarMensaje(datos.Mensaje, "error");
             }
         }
 

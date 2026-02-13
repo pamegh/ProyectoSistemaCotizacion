@@ -1,7 +1,7 @@
 ﻿using System; 
 using System.Configuration;  
 
-namespace VeterinariaWpfApp1.Bases_de_Datos
+namespace ProyectoSistemaCotizacion.BaseDatos
 {
      class Conn
     {
@@ -11,15 +11,9 @@ namespace VeterinariaWpfApp1.Bases_de_Datos
         }
         public static string GetConnectionStrings()
         {
-            string resultado = "";
-            ConnectionStringSettingsCollection settings =
-                ConfigurationManager.ConnectionStrings;
-
-            if (settings != null)
-            {
-                resultado = settings[0].ConnectionString; 
-            }
-            return resultado;
+            return ConfigurationManager
+                   .ConnectionStrings["ConexionBD"]
+                   .ConnectionString;
         }
     }
 }

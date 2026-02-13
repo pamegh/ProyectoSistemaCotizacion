@@ -2,11 +2,11 @@
 using System.Data.SqlClient;
 using System.Data;
 using System.Windows;
-using VeterinariaWpfApp1.Utilidades;
+using ProyectoSistemaCotizacion.Utilidades;
 
-namespace VeterinariaWpfApp1.Bases_de_Datos
+namespace ProyectoSistemaCotizacion.BaseDatos
 {
-    class ConnSQL
+    public class ConnSQL
     {
         public SqlDataReader SQLCargaDataReader(string _SQLConnection, string SQLQuery)
         {
