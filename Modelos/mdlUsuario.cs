@@ -10,8 +10,8 @@ namespace ProyectoSistemaCotizacion.Modelos
         #region Atributos
 
         private int usuario_id;
-        private int mascara_id;
         private string identificacion;
+        private int tipo_identificacion_id;
         private string nombre_completo;
         private string telefono;
         private string correo;
@@ -31,8 +31,8 @@ namespace ProyectoSistemaCotizacion.Modelos
         public mdlUsuario()
         {
             this.usuario_id = 0;
-            this.mascara_id = 0;
             this.identificacion = "";
+            this.tipo_identificacion_id = 0;
             this.nombre_completo = "";
             this.telefono = "";
             this.correo = "";
@@ -48,8 +48,8 @@ namespace ProyectoSistemaCotizacion.Modelos
 
         // Constructor para insertar
         public mdlUsuario(
-            int mascara_id,
             string identificacion,
+            int tipo_identificacion,
             string nombre_completo,
             string telefono,
             string correo,
@@ -58,8 +58,9 @@ namespace ProyectoSistemaCotizacion.Modelos
             string estado,
             string creado_por)
         {
-            this.mascara_id = mascara_id;
+
             this.identificacion = identificacion;
+            this.tipo_identificacion_id = tipo_identificacion;
             this.nombre_completo = nombre_completo;
             this.telefono = telefono;
             this.correo = correo;
@@ -74,8 +75,8 @@ namespace ProyectoSistemaCotizacion.Modelos
         // Constructor para editar
         public mdlUsuario(
             int usuario_id,
-            int mascara_id,
             string identificacion,
+            int tipo_identificacion,
             string nombre_completo,
             string telefono,
             string correo,
@@ -86,7 +87,7 @@ namespace ProyectoSistemaCotizacion.Modelos
             string modificado_por)
         {
             this.usuario_id = usuario_id;
-            this.mascara_id = mascara_id;
+            this.tipo_identificacion_id = tipo_identificacion;
             this.identificacion = identificacion;
             this.nombre_completo = nombre_completo;
             this.telefono = telefono;
@@ -115,16 +116,16 @@ namespace ProyectoSistemaCotizacion.Modelos
             set { usuario_id = value; }
         }
 
-        public int MascaraId
-        {
-            get { return mascara_id; }
-            set { mascara_id = value; }
-        }
-
         public string Identificacion
         {
             get { return identificacion; }
             set { identificacion = value; }
+        }
+
+        public int TipoIdentificacionId
+        {
+            get { return tipo_identificacion_id; }
+            set { tipo_identificacion_id = value; }
         }
 
         public string NombreCompleto

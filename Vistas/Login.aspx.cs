@@ -12,7 +12,6 @@ namespace SistemaCotizacionAPF.Vistas
             // Página de login cargada
         }
 
-        // Evento Click para btnIniciarSesion - Solo muestra mensaje por ahora
         protected void btnIniciarSesion_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid)
@@ -40,7 +39,6 @@ namespace SistemaCotizacionAPF.Vistas
             }
         }
 
-        // Método auxiliar para mostrar mensajes
         private void MostrarMensaje(string mensaje, string tipo)
         {
             lblMensaje.Text = mensaje;

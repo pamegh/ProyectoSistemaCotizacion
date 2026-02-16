@@ -1,2 +1,143 @@
-﻿body {
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #f4f7f9;
+}
+
+.header {
+    background-color: #1693A5;
+    padding: 15px 40px;
+    color: #FFFFFF;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.nav a {
+    color: #FFFFFF;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 600;
+}
+
+    .nav a:hover {
+        text-decoration: underline;
+    }
+
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+
+.card {
+    background-color: #FFFFFF;
+    width: 100%;
+    max-width: 1000px;
+    border: 3px solid #1693A5;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    margin-bottom: 30px;
+    color: #666;
+}
+
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+.input {
+    padding: 12px;
+    border: 2px solid #D8D8C0;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+    .input:focus {
+        outline: none;
+        border-color: #1693A5;
+        box-shadow: 0 0 0 3px rgba(22,147,165,0.15);
+    }
+
+
+.actions {
+    margin-top: 40px;
+    text-align: right;
+}
+
+.btn-primary {
+    background-color: #1693A5;
+    color: #FFFFFF;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #127a8a;
+        transform: translateY(-2px);
+    }
+
+
+.mensaje {
+    display: block;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #efe;
+    border: 1px solid #cfc;
+    color: #2e7d32;
+}
+
+
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        text-align: center;
+    }
 }

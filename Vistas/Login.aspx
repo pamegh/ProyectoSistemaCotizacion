@@ -105,10 +105,14 @@
                     <!-- Botón de login -->
                     <asp:Button ID="btnIniciarSesion" runat="server" Text="Iniciar Sesión" CssClass="btn btn-primary btn-block" OnClick="btnIniciarSesion_Click" />
 
-                    <!-- Links adicionales -->
-                    <div class="login-footer">
-                        <p class="footer-text">¿No tienes una cuenta? <a href="Registro.aspx" class="footer-link">Regístrate aquí</a></p>
-                    </div>
+                   <asp:HyperLink 
+    ID="hlRegistro" 
+    runat="server" 
+    NavigateUrl="~/Vistas/Registro.aspx"
+    CssClass="footer-link">
+    Regístrate aquí
+</asp:HyperLink>
+
 
                     <!-- Usuarios de prueba -->
                     <div class="test-users">
