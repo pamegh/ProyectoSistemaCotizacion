@@ -72,6 +72,27 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BaseDatos\actualizarPlazo.sql" />
+    <Content Include="BaseDatos\actualizarProducto.sql" />
+    <Content Include="BaseDatos\ActualizarUsuario.sql" />
+    <Content Include="BaseDatos\actualziarTasa.sql" />
+    <Content Include="BaseDatos\eliminarPlazo.sql" />
+    <Content Include="BaseDatos\EliminarProducto.sql" />
+    <Content Include="BaseDatos\eliminarTasa.sql" />
+    <Content Include="BaseDatos\InsertarPlazo.sql" />
+    <Content Include="BaseDatos\insertarProducto.sql" />
+    <Content Include="BaseDatos\insertarTasa.sql" />
+    <Content Include="BaseDatos\listarPlazos.sql" />
+    <Content Include="BaseDatos\listarTasas.sql" />
+    <Content Include="BaseDatos\ObtenerPlazoPorId.sql" />
+    <Content Include="BaseDatos\ObtenerProductoPorCodigo.sql" />
+    <Content Include="BaseDatos\ObtenerProductoPorId.sql" />
+    <Content Include="BaseDatos\ObtenerProductoPorNombre.sql" />
+    <Content Include="BaseDatos\ObtenerTablaFinanciera.sql" />
+    <Content Include="BaseDatos\ObtenerTasaPorId.sql" />
+    <Content Include="BaseDatos\ObtenerTasaPorProductoYPlazo.sql" />
+    <Content Include="BaseDatos\ObtenerusuarioId.sql" />
+    <Content Include="BaseDatos\TablaTasasPivot.sql" />
     <Content Include="Estilos\Configuracion.css" />
     <Content Include="Estilos\DashboardAdmin.css" />
     <Content Include="Estilos\DashboardPStyle.css" />
