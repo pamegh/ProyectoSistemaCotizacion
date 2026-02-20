@@ -119,10 +119,7 @@
                         <p class="test-title">👤 Usuarios de prueba:</p>
                         <div class="test-user-grid">
                             <div class="test-user-item">
-                                <strong>Admin:</strong> admin / admin123
-                            </div>
-                            <div class="test-user-item">
-                                <strong>Cliente:</strong> allison / 123456
+                                <strong>Admin:</strong> admin@sistema.com / Admin123!
                             </div>
                         </div>
                     </div>

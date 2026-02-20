@@ -69,14 +69,6 @@
                     <asp:TextBox ID="txtContrasena" runat="server" CssClass="input" TextMode="Password" />
                 </div>
 
-                <div class="form-group">
-                    <label>Estado</label>
-                    <asp:DropDownList ID="ddlEstado" runat="server" CssClass="input">
-                        <asp:ListItem Text="Activo" Value="Activo" />
-                        <asp:ListItem Text="Inactivo" Value="Inactivo" />
-                    </asp:DropDownList>
-                </div>
-
             </div>
 
             <div class="actions">

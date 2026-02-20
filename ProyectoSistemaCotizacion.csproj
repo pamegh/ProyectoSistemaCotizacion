@@ -72,30 +72,57 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Estilos\Configuracion.css" />
+    <Content Include="Estilos\DashboardAdmin.css" />
     <Content Include="Estilos\DashboardPStyle.css" />
     <Content Include="Estilos\LoginStyle.css" />
+    <Content Include="Estilos\MiCuenta.css" />
     <Content Include="Estilos\RegistroStyle.css" />
     <Content Include="Global.asax" />
+    <Content Include="Vistas\ConfiguracionProductos.aspx" />
+    <Content Include="Vistas\DashboardAdministrador.aspx" />
     <Content Include="Vistas\DashboardPrincipal.aspx" />
+    <Content Include="Vistas\DashboardUsuario.aspx" />
     <Content Include="Vistas\Login.aspx" />
+    <Content Include="Vistas\MiCuenta.aspx" />
     <Content Include="Vistas\Registro.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDatos\Conn.cs" />
     <Compile Include="BaseDatos\ConnSQL.cs" />
+    <Compile Include="Controladores\ctrPlazo.cs" />
+    <Compile Include="Controladores\ctrProducto.cs" />
+    <Compile Include="Controladores\ctrTasa.cs" />
     <Compile Include="Controladores\ctrTipoIdentificacion.cs" />
     <Compile Include="Controladores\ctrUsuario.cs" />
     <Compile Include="Controladores\SeguridadContrasena.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Modelos\mdlPlazo.cs" />
+    <Compile Include="Modelos\mdlProducto.cs" />
+    <Compile Include="Modelos\mdlTasa.cs" />
     <Compile Include="Modelos\mdlTipoIdentificacion.cs" />
     <Compile Include="Modelos\mdlUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilidades\escribirLog.cs" />
     <Compile Include="Utilidades\util.cs" />
     <Compile Include="Utilidades\variablesGlobales.cs" />
+    <Compile Include="Vistas\ConfiguracionProductos.aspx.cs">
+      <DependentUpon>ConfiguracionProductos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\ConfiguracionProductos.aspx.designer.cs">
+      <DependentUpon>ConfiguracionProductos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\DashboardAdministrador.aspx.cs">
+      <DependentUpon>DashboardAdministrador.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\DashboardAdministrador.aspx.designer.cs">
+      <DependentUpon>DashboardAdministrador.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\DashboardPrincipal.aspx.cs">
       <DependentUpon>DashboardPrincipal.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -103,12 +130,26 @@
     <Compile Include="Vistas\DashboardPrincipal.aspx.designer.cs">
       <DependentUpon>DashboardPrincipal.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\DashboardUsuario.aspx.cs">
+      <DependentUpon>DashboardUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\DashboardUsuario.aspx.designer.cs">
+      <DependentUpon>DashboardUsuario.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Vistas\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\MiCuenta.aspx.cs">
+      <DependentUpon>MiCuenta.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\MiCuenta.aspx.designer.cs">
+      <DependentUpon>MiCuenta.aspx</DependentUpon>
     </Compile>
     <Compile Include="Vistas\Registro.aspx.cs">
       <DependentUpon>Registro.aspx</DependentUpon>

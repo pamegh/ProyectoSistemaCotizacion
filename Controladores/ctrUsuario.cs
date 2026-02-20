@@ -164,6 +164,68 @@ namespace ProyectoSistemaCotizacion.Controladores
             }
         }
 
+        public mdlUsuario ObtenerUsuarioPorId(int usuarioId)
+        {
+            mdlUsuario usuario = new mdlUsuario();
 
+            using (SqlConnection conn = new SqlConnection(_SQLConnection))
+            using (SqlCommand cmd = new SqlCommand("sp_ObtenerUsuarioPorId", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@usuario_id", usuarioId);
+
+                conn.Open();
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        usuario.UsuarioId = Convert.ToInt32(dr["usuario_id"]);
+                        usuario.Identificacion = dr["identificacion"].ToString();
+                        usuario.NombreCompleto = dr["nombre_completo"].ToString();
+                        usuario.Telefono = dr["telefono"].ToString();
+                        usuario.Correo = dr["correo"].ToString();
+                    }
+                }
+            }
+
+            return usuario;
+        }
+        public bool ActualizarUsuario(mdlUsuario datos, string contrasenaActual = null, string contrasenaNueva = null)
+        {
+            using (SqlConnection conn = new SqlConnection(_SQLConnection))
+            using (SqlCommand cmd = new SqlCommand("sp_ActualizarUsuario", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.Add("@usuario_id", SqlDbType.Int).Value = datos.UsuarioId;
+                cmd.Parameters.Add("@identificacion", SqlDbType.VarChar, 30).Value = datos.Identificacion;
+                cmd.Parameters.Add("@nombre_completo", SqlDbType.VarChar, 150).Value = datos.NombreCompleto;
+                cmd.Parameters.Add("@telefono", SqlDbType.VarChar, 20).Value =
+                    string.IsNullOrWhiteSpace(datos.Telefono) ? (object)DBNull.Value : datos.Telefono;
+                cmd.Parameters.Add("@correo", SqlDbType.VarChar, 100).Value = datos.Correo;
+
+                cmd.Parameters.Add("@contrasena_actual", SqlDbType.VarChar, 255).Value =
+                    string.IsNullOrEmpty(contrasenaActual) ? (object)DBNull.Value : contrasenaActual;
+
+                cmd.Parameters.Add("@contrasena_nueva", SqlDbType.VarChar, 255).Value =
+                    string.IsNullOrEmpty(contrasenaNueva) ? (object)DBNull.Value : contrasenaNueva;
+
+                cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "Sistema";
+
+                conn.Open();
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        datos.Mensaje = dr["mensaje"].ToString();
+                        return Convert.ToInt32(dr["resultado"]) == 1;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

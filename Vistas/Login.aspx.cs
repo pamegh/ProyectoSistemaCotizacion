@@ -30,8 +30,14 @@ namespace SistemaCotizacionAPF.Vistas
 
                 MostrarMensaje("¡Bienvenido " + datos.NombreCompleto + "!", "exito");
 
-                
-                Response.AddHeader("REFRESH", "1.5;URL=Dashboard.aspx");
+                if (datos.Rol != null && datos.Rol.ToUpper() == "ADMIN")
+                {
+                    Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
+                }
+                else
+                {
+                    Response.Redirect("~/Vistas/DashboardUsuario.aspx");
+                }
             }
             else
             {

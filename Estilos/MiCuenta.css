@@ -1,0 +1,120 @@
+﻿/* ============================= */
+/* MI CUENTA */
+/* ============================= */
+
+.mi-cuenta-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: #FFFFFF;
+}
+
+.mi-cuenta-container {
+    width: 100%;
+    max-width: 700px;
+}
+
+.mi-cuenta-card {
+    background: #FFFFFF;
+    border: 3px solid #1693A5;
+    border-radius: 18px;
+    padding: 40px 45px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.mi-cuenta-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.mi-cuenta-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 8px;
+}
+
+.mi-cuenta-subtitle {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* Divider elegante */
+.mi-divider {
+    height: 2px;
+    background-color: #D8D8C0;
+    margin: 30px 0;
+    border-radius: 2px;
+}
+
+/* Botón secundario (cambiar contraseña) */
+.btn-secondary-outline {
+    background: transparent;
+    border: 2px solid #1693A5;
+    color: #1693A5;
+}
+
+    .btn-secondary-outline:hover {
+        background-color: #1693A5;
+        color: #FFFFFF;
+    }
+
+/* Panel cambio contraseña */
+.panel-contrasena {
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px solid #D8D8C0;
+    border-radius: 12px;
+    background-color: #f9fdfd;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animación suave */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Inputs mejorados para esta pantalla */
+.mi-cuenta-card .form-input {
+    border: 2px solid #D8D8C0;
+    border-radius: 10px;
+}
+
+    .mi-cuenta-card .form-input:focus {
+        border-color: #1693A5;
+        box-shadow: 0 0 0 4px rgba(22, 147, 165, 0.08);
+    }
+
+/* Botón guardar más elegante */
+.btn-guardar {
+    background-color: #1693A5;
+    color: #FFFFFF;
+    padding: 12px 40px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+}
+
+    .btn-guardar:hover {
+        background-color: #127a8a;
+        transform: translateY(-2px);
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .mi-cuenta-card {
+        padding: 30px 25px;
+    }
+
+    .mi-cuenta-title {
+        font-size: 1.6rem;
+    }
+}
