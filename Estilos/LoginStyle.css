@@ -367,3 +367,18 @@ body {
         grid-template-columns: 1fr;
     }
 }
+.logo-img,
+.logo-img-admin {
+    width: 160px; /* tamaño pequeño */
+    height: auto;
+}
+
+.logo,
+.logo-admin {
+    align-items: center;
+}
+
+.logo-text-container,
+.logo-admin-text {
+    line-height: 1.1;
+}

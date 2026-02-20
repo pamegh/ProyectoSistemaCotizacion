@@ -14,9 +14,16 @@
 <div class="container-fluid mt-4">
     <div class="row">
 
-        <!-- ================= TABLA IZQUIERDA ================= -->
         <div class="col-md-8">
             <div class="card">
+                <div class="page-header">
+    <asp:Button ID="btnAtras" runat="server"
+        Text="Volver"
+        CssClass="btn-back-icon"
+        OnClientClick="history.back(); return false;" />
+
+    <h2 class="page-title">Configuración de Productos</h2>
+</div>
                 <div class="card-header bg-primary text-white">
                     Tabla Financiera
                 </div>
@@ -29,7 +36,6 @@
             </div>
         </div>
 
-        <!-- ================= PANEL DERECHO ================= -->
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-dark text-white">
@@ -37,7 +43,6 @@
                 </div>
                 <div class="card-body">
 
-                    <!-- Selección tipo -->
                     <div class="mb-3">
                         <label>Tipo</label>
                         <asp:DropDownList ID="ddlEntidad" runat="server" CssClass="form-control"
@@ -72,7 +77,6 @@
 </asp:Panel>
 
 
-<!-- ================= PANEL PLAZO ================= -->
 <asp:Panel ID="pnlPlazo" runat="server" Visible="false">
 
     <div class="mb-3">
@@ -98,7 +102,6 @@
 
 </asp:Panel>
 
-<!-- ================= PANEL TASAS ================= -->
 <asp:Panel ID="pnlTasaFiltros" runat="server" Visible="false">
 
     <div class="mb-3">

@@ -95,11 +95,13 @@
     <Content Include="BaseDatos\TablaTasasPivot.sql" />
     <Content Include="Estilos\Configuracion.css" />
     <Content Include="Estilos\DashboardAdmin.css" />
+    <Content Include="Estilos\DashboardUsuario.css" />
     <Content Include="Estilos\DashboardPStyle.css" />
     <Content Include="Estilos\LoginStyle.css" />
     <Content Include="Estilos\MiCuenta.css" />
     <Content Include="Estilos\RegistroStyle.css" />
     <Content Include="Global.asax" />
+    <Content Include="Recursos\logoWeb.png" />
     <Content Include="Vistas\ConfiguracionProductos.aspx" />
     <Content Include="Vistas\DashboardAdministrador.aspx" />
     <Content Include="Vistas\DashboardPrincipal.aspx" />

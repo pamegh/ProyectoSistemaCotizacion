@@ -10,12 +10,12 @@
 </head>
 <body>
 <form id="form1" runat="server">
-
+    <div class="page-wrapper">
     <header class="header">
         <div class="header-container">
-            <div class="logo">
-                APF Cotizaciones - Panel Admin
-            </div>
+           <div class="logo-admin">
+    <img src="../Recursos/logoWeb.png" alt="SICAPF Logo" class="logo-img-admin" />
+</div>
             <div class="user-info">
                 <asp:Label ID="lblUsuario" runat="server"></asp:Label>
                 <asp:Button ID="btnSalir" runat="server" Text="Cerrar Sesión" CssClass="btn-logout" OnClick="btnSalir_Click" />
@@ -45,22 +45,22 @@
 
                 <div class="card">
                     <h2>Total Usuarios</h2>
-                    <p class="card-number">150</p>
+                    <p class="card-number">-</p>
                 </div>
 
                 <div class="card">
                     <h2>Cotizaciones Activas</h2>
-                    <p class="card-number">87</p>
+                    <p class="card-number">-</p>
                 </div>
 
                 <div class="card">
                     <h2>Reportes Generados</h2>
-                    <p class="card-number">34</p>
+                    <p class="card-number">-</p>
                 </div>
 
                 <div class="card">
                     <h2>Productos Disponibles</h2>
-                    <p class="card-number">12</p>
+                    <p class="card-number">-</p>
                 </div>
 
             </div>
@@ -68,7 +68,7 @@
         </main>
 
     </div>
-
+        </div>
 </form>
 </body>
 </html>

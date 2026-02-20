@@ -13,6 +13,12 @@
       <div class="mi-cuenta-wrapper">
     <div class="mi-cuenta-container">
         <div class="mi-cuenta-card">
+            <div class="page-header">
+    <asp:Button ID="btnAtras" runat="server"
+        Text="←"
+        CssClass="btn-back-icon"
+        OnClientClick="history.back(); return false;" />
+</div>
 
             <div class="mi-cuenta-header">
                 <h2 class="mi-cuenta-title">Mi Cuenta</h2>
