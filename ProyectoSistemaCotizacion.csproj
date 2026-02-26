@@ -103,6 +103,7 @@
     <Content Include="Global.asax" />
     <Content Include="Recursos\logoWeb.png" />
     <Content Include="Vistas\ConfiguracionProductos.aspx" />
+    <Content Include="Vistas\CrearCotizacion.aspx" />
     <Content Include="Vistas\DashboardAdministrador.aspx" />
     <Content Include="Vistas\DashboardPrincipal.aspx" />
     <Content Include="Vistas\DashboardUsuario.aspx" />
@@ -138,6 +139,13 @@
     </Compile>
     <Compile Include="Vistas\ConfiguracionProductos.aspx.designer.cs">
       <DependentUpon>ConfiguracionProductos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\CrearCotizacion.aspx.cs">
+      <DependentUpon>CrearCotizacion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\CrearCotizacion.aspx.designer.cs">
+      <DependentUpon>CrearCotizacion.aspx</DependentUpon>
     </Compile>
     <Compile Include="Vistas\DashboardAdministrador.aspx.cs">
       <DependentUpon>DashboardAdministrador.aspx</DependentUpon>

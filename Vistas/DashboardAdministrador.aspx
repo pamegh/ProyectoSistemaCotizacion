@@ -27,7 +27,7 @@
 
         <aside class="sidebar">
             <ul class="menu">
-                <li><a href="#">Realizar Cotización</a></li>
+                <li><a href="CrearCotizacion.aspx">Realizar Cotización</a></li>
                 <li><a href="#">Gestión de Clientes</a></li>
                 <li><a href="#">Historial Mis Cotizaciones</a></li>
                 <li><a href="ConfiguracionProductos.aspx">Configuraciones de Productos</a></li>

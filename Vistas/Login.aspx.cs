@@ -42,6 +42,16 @@ namespace SistemaCotizacionAPF.Vistas
             else
             {
                 MostrarMensaje(datos.Mensaje, "error");
+                // en este if, sii el usuario no existe, enfocar campo usuario
+                if (datos.Mensaje != null && datos.Mensaje.ToLower().Contains("usuario"))
+                {
+                    txtUsuario.Focus();
+                }
+                else
+                {
+                    txtContrasena.Text = "";
+                    txtContrasena.Focus();
+                }
             }
         }
 

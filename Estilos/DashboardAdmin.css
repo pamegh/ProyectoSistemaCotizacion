@@ -177,3 +177,40 @@ body {
         background-color: #1693A5;
         color: #FFFFFF;
     }
+
+/* Mensajes del sistema */
+
+
+.mensaje-error {
+    color: #d93025;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.mensaje-exito {
+    color: #1e7e34;
+    font-weight: bold;
+}
+
+
+
+
+/* Animación suave del mensaje */
+.mensaje-error {
+    color: #d93025;
+    font-style: italic;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 15px;
+    opacity: 0;
+    transform: translateY(-8px);
+    animation: aparecerMensaje 0.4s ease forwards;
+}
+
+@keyframes aparecerMensaje {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
