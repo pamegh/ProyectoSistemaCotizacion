@@ -83,6 +83,8 @@
                     OnClick="btnCalcular_Click" />
 
             </div>
+        <!-- Tabla dinamica -->
+        <asp:GridView ID="gvDetalle" runat="server" CssClass="tabla-cotizacion"></asp:GridView>
 
             <!-- RESULTADO -->
             <asp:Panel ID="pnlResultado" runat="server" Visible="false" CssClass="card" style="margin-top:20px;">
