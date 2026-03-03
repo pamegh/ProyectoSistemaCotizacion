@@ -1,4 +1,5 @@
 ﻿using ProyectoSistemaCotizacion.Controladores;
+using ProyectoSistemaCotizacion.Modelos;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+
 
 
 
@@ -107,6 +109,17 @@ namespace ProyectoSistemaCotizacion.Vistas
                 return 8.1m;
 
             return 0;
+        }
+
+        private decimal ObtenerTasa()
+        {
+            int prodctoId = Convert.ToInt32(ddlProducto.SelectedValue);
+            int plazoId = Convert.ToInt32(ddlPlazo.SelectedValue);
+
+            ctrTasa controlador = new ctrTasa();
+            mdlTasa tasa = controlador.ObtenerTasaPorProductoYPlazo(prodctoId, plazoId);
+
+            return tasa.TasaAnual;
         }
 
         private void CargarProductos()

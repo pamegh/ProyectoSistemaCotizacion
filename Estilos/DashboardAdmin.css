@@ -1,4 +1,4 @@
-﻿* {
+﻿ex* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -213,4 +213,75 @@ body {
         transform: translateY(0);
     }
 }
+
+/* +++ Estilo para la cotización +++*/
+
+.card.cotizacion-panel {
+    margin-top: 20px;
+    padding: 25px;
+    background: #FFFFFF;
+    border-radius: 18px;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.08);
+}
+
+/* Tabla general */
+.tabla-cotizacion-resumen {
+    width: 90%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+    /* Filas */
+    .tabla-cotizacion-resumen td {
+        padding: 14px 18px;
+        border-bottom: 1px solid #D8D8C0;
+    }
+
+    /* Columna izquierda (títulos) */
+    .tabla-cotizacion-resumen .titulo {
+        background-color: #1693A5;
+        color: #FFFFFF;
+        font-weight: bold;
+        width: 33%;
+        font-size: 17px;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+    }
+
+    .tabla-cotizacion-resumen td:first-child {
+        width: 60%;
+    }
+
+    /* Columna derecha (valores) */
+    .tabla-cotizacion-resumen td:last-child {
+        background-color: #F7F7EF;
+        font-weight: 500;
+        width: 40%;
+        color: #000000;
+    }
+
+    
+
+    /* Totales */
+    .tabla-cotizacion-resumen.totales .titulo {
+        background-color: #000000;
+        color: #FFFFFF;
+        font-size: 18px;
+    }
+
+    .tabla-cotizacion-resumen.totales td:last-child {
+        background-color: #D8D8C0;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+ Separador 
+.cotizacion-panel hr {
+    margin: 30px 0;
+    border: none;
+    border-top: 2px solid #D8D8C0;
+}
+
+
 

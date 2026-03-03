@@ -7,6 +7,7 @@
     <meta charset="utf-8" />
     <title>Crear Cotización</title>
     <link href="../Estilos/DashboardAdmin.css" rel="stylesheet" />
+    <link runat="server" href="~/Estilos/DashboardAdmin.css" rel="stylesheet" />
     <style type="text/css">
         .form-input {}
     </style>
@@ -85,6 +86,83 @@
             </div>
         <!-- Tabla dinamica -->
         <asp:GridView ID="gvDetalle" runat="server" CssClass="tabla-cotizacion"></asp:GridView>
+
+         <!-- Estructura de crear cotización -->
+
+        <div class="card cotizacion-panel">
+
+    <table class="tabla-cotizacion-resumen">
+
+        <tr>
+            <td class="titulo">Número de cotización</td>
+            <td><asp:Label ID="lblNumero" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Cliente</td>
+            <td><asp:Label ID="lblCliente" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Teléfono</td>
+            <td><asp:Label ID="lblTelefono" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Correo</td>
+            <td><asp:Label ID="lblCorreo" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Producto</td>
+            <td><asp:Label ID="lblProducto" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Monto</td>
+            <td><asp:Label ID="lblMonto" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Plazo</td>
+            <td><asp:Label ID="lblPlazo" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Tasa</td>
+            <td><asp:Label ID="Label1" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Impuesto</td>
+            <td><asp:Label ID="lblImpuestoPorc" runat="server" /></td>
+        </tr>
+
+    </table>
+
+    <hr />
+
+    <table class="tabla-cotizacion-resumen totales">
+
+        <tr>
+            <td class="titulo">Monto Total Interés Bruto</td>
+            <td><asp:Label ID="Label2" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Monto Total Impuesto</td>
+            <td><asp:Label ID="lblImpuestoTotal" runat="server" /></td>
+        </tr>
+
+        <tr>
+            <td class="titulo">Monto Total Neto</td>
+            <td><asp:Label ID="lblNetoTotal" runat="server" /></td>
+        </tr>
+
+    </table>
+
+</div>
+
 
             <!-- RESULTADO -->
             <asp:Panel ID="pnlResultado" runat="server" Visible="false" CssClass="card" style="margin-top:20px;">
