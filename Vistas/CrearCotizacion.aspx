@@ -84,8 +84,7 @@
                     OnClick="btnCalcular_Click" />
 
             </div>
-        <!-- Tabla dinamica -->
-        <asp:GridView ID="gvDetalle" runat="server" CssClass="tabla-cotizacion"></asp:GridView>
+        
 
          <!-- Estructura de crear cotización -->
 
@@ -162,6 +161,8 @@
     </table>
 
 </div>
+
+        <!-- Botom -->
 
 
             <!-- RESULTADO -->

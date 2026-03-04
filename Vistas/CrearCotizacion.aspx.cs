@@ -17,6 +17,8 @@ namespace ProyectoSistemaCotizacion.Vistas
     {
         ctrProducto ctrProd = new ctrProducto();
         ctrPlazo ctrPlz = new ctrPlazo();
+        ctrTasa crtTasa = new ctrTasa();
+        
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["Usuario"] == null)
@@ -57,7 +59,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             decimal monto = Convert.ToDecimal(txtMonto.Text);
             decimal tasa = ObtenerTasaProducto();
 
-            if (tasa == 0)
+            if (tasa == null)
             {
                 lblMensaje.Text = "No existe una tasa configurada para el producto y plazo seleccionado.";
                 lblMensaje.CssClass = "mensaje mensaje-error";
@@ -75,40 +77,69 @@ namespace ProyectoSistemaCotizacion.Vistas
         private void CalcularCotizacion(decimal monto, decimal tasa, int plazo)
         {
             decimal tasaMensual = tasa / 12 / 100;
-            decimal impuesto = 0.13m;
+            decimal impuestoPorcentaje = 0.13m;
 
-            List<string> detalle = new List<string>();
+            decimal totalInteresBruto = 0;
+            decimal totalImpuesto = 0;
+            decimal totalNeto = 0;
 
             for (int i = 1; i <= plazo; i++)
             {
                 decimal interesBruto = monto * tasaMensual;
-                decimal impuestoMes = interesBruto * impuesto;
+                decimal impuestoMes = interesBruto * impuestoPorcentaje;
                 decimal interesNeto = interesBruto - impuestoMes;
 
-                detalle.Add($"Mes {i}: Bruto {interesBruto:C} | Impuesto {impuestoMes:C} | Neto {interesNeto:C}");
+                totalInteresBruto += interesBruto;
+                totalImpuesto += impuestoMes;
+                totalNeto += interesNeto;
             }
 
-            gvDetalle.DataSource = detalle;
-            gvDetalle.DataBind();
+            //  Llenar tabla resumen
+
+            lblNumero.Text = "001"; // aquí luego ponemos consecutivo real
+            //lblCliente.Text = txtCliente.Text;
+            //lblTelefono.Text = txtTelefono.Text;
+            //lblCorreo.Text = txtCorreo.Text;
+            lblProducto.Text = ddlProducto.SelectedItem.Text;
+            lblMonto.Text = monto.ToString("C");
+            lblPlazo.Text = ddlPlazo.SelectedItem.Text;
+            Label1.Text = tasa.ToString("N2") + " %";
+            lblImpuestoPorc.Text = "13 %";
+
+            Label2.Text = totalInteresBruto.ToString("C");
+            lblImpuestoTotal.Text = totalImpuesto.ToString("C");
+            lblNetoTotal.Text = totalNeto.ToString("C");
+
             lblMensaje.Text = "Cotización generada correctamente.";
+            lblMensaje.CssClass = "mensaje mensaje-exito";
             lblMensaje.Visible = true;
         }
 
         private decimal ObtenerTasaProducto()
         {
-            string productoSeleccionado = ddlProducto.SelectedValue;
+            int productoId;
+            int plazoId;
 
-            // EJEMPLO temporal (simulación)
-            if (productoSeleccionado == "1")
-                return 6.5m;
+            if (!int.TryParse(ddlProducto.SelectedValue, out productoId) ||
+                !int.TryParse(ddlPlazo.SelectedValue, out plazoId))
+            {
+                lblMensaje.Text = "Debe seleccionar un producto y un plazo válidos.";
+                lblMensaje.CssClass = "mensaje mensaje-error";
+                lblMensaje.Visible = true;
+                return 0;
+            }
 
-            if (productoSeleccionado == "2")
-                return 7.2m;
+            mdlTasa tasaObj = crtTasa.ObtenerTasaPorProductoYPlazo(productoId, plazoId);
 
-            if (productoSeleccionado == "3")
-                return 8.1m;
+            if (tasaObj == null)
+            {
+                lblMensaje.Text = "No existe una tasa configurada para el producto y plazo seleccionado.";
+                lblMensaje.CssClass = "mensaje mensaje-error";
+                lblMensaje.Visible = true;
+                return 0;
+            }
 
-            return 0;
+            return tasaObj.TasaAnual;
         }
 
         private decimal ObtenerTasa()

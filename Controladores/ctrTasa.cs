@@ -123,7 +123,7 @@ namespace ProyectoSistemaCotizacion.Controladores
 
         public mdlTasa ObtenerTasaPorProductoYPlazo(int productoId, int plazoId)
         {
-            mdlTasa tasa = new mdlTasa();
+            mdlTasa tasa = null;
 
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_ObtenerTasaPorProductoYPlazo", conn))

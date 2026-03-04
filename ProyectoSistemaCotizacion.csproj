@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="BaseDatos\Conn.cs" />
     <Compile Include="BaseDatos\ConnSQL.cs" />
+    <Compile Include="Controladores\ctrCotizacion.cs" />
     <Compile Include="Controladores\ctrPlazo.cs" />
     <Compile Include="Controladores\ctrProducto.cs" />
     <Compile Include="Controladores\ctrTasa.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Modelos\mdlCotizacion.cs" />
     <Compile Include="Modelos\mdlPlazo.cs" />
     <Compile Include="Modelos\mdlProducto.cs" />
     <Compile Include="Modelos\mdlTasa.cs" />
