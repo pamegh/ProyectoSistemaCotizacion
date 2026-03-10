@@ -6,7 +6,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
-using System.Windows;
 
 
 namespace ProyectoSistemaCotizacion.Controladores
@@ -226,6 +225,66 @@ namespace ProyectoSistemaCotizacion.Controladores
             }
 
             return false;
+        }
+
+        public bool CambiarEstadoUsuario(int usuadioId, string estado)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_SQLConnection))
+                using (SqlCommand cmd = new SqlCommand("sp_CambiarEstadoUsuario", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@usuario_id", SqlDbType.Int).Value = usuadioId;
+                    cmd.Parameters.Add("@estado", SqlDbType.VarChar, 20).Value = estado;
+                    cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "sistema";
+
+                    conn.Open();
+
+                    int filas = cmd.ExecuteNonQuery();
+
+                    return filas > 0;
+
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public List<mdlUsuario> ListarUsuarios()
+        {
+            List<mdlUsuario> lista = new List<mdlUsuario>();
+
+            using (SqlConnection conn = new SqlConnection(_SQLConnection))
+            using (SqlCommand cmd = new SqlCommand("sp_ListarUsuarios", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                conn.Open ();
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        mdlUsuario usuario= new mdlUsuario();
+
+                        usuario.UsuarioId = Convert.ToInt32(dr["usuario_id"]);
+                        usuario.Identificacion = dr["identificacion"].ToString();
+                        usuario.NombreCompleto = dr["nombre_completo"].ToString();
+                        usuario.Telefono = dr["telefono"].ToString();
+                        usuario.Correo = dr["correo"].ToString();
+                        usuario.Rol= dr["rol"].ToString();
+                        usuario.Estado = dr["estado"].ToString();
+                        lista.Add(usuario);
+
+                    }
+                    
+                }
+            }
+            return lista;
         }
     }
 }

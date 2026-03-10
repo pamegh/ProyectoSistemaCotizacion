@@ -23,6 +23,11 @@
         </div>
     </header>
 
+
+
+
+
+
     <div class="layout">
 
         <aside class="sidebar">
@@ -31,7 +36,7 @@
                 <li><a href="#">Gestión de Clientes</a></li>
                 <li><a href="#">Historial Mis Cotizaciones</a></li>
                 <li><a href="ConfiguracionProductos.aspx">Configuraciones de Productos</a></li>
-                <li><a href="#">Administración de Usuarios</a></li>
+                <li><a href="MantenimientoUsuarios.aspx">Administración de Usuarios</a></li>
                 <li><a href="MiCuenta.aspx">Mi Cuenta</a></li>
                 <li><a href="#">Reportes del Sistema</a></li>
             </ul>

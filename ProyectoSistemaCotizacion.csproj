@@ -93,11 +93,13 @@
     <Content Include="BaseDatos\ObtenerTasaPorProductoYPlazo.sql" />
     <Content Include="BaseDatos\ObtenerusuarioId.sql" />
     <Content Include="BaseDatos\TablaTasasPivot.sql" />
+    <Content Include="Content\Site.css" />
     <Content Include="Estilos\Configuracion.css" />
     <Content Include="Estilos\DashboardAdmin.css" />
     <Content Include="Estilos\DashboardUsuario.css" />
     <Content Include="Estilos\DashboardPStyle.css" />
     <Content Include="Estilos\LoginStyle.css" />
+    <Content Include="Estilos\MantenimientoUsuarios.css" />
     <Content Include="Estilos\MiCuenta.css" />
     <Content Include="Estilos\RegistroStyle.css" />
     <Content Include="Global.asax" />
@@ -108,6 +110,7 @@
     <Content Include="Vistas\DashboardPrincipal.aspx" />
     <Content Include="Vistas\DashboardUsuario.aspx" />
     <Content Include="Vistas\Login.aspx" />
+    <Content Include="Vistas\MantenimientoUsuarios.aspx" />
     <Content Include="Vistas\MiCuenta.aspx" />
     <Content Include="Vistas\Registro.aspx" />
     <Content Include="Web.config" />
@@ -177,6 +180,13 @@
     <Compile Include="Vistas\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\MantenimientoUsuarios.aspx.cs">
+      <DependentUpon>MantenimientoUsuarios.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\MantenimientoUsuarios.aspx.designer.cs">
+      <DependentUpon>MantenimientoUsuarios.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\MiCuenta.aspx.cs">
       <DependentUpon>MiCuenta.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -194,6 +204,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -203,6 +217,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Data\" />
+    <Folder Include="Views\MantenimientoUsuarios\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

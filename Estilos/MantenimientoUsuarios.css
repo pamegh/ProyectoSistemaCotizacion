@@ -1,0 +1,20 @@
+﻿
+/* Botones de estado usuario */
+
+.btn-activar {
+    background-color: #2e8b57;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.btn-desactivar {
+    background-color: #cd5c5c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+}

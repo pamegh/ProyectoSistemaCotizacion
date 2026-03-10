@@ -11,7 +11,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 {
 
 
-    public partial class DashboardUsuario
+    public partial class MantenimientoUsuarios
     {
 
         /// <summary>
@@ -24,21 +24,12 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// lblUsuario control.
+        /// gvUsuarios control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUsuario;
-
-        /// <summary>
-        /// btnSalir control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSalir;
+        protected global::System.Web.UI.WebControls.GridView gvUsuarios;
     }
 }
