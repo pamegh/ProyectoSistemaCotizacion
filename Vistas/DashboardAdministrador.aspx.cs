@@ -1,4 +1,5 @@
-﻿using ProyectoSistemaCotizacion.Modelos;
+﻿using ProyectoSistemaCotizacion.Controladores;
+using ProyectoSistemaCotizacion.Modelos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,5 +34,7 @@ namespace ProyectoSistemaCotizacion.Vistas
         {
             Response.Redirect("~/Vistas/MantenimientoUsuarios");
         }
+
+        
     }
 }

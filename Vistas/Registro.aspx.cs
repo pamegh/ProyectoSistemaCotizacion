@@ -17,6 +17,26 @@ namespace ProyectoSistemaCotizacion.Vistas
             if (!IsPostBack)
             {
                 CargarTiposIdentificacion();
+
+                if (Request.QueryString["id"] != null)
+                {
+                    int usuarioId = Convert.ToInt32(Request.QueryString["id"]);
+                    CargarUsuario(usuarioId);
+                }
+            }
+        }
+
+        private void CargarUsuario(int usuarioId)
+        {
+            ctrUsuario ctrUsuario = new ctrUsuario();
+            mdlUsuario usuario = ctrUsuario.ObtenerUsuarioPorId(usuarioId);
+
+            if(usuario != null)
+            {
+                txtIdentificacion.Text = usuario.Identificacion;
+                txtNombre.Text = usuario.NombreCompleto;
+                txtTelefono.Text = usuario.Telefono;
+                txtCorreo.Text = usuario.Correo;
             }
         }
 
