@@ -93,6 +93,7 @@
     <Content Include="BaseDatos\ObtenerusuarioId.sql" />
     <Content Include="BaseDatos\sp_ObtenerEstadisticasDashboard.sql" />
     <Content Include="BaseDatos\TablaTasasPivot.sql" />
+    <Content Include="BaseDatos\UPDATE_MiCuenta.sql" />
     <Content Include="Content\Site.css" />
     <Content Include="Estilos\Configuracion.css" />
     <Content Include="Estilos\DashboardAdmin.css" />
@@ -204,7 +205,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="INSTALACION_PanelControl.md" />
     <None Include="packages.config" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />

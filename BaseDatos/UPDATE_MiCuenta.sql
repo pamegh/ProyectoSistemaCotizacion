@@ -1,8 +1,55 @@
 -- =============================================
--- Procedimiento: sp_ActualizarUsuario
+-- SCRIPT DE ACTUALIZACIÓN - Mi Cuenta
+-- Fecha: $(date)
+-- Descripción: Actualiza los procedimientos almacenados para la funcionalidad Mi Cuenta
+-- =============================================
+
+USE [Apf_cotizaciones]
+GO
+
+PRINT 'Iniciando actualización de procedimientos almacenados...'
+GO
+
+-- =============================================
+-- 1. Procedimiento: sp_ObtenerUsuarioPorId
+-- Descripción: Obtiene los datos de un usuario por su ID (SIN contraseña)
+-- =============================================
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ObtenerUsuarioPorId]') AND type in (N'P', N'PC'))
+    DROP PROCEDURE [dbo].[sp_ObtenerUsuarioPorId]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ObtenerUsuarioPorId]
+    @usuario_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        usuario_id,
+        tipo_identificacion_id,
+        identificacion,
+        nombre_completo,
+        telefono,
+        correo,
+        rol,
+        estado
+    FROM usuarios
+    WHERE usuario_id = @usuario_id;
+END
+GO
+
+PRINT 'Procedimiento sp_ObtenerUsuarioPorId actualizado correctamente.'
+GO
+
+-- =============================================
+-- 2. Procedimiento: sp_ActualizarUsuario
 -- Descripción: Actualiza los datos de un usuario con validaciones
 -- =============================================
-CREATE OR ALTER PROCEDURE sp_ActualizarUsuario
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ActualizarUsuario]') AND type in (N'P', N'PC'))
+    DROP PROCEDURE [dbo].[sp_ActualizarUsuario]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ActualizarUsuario]
     @usuario_id INT,
     @tipo_identificacion_id INT,
     @identificacion VARCHAR(30),
@@ -105,4 +152,32 @@ BEGIN
         SELECT 1 AS resultado, 'Datos actualizados correctamente.' AS mensaje;
     END
 END
+GO
+
+PRINT 'Procedimiento sp_ActualizarUsuario actualizado correctamente.'
+GO
+
+-- =============================================
+-- 3. Verificación de Procedimientos
+-- =============================================
+PRINT ''
+PRINT 'Verificando procedimientos almacenados...'
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ObtenerUsuarioPorId]') AND type in (N'P', N'PC'))
+    PRINT '? sp_ObtenerUsuarioPorId - OK'
+ELSE
+    PRINT '? sp_ObtenerUsuarioPorId - ERROR'
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ActualizarUsuario]') AND type in (N'P', N'PC'))
+    PRINT '? sp_ActualizarUsuario - OK'
+ELSE
+    PRINT '? sp_ActualizarUsuario - ERROR'
+GO
+
+PRINT ''
+PRINT '============================================='
+PRINT 'Actualización completada exitosamente.'
+PRINT '============================================='
 GO
