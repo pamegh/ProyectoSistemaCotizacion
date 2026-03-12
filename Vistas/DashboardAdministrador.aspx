@@ -50,22 +50,22 @@
 
                 <div class="card">
                     <h2>Total Usuarios</h2>
-                    <p class="card-number">-</p>
+                    <p class="card-number"><asp:Label ID="lblTotalUsuarios" runat="server" Text="0"></asp:Label></p>
                 </div>
 
                 <div class="card">
                     <h2>Cotizaciones Activas</h2>
-                    <p class="card-number">-</p>
+                    <p class="card-number"><asp:Label ID="lblCotizacionesActivas" runat="server" Text="0"></asp:Label></p>
                 </div>
 
                 <div class="card">
                     <h2>Reportes Generados</h2>
-                    <p class="card-number">-</p>
+                    <p class="card-number"><asp:Label ID="lblReportesGenerados" runat="server" Text="0"></asp:Label></p>
                 </div>
 
                 <div class="card">
                     <h2>Productos Disponibles</h2>
-                    <p class="card-number">-</p>
+                    <p class="card-number"><asp:Label ID="lblProductosDisponibles" runat="server" Text="0"></asp:Label></p>
                 </div>
 
             </div>

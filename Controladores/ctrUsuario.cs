@@ -287,5 +287,54 @@ namespace ProyectoSistemaCotizacion.Controladores
             }
             return lista;
         }
+
+        public mdlEstadisticasDashboard ObtenerEstadisticasDashboard()
+        {
+            mdlEstadisticasDashboard estadisticas = new mdlEstadisticasDashboard();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_SQLConnection))
+                using (SqlCommand cmd = new SqlCommand("sp_ObtenerEstadisticasDashboard", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 60;
+
+                    conn.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            estadisticas.TotalUsuarios = dr["total_usuarios"] != DBNull.Value
+                                ? Convert.ToInt32(dr["total_usuarios"])
+                                : 0;
+
+                            estadisticas.CotizacionesActivas = dr["cotizaciones_activas"] != DBNull.Value
+                                ? Convert.ToInt32(dr["cotizaciones_activas"])
+                                : 0;
+
+                            estadisticas.ReportesGenerados = dr["reportes_generados"] != DBNull.Value
+                                ? Convert.ToInt32(dr["reportes_generados"])
+                                : 0;
+
+                            estadisticas.ProductosDisponibles = dr["productos_disponibles"] != DBNull.Value
+                                ? Convert.ToInt32(dr["productos_disponibles"])
+                                : 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Si hay error, devolver todos en 0
+                estadisticas.TotalUsuarios = 0;
+                estadisticas.CotizacionesActivas = 0;
+                estadisticas.ReportesGenerados = 0;
+                estadisticas.ProductosDisponibles = 0;
+            }
+
+            return estadisticas;
+        }
     }
 }

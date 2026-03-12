@@ -1,4 +1,5 @@
 ﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -75,6 +76,8 @@
     <Content Include="BaseDatos\actualizarProducto.sql" />
     <Content Include="BaseDatos\ActualizarUsuario.sql" />
     <Content Include="BaseDatos\actualziarTasa.sql" />
+    <Content Include="BaseDatos\AlterTable_Tasas_FechaVigencia.sql" />
+    <Content Include="BaseDatos\Configurar_Usuario_Administrador.sql" />
     <Content Include="BaseDatos\eliminarPlazo.sql" />
     <Content Include="BaseDatos\EliminarProducto.sql" />
     <Content Include="BaseDatos\eliminarTasa.sql" />
@@ -91,7 +94,11 @@
     <Content Include="BaseDatos\ObtenerTasaPorId.sql" />
     <Content Include="BaseDatos\ObtenerTasaPorProductoYPlazo.sql" />
     <Content Include="BaseDatos\ObtenerusuarioId.sql" />
-    <Content Include="BaseDatos\sp_ObtenerEstadisticasDashboard.sql" />
+    <Content Include="BaseDatos\sp_Tasa_Actualizar.sql" />
+    <Content Include="BaseDatos\sp_Tasa_CambiarEstado.sql" />
+    <Content Include="BaseDatos\sp_Tasa_Insertar.sql" />
+    <Content Include="BaseDatos\sp_Tasa_ObtenerPorId.sql" />
+    <Content Include="BaseDatos\sp_Tasa_ObtenerTodas.sql" />
     <Content Include="BaseDatos\TablaTasasPivot.sql" />
     <Content Include="Content\Site.css" />
     <Content Include="Estilos\Configuracion.css" />
@@ -109,6 +116,7 @@
     <Content Include="Vistas\DashboardAdministrador.aspx" />
     <Content Include="Vistas\DashboardPrincipal.aspx" />
     <Content Include="Vistas\DashboardUsuario.aspx" />
+    <Content Include="Vistas\GestionTasas.aspx" />
     <Content Include="Vistas\Login.aspx" />
     <Content Include="Vistas\MantenimientoUsuarios.aspx" />
     <Content Include="Vistas\MiCuenta.aspx" />
@@ -129,7 +137,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Modelos\mdlCotizacion.cs" />
-    <Compile Include="Modelos\mdlEstadisticasDashboard.cs" />
     <Compile Include="Modelos\mdlPlazo.cs" />
     <Compile Include="Modelos\mdlProducto.cs" />
     <Compile Include="Modelos\mdlTasa.cs" />
@@ -174,6 +181,12 @@
     <Compile Include="Vistas\DashboardUsuario.aspx.designer.cs">
       <DependentUpon>DashboardUsuario.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\GestionTasas.aspx.cs">
+      <DependentUpon>GestionTasas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\GestionTasas.aspx.designer.cs">
+      <DependentUpon>GestionTasas.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -204,12 +217,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="INSTALACION_PanelControl.md" />
+    <Content Include="INICIO_RAPIDO_GestionTasas.md" />
+    <Content Include="CorregirPaquetesNuGet.ps1" />
     <None Include="packages.config" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\web.config" />
+    <Content Include="README_GestionTasas.md" />
+    <Content Include="RESUMEN_IMPLEMENTACION.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -252,6 +268,7 @@
     <PropertyGroup>
       <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
   </Target>
   <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
