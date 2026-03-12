@@ -2,6 +2,7 @@
 using ProyectoSistemaCotizacion.Modelos;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -22,6 +23,12 @@ namespace ProyectoSistemaCotizacion.Vistas
                 {
                     int usuarioId = Convert.ToInt32(Request.QueryString["id"]);
                     CargarUsuario(usuarioId);
+
+                    lblTitulo.Text = "Editar Usuario";
+
+                    lblSubtitulo.Text = "Actualice la información del usuario.";
+
+                    txtContrasena.Enabled = false;
                 }
             }
         }
@@ -37,6 +44,8 @@ namespace ProyectoSistemaCotizacion.Vistas
                 txtNombre.Text = usuario.NombreCompleto;
                 txtTelefono.Text = usuario.Telefono;
                 txtCorreo.Text = usuario.Correo;
+
+                ddlTipoIdentificacion.SelectedValue = usuario.TipoIdentificacionId.ToString();
             }
         }
 
@@ -54,6 +63,8 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            bool esEdicion = Request.QueryString["id"] != null;
+            
             if (string.IsNullOrWhiteSpace(txtIdentificacion.Text))
             {
                 MostrarMensaje("La identificación es obligatoria.", false);
@@ -72,7 +83,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(txtContrasena.Text))
+            if (!esEdicion && string.IsNullOrWhiteSpace(txtContrasena.Text))
             {
                 MostrarMensaje("La contraseña es obligatoria.", false);
                 return;
@@ -94,12 +105,54 @@ namespace ProyectoSistemaCotizacion.Vistas
                 TipoIdentificacionId = Convert.ToInt32(ddlTipoIdentificacion.SelectedValue)
             };
 
+            ctrUsuario ctr = new ctrUsuario();
+
+            if (Request.QueryString["id"] != null)
+            {
+                datos.UsuarioId = Convert.ToInt32(Request.QueryString["id"]);
+                if (!string.IsNullOrWhiteSpace(txtContrasena.Text))
+                {
+                    datos.Contrasena = txtContrasena.Text.Trim();
+
+                }
+
+                if (ctr.ActualizarUsuario(datos, null, txtContrasena.Text))
+                {
+                    Response.Redirect("MantenimientoUsuarios.aspx");
+                }
+                else
+                {
+                    MostrarMensaje("Error al actualizar usuario.", false);
+                }
+                    
+                    
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(txtContrasena.Text))
+                {
+                    MostrarMensaje("La contraseña es obligatoria",false);
+                    return;
+                }
+                datos.Contrasena = txtContrasena.Text.Trim();
+
+                if(ctr.RegistrarUsuario(datos))
+                    MostrarMensaje(datos.Mensaje,true);
+                else
+                    MostrarMensaje(datos.Mensaje,false);
+            }
+
             ctrUsuario controlador = new ctrUsuario();
 
             if (controlador.RegistrarUsuario(datos))
-                MostrarMensaje(datos.Mensaje, true);
+            {
+                Response.Redirect("MantenimientoUsuarios.aspx");
+            }
             else
+            {
                 MostrarMensaje(datos.Mensaje, false);
+            }
+
         }
 
         private void MostrarMensaje(string mensaje, bool exito)

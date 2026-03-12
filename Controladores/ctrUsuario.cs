@@ -180,6 +180,7 @@ namespace ProyectoSistemaCotizacion.Controladores
                     if (dr.Read())
                     {
                         usuario.UsuarioId = Convert.ToInt32(dr["usuario_id"]);
+                        usuario.TipoIdentificacionId = Convert.ToInt32(dr["tipo_identificacion_id"]);//Agregar el tipo de identificación
                         usuario.Identificacion = dr["identificacion"].ToString();
                         usuario.NombreCompleto = dr["nombre_completo"].ToString();
                         usuario.Telefono = dr["telefono"].ToString();

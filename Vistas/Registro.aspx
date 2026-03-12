@@ -27,14 +27,29 @@
 
         <div class="card">
 
-            <h1 class="title">Registro de Usuario</h1>
-            <p class="subtitle">Complete la información para crear un nuevo usuario</p>
+            <asp:Label 
+                    ID="lblTitulo" 
+                    runat="server" 
+                    CssClass="title"
+                    Text="Registro de Usuario">
+                </asp:Label>
+
+            <br />
+
+            <asp:Label 
+                ID="lblSubtitulo" 
+                runat="server"
+                CssClass="subtitle"
+                Text="Complete la información para crear un nuevo usuario">
+            </asp:Label>
 
             <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje" Visible="false"></asp:Label>
 
             <div class="form-grid">
 
                 <div class="form-group">
+
+                    <br />
     <label>Tipo Identificación</label>
     <asp:DropDownList 
         ID="ddlTipoIdentificacion" 
