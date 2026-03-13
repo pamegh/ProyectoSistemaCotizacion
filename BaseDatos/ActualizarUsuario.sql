@@ -3,106 +3,103 @@
 -- Descripción: Actualiza los datos de un usuario con validaciones
 -- =============================================
 CREATE OR ALTER PROCEDURE sp_ActualizarUsuario
-    @usuario_id INT,
+(
+    @usuario_id         INT,
     @tipo_identificacion_id INT,
-    @identificacion VARCHAR(30),
-    @nombre_completo VARCHAR(150),
-    @telefono VARCHAR(20),
-    @correo VARCHAR(100),
-    @contrasena_actual VARCHAR(255) = NULL,
-    @contrasena_nueva VARCHAR(255) = NULL,
-    @modificado_por VARCHAR(50)
+    @identificacion     VARCHAR(30),
+    @nombre_completo    VARCHAR(150),
+    @telefono           VARCHAR(20) = NULL,
+    @correo             VARCHAR(100),
+    @contrasena_actual  VARCHAR(255) = NULL,
+    @contrasena_nueva   VARCHAR(255) = NULL,
+    @modificado_por     VARCHAR(50)
+)
 AS
 BEGIN
     SET NOCOUNT ON;
-    
-    -- Validar que el usuario existe
-    IF NOT EXISTS (SELECT 1 FROM usuarios WHERE usuario_id = @usuario_id)
+ 
+    -- Verificar que el usuario exista
+    IF NOT EXISTS (SELECT 1 FROM Usuarios WHERE usuario_id = @usuario_id)
     BEGIN
-        SELECT 0 AS resultado, 'El usuario no existe.' AS mensaje;
-        RETURN;
+        SELECT 0 AS resultado, 'Usuario no encontrado.' AS mensaje
+        RETURN
     END
-    
-    -- Validar campos requeridos
-    IF @identificacion IS NULL OR LTRIM(RTRIM(@identificacion)) = ''
+ 
+    -- Validar duplicado de identificación (excluyendo al mismo usuario)
+    IF EXISTS (
+        SELECT 1 FROM Usuarios 
+        WHERE identificacion = @identificacion 
+          AND usuario_id <> @usuario_id
+    )
     BEGIN
-        SELECT 0 AS resultado, 'La identificación es requerida.' AS mensaje;
-        RETURN;
+        SELECT 0 AS resultado, 'La identificación ya está registrada por otro usuario.' AS mensaje
+        RETURN
     END
-    
-    IF @nombre_completo IS NULL OR LTRIM(RTRIM(@nombre_completo)) = ''
+ 
+    -- Validar duplicado de correo (excluyendo al mismo usuario)
+    IF EXISTS (
+        SELECT 1 FROM Usuarios 
+        WHERE correo = @correo 
+          AND usuario_id <> @usuario_id
+    )
     BEGIN
-        SELECT 0 AS resultado, 'El nombre completo es requerido.' AS mensaje;
-        RETURN;
+        SELECT 0 AS resultado, 'El correo ya está registrado por otro usuario.' AS mensaje
+        RETURN
     END
-    
-    IF @correo IS NULL OR LTRIM(RTRIM(@correo)) = ''
+ 
+    -- Validar duplicado de teléfono (solo si se proporciona, excluyendo al mismo usuario)
+    IF @telefono IS NOT NULL AND @telefono <> ''
     BEGIN
-        SELECT 0 AS resultado, 'El correo es requerido.' AS mensaje;
-        RETURN;
-    END
-    
-    -- Validar formato de correo
-    IF @correo NOT LIKE '%_@__%.__%'
-    BEGIN
-        SELECT 0 AS resultado, 'El formato del correo es inválido.' AS mensaje;
-        RETURN;
-    END
-    
-    -- Validar que el correo no esté en uso por otro usuario
-    IF EXISTS (SELECT 1 FROM usuarios WHERE correo = @correo AND usuario_id <> @usuario_id)
-    BEGIN
-        SELECT 0 AS resultado, 'El correo ya está registrado por otro usuario.' AS mensaje;
-        RETURN;
-    END
-    
-    -- Validar que la identificación no esté en uso por otro usuario
-    IF EXISTS (SELECT 1 FROM usuarios WHERE identificacion = @identificacion AND usuario_id <> @usuario_id)
-    BEGIN
-        SELECT 0 AS resultado, 'La identificación ya está registrada por otro usuario.' AS mensaje;
-        RETURN;
-    END
-    
-    -- Si se desea cambiar contraseña, validar
-    IF @contrasena_actual IS NOT NULL AND @contrasena_nueva IS NOT NULL
-    BEGIN
-        -- Verificar que la contraseña actual sea correcta
-        IF NOT EXISTS (SELECT 1 FROM usuarios WHERE usuario_id = @usuario_id AND contrasena = @contrasena_actual)
+        IF EXISTS (
+            SELECT 1 FROM Usuarios 
+            WHERE telefono = @telefono 
+              AND usuario_id <> @usuario_id
+        )
         BEGIN
-            SELECT 0 AS resultado, 'La contraseña actual es incorrecta.' AS mensaje;
-            RETURN;
+            SELECT 0 AS resultado, 'El teléfono ya está registrado por otro usuario.' AS mensaje
+            RETURN
         END
-        
-        -- Actualizar con nueva contraseña
-        UPDATE usuarios
-        SET 
-            tipo_identificacion_id = @tipo_identificacion_id,
-            identificacion = @identificacion,
-            nombre_completo = @nombre_completo,
-            telefono = @telefono,
-            correo = @correo,
-            contrasena = @contrasena_nueva,
-            fecha_modificacion = GETDATE(),
-            modificado_por = @modificado_por
-        WHERE usuario_id = @usuario_id;
-        
-        SELECT 1 AS resultado, 'Datos y contraseña actualizados correctamente.' AS mensaje;
     END
-    ELSE
+ 
+    -- Validar contraseña actual si se quiere cambiar
+    IF @contrasena_nueva IS NOT NULL
     BEGIN
-        -- Actualizar solo datos personales
-        UPDATE usuarios
-        SET 
-            tipo_identificacion_id = @tipo_identificacion_id,
-            identificacion = @identificacion,
-            nombre_completo = @nombre_completo,
-            telefono = @telefono,
-            correo = @correo,
-            fecha_modificacion = GETDATE(),
-            modificado_por = @modificado_por
-        WHERE usuario_id = @usuario_id;
-        
-        SELECT 1 AS resultado, 'Datos actualizados correctamente.' AS mensaje;
+        IF @contrasena_actual IS NULL
+        BEGIN
+            SELECT 0 AS resultado, 'Debe proporcionar la contraseña actual para cambiarla.' AS mensaje
+            RETURN
+        END
+ 
+        IF NOT EXISTS (
+            SELECT 1 FROM Usuarios 
+            WHERE usuario_id = @usuario_id 
+              AND contrasena = @contrasena_actual
+        )
+        BEGIN
+            SELECT 0 AS resultado, 'La contraseña actual es incorrecta.' AS mensaje
+            RETURN
+        END
     END
+ 
+    -- Actualizar datos generales
+    UPDATE Usuarios
+    SET
+        tipo_identificacion_id = @tipo_identificacion_id,
+        identificacion         = @identificacion,
+        nombre_completo        = @nombre_completo,
+        telefono               = @telefono,
+        correo                 = @correo,
+        fecha_modificacion     = GETDATE(),
+        modificado_por         = @modificado_por
+    WHERE usuario_id = @usuario_id
+ 
+    -- Actualizar contraseña si se proporcionó nueva
+    IF @contrasena_nueva IS NOT NULL
+    BEGIN
+        UPDATE Usuarios
+        SET contrasena = @contrasena_nueva
+        WHERE usuario_id = @usuario_id
+    END
+ 
+    SELECT 1 AS resultado, 'Usuario actualizado correctamente.' AS mensaje
 END
-GO

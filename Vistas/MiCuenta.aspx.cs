@@ -2,8 +2,7 @@
 using ProyectoSistemaCotizacion.Modelos;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -11,12 +10,19 @@ namespace ProyectoSistemaCotizacion.Vistas
 {
     public partial class MiCuenta : System.Web.UI.Page
     {
-        ctrUsuario ctrUsuario = new ctrUsuario();
-        ctrTipoIdentificacion ctrTipoIdentificacion = new ctrTipoIdentificacion();
+        private ctrUsuario ctrUsuario = new ctrUsuario();
+        private ctrTipoIdentificacion ctrTipoIdentificacion = new ctrTipoIdentificacion();
+
+        // Propiedad pública leída desde el ASPX con <%= %>
+        public string TiposIdentificacionJson { get; private set; }
+
+        public MiCuenta()
+        {
+            TiposIdentificacionJson = "{}";
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Configurar ValidationSettings para evitar error de jQuery
             Page.UnobtrusiveValidationMode = System.Web.UI.UnobtrusiveValidationMode.None;
 
             if (Session["Usuario"] == null)
@@ -31,6 +37,10 @@ namespace ProyectoSistemaCotizacion.Vistas
                 mdlUsuario usuarioSesion = (mdlUsuario)Session["Usuario"];
                 CargarDatos(usuarioSesion.UsuarioId);
             }
+            else
+            {
+                GenerarTiposJson(null);
+            }
         }
 
         private void CargarTiposIdentificacion()
@@ -38,18 +48,83 @@ namespace ProyectoSistemaCotizacion.Vistas
             try
             {
                 List<mdlTipoIdentificacion> tipos = ctrTipoIdentificacion.ObtenerTodos();
-                
+
                 ddlTipoIdentificacion.Items.Clear();
                 ddlTipoIdentificacion.Items.Add(new ListItem("-- Seleccione --", "0"));
-                
-                foreach (var tipo in tipos)
+
+                foreach (mdlTipoIdentificacion tipo in tipos)
                 {
-                    ddlTipoIdentificacion.Items.Add(new ListItem(tipo.Nombre, tipo.TipoIdentificacionId.ToString()));
+                    ddlTipoIdentificacion.Items.Add(
+                        new ListItem(tipo.Nombre, tipo.TipoIdentificacionId.ToString()));
                 }
+
+                GenerarTiposJson(tipos);
             }
             catch (Exception ex)
             {
                 MostrarMensaje("Error al cargar tipos de identificación: " + ex.Message, false);
+            }
+        }
+
+        private void GenerarTiposJson(List<mdlTipoIdentificacion> tipos)
+        {
+            if (tipos == null)
+            {
+                try { tipos = ctrTipoIdentificacion.ObtenerTodos(); }
+                catch { return; }
+            }
+
+            StringBuilder sb = new StringBuilder("{");
+            bool primero = true;
+
+            foreach (mdlTipoIdentificacion t in tipos)
+            {
+                string placeholder = GenerarPlaceholder(t);
+                string hint = GenerarHint(t);
+
+                if (!primero) sb.Append(",");
+
+                sb.Append("\"" + t.TipoIdentificacionId + "\":{");
+                sb.Append("\"placeholder\":\"" + placeholder + "\",");
+                sb.Append("\"hint\":\"" + hint + "\",");
+                sb.Append("\"maxLength\":" + t.LongitudMax + ",");
+                sb.Append("\"soloNumerico\":" + (t.SoloNumerico ? "true" : "false"));
+                sb.Append("}");
+
+                primero = false;
+            }
+
+            sb.Append("}");
+            TiposIdentificacionJson = sb.ToString();
+        }
+
+        private string GenerarPlaceholder(mdlTipoIdentificacion t)
+        {
+            switch (t.TipoIdentificacionId)
+            {
+                case 1: return "Ej: 1-1234-1234";
+                case 2: return "Ej: 3-123-123456";
+                case 3: return "Ej: 11234567890";
+                case 4: return "Ej: A1234567";
+                default:
+                    return t.LongitudMin == t.LongitudMax
+                        ? t.LongitudMin + " caracteres"
+                        : t.LongitudMin + "-" + t.LongitudMax + " caracteres";
+            }
+        }
+
+        private string GenerarHint(mdlTipoIdentificacion t)
+        {
+            switch (t.TipoIdentificacionId)
+            {
+                case 1: return "Cedula Fisica: formato X-XXXX-XXXX";
+                case 2: return "Cedula Juridica: formato 3-XXX-XXXXXX";
+                case 3: return "DIMEX: 11 o 12 digitos";
+                case 4: return "Pasaporte: 6 a 20 caracteres alfanumericos";
+                default:
+                    return t.SoloNumerico
+                        ? (t.Nombre + ": " + t.LongitudMin + "-" + t.LongitudMax + " digitos")
+                        : (t.Nombre + ": " + t.LongitudMin + "-" + t.LongitudMax + " caracteres");
             }
         }
 
@@ -61,38 +136,22 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 if (usuario != null && usuario.UsuarioId > 0)
                 {
-                    // Debug: Verificar datos
-                    System.Diagnostics.Debug.WriteLine($"Usuario ID: {usuario.UsuarioId}");
-                    System.Diagnostics.Debug.WriteLine($"Tipo ID: {usuario.TipoIdentificacionId}");
-                    System.Diagnostics.Debug.WriteLine($"Identificacion: {usuario.Identificacion}");
-                    System.Diagnostics.Debug.WriteLine($"Nombre: {usuario.NombreCompleto}");
-                    
-                    // Cargar datos en los campos de texto
                     txtIdentificacion.Text = usuario.Identificacion ?? "";
                     txtNombre.Text = usuario.NombreCompleto ?? "";
                     txtTelefono.Text = usuario.Telefono ?? "";
                     txtCorreo.Text = usuario.Correo ?? "";
-                    
-                    // Seleccionar el tipo de identificación si existe en el dropdown
+
                     if (usuario.TipoIdentificacionId > 0)
                     {
                         string valorTipoId = usuario.TipoIdentificacionId.ToString();
                         ListItem item = ddlTipoIdentificacion.Items.FindByValue(valorTipoId);
-                        
                         if (item != null)
-                        {
                             ddlTipoIdentificacion.SelectedValue = valorTipoId;
-                            System.Diagnostics.Debug.WriteLine($"Dropdown seleccionado: {valorTipoId}");
-                        }
                         else
-                        {
-                            System.Diagnostics.Debug.WriteLine($"No se encontró el valor {valorTipoId} en el dropdown");
                             ddlTipoIdentificacion.SelectedIndex = 0;
-                        }
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine("TipoIdentificacionId es 0 o negativo");
                         ddlTipoIdentificacion.SelectedIndex = 0;
                     }
                 }
@@ -103,8 +162,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en CargarDatos: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 MostrarMensaje("Error al cargar datos: " + ex.Message, false);
             }
         }
@@ -112,7 +169,7 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected void btnMostrarCambio_Click(object sender, EventArgs e)
         {
             pnlCambioContrasena.Visible = !pnlCambioContrasena.Visible;
-            
+
             rfvActual.Enabled = pnlCambioContrasena.Visible;
             rfvNueva.Enabled = pnlCambioContrasena.Visible;
             revNueva.Enabled = pnlCambioContrasena.Visible;
@@ -130,13 +187,17 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void btnAtras_Click(object sender, EventArgs e)
         {
-            // Redirigir al Dashboard del Administrador
-            Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
+            mdlUsuario usuarioSesion = (mdlUsuario)Session["Usuario"];
+
+            if (usuarioSesion != null && usuarioSesion.Rol != null &&
+                usuarioSesion.Rol.ToUpper() == "ADMIN")
+                Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
+            else
+                Response.Redirect("~/Vistas/DashboardUsuario.aspx");
         }
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            // Validar que la página sea válida
             if (!Page.IsValid)
             {
                 MostrarMensaje("Por favor, corrija los errores en el formulario.", false);
@@ -147,49 +208,42 @@ namespace ProyectoSistemaCotizacion.Vistas
             {
                 mdlUsuario usuarioSesion = (mdlUsuario)Session["Usuario"];
 
-                // Crear objeto con los datos del formulario
-                mdlUsuario usuario = new mdlUsuario
-                {
-                    UsuarioId = usuarioSesion.UsuarioId,
-                    TipoIdentificacionId = Convert.ToInt32(ddlTipoIdentificacion.SelectedValue),
-                    Identificacion = txtIdentificacion.Text.Trim(),
-                    NombreCompleto = txtNombre.Text.Trim(),
-                    Telefono = txtTelefono.Text.Trim(),
-                    Correo = txtCorreo.Text.Trim()
-                };
+                mdlUsuario usuario = new mdlUsuario();
+                usuario.UsuarioId = usuarioSesion.UsuarioId;
+                usuario.TipoIdentificacionId = Convert.ToInt32(ddlTipoIdentificacion.SelectedValue);
+                usuario.Identificacion = txtIdentificacion.Text.Trim();
+                usuario.NombreCompleto = txtNombre.Text.Trim();
+                usuario.Telefono = txtTelefono.Text.Trim();
+                usuario.Correo = txtCorreo.Text.Trim();
 
                 string actual = null;
                 string nueva = null;
 
-                // Si el panel de contraseña está visible y hay valores
                 if (pnlCambioContrasena.Visible)
                 {
-                    if (!string.IsNullOrWhiteSpace(txtActual.Text) && !string.IsNullOrWhiteSpace(txtNueva.Text))
+                    if (!string.IsNullOrWhiteSpace(txtActual.Text) &&
+                        !string.IsNullOrWhiteSpace(txtNueva.Text))
                     {
-                        // Validar que las contraseñas coincidan
                         if (txtNueva.Text != txtConfirmarNueva.Text)
                         {
                             MostrarMensaje("Las contraseñas no coinciden.", false);
                             return;
                         }
-
-                        // Encriptar contraseñas
                         actual = SeguridadContrasena.CalcularSHA256(txtActual.Text);
                         nueva = SeguridadContrasena.CalcularSHA256(txtNueva.Text);
                     }
-                    else if (!string.IsNullOrWhiteSpace(txtActual.Text) || !string.IsNullOrWhiteSpace(txtNueva.Text))
+                    else if (!string.IsNullOrWhiteSpace(txtActual.Text) ||
+                             !string.IsNullOrWhiteSpace(txtNueva.Text))
                     {
                         MostrarMensaje("Debe completar ambos campos de contraseña para cambiarla.", false);
                         return;
                     }
                 }
 
-                // Intentar actualizar
                 bool resultado = ctrUsuario.ActualizarUsuario(usuario, actual, nueva);
 
                 if (resultado)
                 {
-                    // Actualizar datos de sesión
                     usuarioSesion.TipoIdentificacionId = usuario.TipoIdentificacionId;
                     usuarioSesion.Identificacion = usuario.Identificacion;
                     usuarioSesion.NombreCompleto = usuario.NombreCompleto;
@@ -197,15 +251,13 @@ namespace ProyectoSistemaCotizacion.Vistas
                     usuarioSesion.Correo = usuario.Correo;
                     Session["Usuario"] = usuarioSesion;
 
-                    // Limpiar campos de contraseña si se actualizó
                     if (pnlCambioContrasena.Visible && actual != null)
                     {
                         txtActual.Text = "";
                         txtNueva.Text = "";
                         txtConfirmarNueva.Text = "";
                         pnlCambioContrasena.Visible = false;
-                        
-                        // Deshabilitar validadores
+
                         rfvActual.Enabled = false;
                         rfvNueva.Enabled = false;
                         revNueva.Enabled = false;

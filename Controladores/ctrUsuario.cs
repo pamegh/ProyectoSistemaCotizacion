@@ -219,7 +219,6 @@ namespace ProyectoSistemaCotizacion.Controladores
         }
         public bool ActualizarUsuario(mdlUsuario datos, string contrasenaActual = null, string contrasenaNueva = null)
         {
-            // Validaciones en el controlador
             if (datos == null)
             {
                 datos = new mdlUsuario();
@@ -227,27 +226,66 @@ namespace ProyectoSistemaCotizacion.Controladores
                 return false;
             }
 
-            // Validar tipo de identificación
+            // ── Tipo de identificación ────────────────────────────────────
             if (datos.TipoIdentificacionId <= 0)
             {
                 datos.Mensaje = "Debe seleccionar un tipo de identificación.";
                 return false;
             }
 
-            // Validar identificación
+            // ── Identificación ────────────────────────────────────────────
             if (string.IsNullOrWhiteSpace(datos.Identificacion))
             {
                 datos.Mensaje = "La identificación es requerida.";
                 return false;
             }
 
-            if (datos.Identificacion.Trim().Length < 9)
+            string id = datos.Identificacion.Trim();
+
+            switch (datos.TipoIdentificacionId)
             {
-                datos.Mensaje = "La identificación debe tener al menos 9 caracteres.";
-                return false;
+                case 1: // Cédula Física: X-XXXX-XXXX
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^\d{1}-\d{4}-\d{4}$"))
+                    {
+                        datos.Mensaje = "La Cédula Física debe tener el formato X-XXXX-XXXX.";
+                        return false;
+                    }
+                    break;
+
+                case 2: // Cédula Jurídica: 3-XXX-XXXXXX
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^3-\d{3}-\d{6}$"))
+                    {
+                        datos.Mensaje = "La Cédula Jurídica debe tener el formato 3-XXX-XXXXXX.";
+                        return false;
+                    }
+                    break;
+
+                case 3: // DIMEX: 11 o 12 dígitos
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^\d{11,12}$"))
+                    {
+                        datos.Mensaje = "El DIMEX debe tener 11 o 12 dígitos.";
+                        return false;
+                    }
+                    break;
+
+                case 4: // Pasaporte: 6-20 alfanuméricos
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^[A-Za-z0-9]{6,20}$"))
+                    {
+                        datos.Mensaje = "El pasaporte debe tener entre 6 y 20 caracteres alfanuméricos.";
+                        return false;
+                    }
+                    break;
+
+                default:
+                    if (id.Length < 6)
+                    {
+                        datos.Mensaje = "La identificación debe tener al menos 6 caracteres.";
+                        return false;
+                    }
+                    break;
             }
 
-            // Validar nombre completo
+            // ── Nombre completo ───────────────────────────────────────────
             if (string.IsNullOrWhiteSpace(datos.NombreCompleto))
             {
                 datos.Mensaje = "El nombre completo es requerido.";
@@ -260,31 +298,43 @@ namespace ProyectoSistemaCotizacion.Controladores
                 return false;
             }
 
-            // Validar correo
+            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.NombreCompleto.Trim(),
+                @"^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]+$"))
+            {
+                datos.Mensaje = "El nombre completo solo debe contener letras y espacios.";
+                return false;
+            }
+
+            // ── Teléfono (obligatorio, formato CR) ────────────────────────
+            if (string.IsNullOrWhiteSpace(datos.Telefono))
+            {
+                datos.Mensaje = "El teléfono es requerido.";
+                return false;
+            }
+
+            string tel = datos.Telefono.Trim().Replace("-", "").Replace(" ", "");
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(tel, @"^[24678]\d{7}$"))
+            {
+                datos.Mensaje = "El teléfono debe tener 8 dígitos y ser un número costarricense válido (inicia con 2, 4, 6, 7 u 8).";
+                return false;
+            }
+
+            // ── Correo ────────────────────────────────────────────────────
             if (string.IsNullOrWhiteSpace(datos.Correo))
             {
                 datos.Mensaje = "El correo es requerido.";
                 return false;
             }
 
-            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.Correo, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.Correo.Trim(),
+                @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
                 datos.Mensaje = "El formato del correo es inválido.";
                 return false;
             }
 
-            // Validar teléfono si se proporciona
-            if (!string.IsNullOrWhiteSpace(datos.Telefono))
-            {
-                string telefonoLimpio = datos.Telefono.Trim().Replace("-", "").Replace(" ", "");
-                if (telefonoLimpio.Length < 8)
-                {
-                    datos.Mensaje = "El teléfono debe tener al menos 8 dígitos.";
-                    return false;
-                }
-            }
-
-            // Validar contraseñas si se están cambiando
+            // ── Contraseña nueva ──────────────────────────────────────────
             if (!string.IsNullOrEmpty(contrasenaActual) && !string.IsNullOrEmpty(contrasenaNueva))
             {
                 if (contrasenaNueva.Length < 6)
@@ -294,6 +344,7 @@ namespace ProyectoSistemaCotizacion.Controladores
                 }
             }
 
+            // ── Llamada a la base de datos ────────────────────────────────
             try
             {
                 using (SqlConnection conn = new SqlConnection(_SQLConnection))
@@ -309,13 +360,10 @@ namespace ProyectoSistemaCotizacion.Controladores
                     cmd.Parameters.Add("@telefono", SqlDbType.VarChar, 20).Value =
                         string.IsNullOrWhiteSpace(datos.Telefono) ? (object)DBNull.Value : datos.Telefono.Trim();
                     cmd.Parameters.Add("@correo", SqlDbType.VarChar, 100).Value = datos.Correo.Trim();
-
                     cmd.Parameters.Add("@contrasena_actual", SqlDbType.VarChar, 255).Value =
                         string.IsNullOrEmpty(contrasenaActual) ? (object)DBNull.Value : contrasenaActual;
-
                     cmd.Parameters.Add("@contrasena_nueva", SqlDbType.VarChar, 255).Value =
                         string.IsNullOrEmpty(contrasenaNueva) ? (object)DBNull.Value : contrasenaNueva;
-
                     cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "Sistema";
 
                     conn.Open();
@@ -344,7 +392,6 @@ namespace ProyectoSistemaCotizacion.Controladores
             datos.Mensaje = "No se pudo actualizar el usuario.";
             return false;
         }
-
         public bool CambiarEstadoUsuario(int usuadioId, string estado)
         {
             try
