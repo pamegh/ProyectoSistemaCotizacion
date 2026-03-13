@@ -453,5 +453,43 @@ namespace ProyectoSistemaCotizacion.Controladores
 
             return estadisticas;
         }
+        public bool CambiarRolUsuario(int usuarioId, string nuevoRol, string modificadoPor)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_SQLConnection))
+                using (SqlCommand cmd = new SqlCommand("sp_CambiarRolUsuario", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 60;
+
+                    cmd.Parameters.Add("@usuario_id", SqlDbType.Int).Value = usuarioId;
+                    cmd.Parameters.Add("@rol", SqlDbType.VarChar, 50).Value = nuevoRol;
+                    cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = modificadoPor;
+
+                    conn.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            return Convert.ToInt32(dr["resultado"]) == 1;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("SQL Error en CambiarRolUsuario: " + ex.Message);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error en CambiarRolUsuario: " + ex.Message);
+                return false;
+            }
+
+            return false;
+        }
     }
 }

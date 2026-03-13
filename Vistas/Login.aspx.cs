@@ -30,6 +30,7 @@ namespace SistemaCotizacionAPF.Vistas
 
                 MostrarMensaje("¡Bienvenido " + datos.NombreCompleto + "!", "exito");
 
+                // El rol en la BD es "ADMIN"
                 if (datos.Rol != null && datos.Rol.ToUpper() == "ADMIN")
                 {
                     Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
@@ -42,7 +43,7 @@ namespace SistemaCotizacionAPF.Vistas
             else
             {
                 MostrarMensaje(datos.Mensaje, "error");
-                // en este if, sii el usuario no existe, enfocar campo usuario
+
                 if (datos.Mensaje != null && datos.Mensaje.ToLower().Contains("usuario"))
                 {
                     txtUsuario.Focus();
@@ -61,17 +62,11 @@ namespace SistemaCotizacionAPF.Vistas
             lblMensaje.Visible = true;
 
             if (tipo == "error")
-            {
                 lblMensaje.CssClass = "mensaje mensaje-error";
-            }
             else if (tipo == "exito")
-            {
                 lblMensaje.CssClass = "mensaje mensaje-exito";
-            }
             else
-            {
                 lblMensaje.CssClass = "mensaje";
-            }
         }
     }
 }

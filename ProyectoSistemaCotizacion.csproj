@@ -75,6 +75,7 @@
     <Content Include="BaseDatos\actualizarProducto.sql" />
     <Content Include="BaseDatos\ActualizarUsuario.sql" />
     <Content Include="BaseDatos\actualziarTasa.sql" />
+    <Content Include="BaseDatos\correcciontiposidentificacion.sql" />
     <Content Include="BaseDatos\eliminarPlazo.sql" />
     <Content Include="BaseDatos\EliminarProducto.sql" />
     <Content Include="BaseDatos\eliminarTasa.sql" />
@@ -91,6 +92,8 @@
     <Content Include="BaseDatos\ObtenerTasaPorId.sql" />
     <Content Include="BaseDatos\ObtenerTasaPorProductoYPlazo.sql" />
     <Content Include="BaseDatos\ObtenerusuarioId.sql" />
+    <Content Include="BaseDatos\sp_CambiarRolUsuario.sql" />
+    <Content Include="BaseDatos\sp_ListarUsuarios.sql" />
     <Content Include="BaseDatos\sp_ObtenerEstadisticasDashboard.sql" />
     <Content Include="BaseDatos\TablaTasasPivot.sql" />
     <Content Include="BaseDatos\UPDATE_MiCuenta.sql" />

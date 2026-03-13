@@ -1,54 +1,223 @@
-﻿
-/* Botones de estado usuario */
+﻿/* =============================================
+   MantenimientoUsuarios.css
+   Estética consistente con el sistema APF
+   ============================================= */
 
-.btn-activar {
-    background-color: #2e8b57;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 15px;
-    cursor: pointer;
+/* Reset base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.btn-desactivar {
-    background-color: #cd5c5c;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 15px;
-    cursor: pointer;
+body {
+    font-family: 'Times New Roman', serif;
+    background-color: #D8D8C0;
 }
 
-/* BOTONES DE ACCION DEL GRID */
+/* ── HEADER ─────────────────────────────────── */
+.header {
+    background-color: #FFFFFF;
+    padding: 20px 40px;
+    border-bottom: 3px solid #1693A5;
+}
 
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-
-.estado-label {
-    padding: 6px 12px;
-    border-radius: 20px;
+.logo {
+    font-size: 1.4rem;
     font-weight: bold;
-    color: white;
+    color: #1693A5;
+    letter-spacing: 0.5px;
 }
 
+.nav {
+    display: flex;
+    gap: 15px;
+}
+
+    .nav a {
+        text-decoration: none;
+        color: #1693A5;
+        font-weight: 600;
+        padding: 6px 16px;
+        border-radius: 20px;
+        border: 2px solid #1693A5;
+        transition: 0.3s;
+        font-size: 0.95rem;
+    }
+
+        .nav a:hover {
+            background-color: #1693A5;
+            color: #FFFFFF;
+        }
+
+/* ── CONTENEDOR PRINCIPAL ───────────────────── */
+.main-container {
+    margin: 35px 40px;
+}
+
+.card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 35px 40px;
+    border: 2px solid #D8D8C0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+/* ── TÍTULOS ────────────────────────────────── */
+.title {
+    font-size: 1.9rem;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #666666;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #D8D8C0;
+}
+
+/* ── MENSAJES ───────────────────────────────── */
+.mensaje {
+    display: block;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.mensaje-exito {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+    border: 1px solid #a5d6a7;
+}
+
+.mensaje-error {
+    background-color: #fce4ec;
+    color: #880e4f;
+    border: 1px solid #f48fb1;
+}
+
+/* ── BUSCADOR ───────────────────────────────── */
+.search-box {
+    margin-bottom: 25px;
+    max-width: 350px;
+}
+
+.input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 2px solid #D8D8C0;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-family: 'Times New Roman', serif;
+    color: #000000;
+    transition: 0.3s;
+    background-color: #FAFAFA;
+}
+
+    .input:focus {
+        outline: none;
+        border-color: #1693A5;
+        box-shadow: 0 0 0 3px rgba(22, 147, 165, 0.1);
+        background-color: #FFFFFF;
+    }
+
+    .input::placeholder {
+        color: #999;
+    }
+
+/* ── TABLA ──────────────────────────────────── */
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+    .tabla th {
+        background-color: #1693A5;
+        color: #FFFFFF;
+        padding: 14px 16px;
+        text-align: left;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+        .tabla th:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .tabla th:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+    .tabla td {
+        padding: 13px 16px;
+        border-bottom: 1px solid #EFEFEF;
+        color: #222222;
+        vertical-align: middle;
+    }
+
+    .tabla tr:last-child td {
+        border-bottom: none;
+    }
+
+    .tabla tr:hover td {
+        background-color: #F0FBFC;
+        cursor: pointer;
+    }
+
+/* ── ESTADO ─────────────────────────────────── */
 .estado-activo {
+    display: inline-block;
+    background-color: #e8f5e9;
     color: #2e7d32;
     font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    border: 1px solid #a5d6a7;
 }
 
 .estado-inactivo {
+    display: inline-block;
+    background-color: #fce4ec;
     color: #c62828;
     font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    border: 1px solid #f48fb1;
 }
 
+/* ── BOTONES DE ACCIÓN ──────────────────────── */
 .btn-action {
     color: #1693A5;
     font-size: 18px;
-    margin-right: 10px;
+    margin-right: 8px;
     cursor: pointer;
+    transition: 0.2s;
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 6px;
 }
 
     .btn-action:hover {
         color: #127a8a;
+        background-color: #e0f7fa;
     }
 
 .btn-danger {
@@ -57,37 +226,57 @@
 
     .btn-danger:hover {
         color: #b52b27;
+        background-color: #fce4ec;
     }
 
-/* resalta el boton cuando pasa el mouse */
-.tabla tr:hover {
-    background-color: #eef7f9;
+/* Ícono dorado = ya es Administrador */
+.btn-admin-activo {
+    color: #f0a500;
+    font-size: 18px;
+    margin-right: 8px;
     cursor: pointer;
-}
-/* muestra la tabla */
-.tabla {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    transition: 0.2s;
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 6px;
 }
 
-    .tabla th {
-        background-color: #1693A5;
-        color: white;
-        padding: 12px;
-        text-align: left;
+    .btn-admin-activo:hover {
+        color: #c47f00;
+        background-color: #fff8e1;
     }
 
+/* Botones deshabilitados (usuario logueado) */
+.btn-disabled {
+    color: #CCCCCC !important;
+    font-size: 18px;
+    margin-right: 8px;
+    cursor: not-allowed !important;
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 6px;
+    opacity: 0.4;
+}
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 768px) {
+    .main-container {
+        margin: 20px 15px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .tabla th,
     .tabla td {
-        padding: 12px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .tabla tr:hover {
-        background-color: #f5f5f5;
+        padding: 10px 8px;
+        font-size: 0.85rem;
     }
 
     .search-box {
-        margin-bottom: 20px;
-        max-width: 300px;
+        max-width: 100%;
     }
+}
