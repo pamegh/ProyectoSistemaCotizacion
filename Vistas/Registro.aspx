@@ -60,7 +60,7 @@
 
                 <%-- Teléfono --%>
                 <div class="form-group">
-                    <label>Teléfono</label>
+                    <label>Teléfono <span class="req">*</span></label>
                     <asp:TextBox ID="txtTelefono" runat="server"
                         CssClass="input"
                         placeholder="Ej: 8888-8888"
@@ -266,7 +266,10 @@
         errSpn.style.display = 'none';
         input.classList.remove('input-error');
 
-        if (val === '') return true; // opcional
+        if (val === '') {
+            mostrarErrorCampo(errSpn, input, 'El teléfono es obligatorio.');
+            return false;
+        }
 
         if (!/^[245678]\d{7}$/.test(soloDigitos)) {
             mostrarErrorCampo(errSpn, input,

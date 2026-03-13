@@ -133,17 +133,20 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
 
             // ── Validación de teléfono CR (servidor = doble capa) ─────────
-            // Válidos: 8 dígitos, primer dígito 2, 4, 5, 6, 7 u 8
-            if (!string.IsNullOrWhiteSpace(txtTelefono.Text))
+            // Obligatorio, 8 dígitos, primer dígito 2, 4, 5, 6, 7 u 8
+            if (string.IsNullOrWhiteSpace(txtTelefono.Text))
             {
-                string telLimpio = txtTelefono.Text.Trim().Replace("-", "");
-                if (!Regex.IsMatch(telLimpio, @"^[245678]\d{7}$"))
-                {
-                    MostrarMensaje(
-                        "El teléfono no es válido. Debe tener 8 dígitos e iniciar con 2, 4, 5, 6, 7 u 8.",
-                        false);
-                    return;
-                }
+                MostrarMensaje("El teléfono es obligatorio.", false);
+                return;
+            }
+
+            string telLimpio = txtTelefono.Text.Trim().Replace("-", "");
+            if (!Regex.IsMatch(telLimpio, @"^[245678]\d{7}$"))
+            {
+                MostrarMensaje(
+                    "El teléfono no es válido. Debe tener 8 dígitos e iniciar con 2, 4, 5, 6, 7 u 8.",
+                    false);
+                return;
             }
 
             // ── Validación de formato de identificación (servidor) ────────
