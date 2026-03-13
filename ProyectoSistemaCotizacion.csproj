@@ -92,6 +92,7 @@
     <Content Include="BaseDatos\ObtenerTasaPorId.sql" />
     <Content Include="BaseDatos\ObtenerTasaPorProductoYPlazo.sql" />
     <Content Include="BaseDatos\ObtenerusuarioId.sql" />
+    <Content Include="BaseDatos\sp_CambiarEstadoUsuario.sql" />
     <Content Include="BaseDatos\sp_CambiarRolUsuario.sql" />
     <Content Include="BaseDatos\sp_ListarUsuarios.sql" />
     <Content Include="BaseDatos\sp_ObtenerEstadisticasDashboard.sql" />

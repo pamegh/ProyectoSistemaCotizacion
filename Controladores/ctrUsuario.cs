@@ -392,7 +392,7 @@ namespace ProyectoSistemaCotizacion.Controladores
             datos.Mensaje = "No se pudo actualizar el usuario.";
             return false;
         }
-        public bool CambiarEstadoUsuario(int usuadioId, string estado)
+        public bool CambiarEstadoUsuario(int usuarioId, string estado)
         {
             try
             {
@@ -400,24 +400,33 @@ namespace ProyectoSistemaCotizacion.Controladores
                 using (SqlCommand cmd = new SqlCommand("sp_CambiarEstadoUsuario", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 60;
 
-                    cmd.Parameters.Add("@usuario_id", SqlDbType.Int).Value = usuadioId;
+                    cmd.Parameters.Add("@usuario_id", SqlDbType.Int).Value = usuarioId;
                     cmd.Parameters.Add("@estado", SqlDbType.VarChar, 20).Value = estado;
                     cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "sistema";
 
                     conn.Open();
 
-                    int filas = cmd.ExecuteNonQuery();
-
-                    return filas > 0;
-
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                            return Convert.ToInt32(dr["resultado"]) == 1;
+                    }
                 }
             }
-            catch
+            catch (SqlException ex)
             {
-                return false;
+                System.Diagnostics.Debug.WriteLine("SQL Error en CambiarEstadoUsuario: " + ex.Message);
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error en CambiarEstadoUsuario: " + ex.Message);
+            }
+
+            return false;
         }
+
 
         public List<mdlUsuario> ListarUsuarios()
         {
