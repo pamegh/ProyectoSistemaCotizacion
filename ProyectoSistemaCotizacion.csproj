@@ -108,6 +108,7 @@
     <Content Include="Estilos\RegistroStyle.css" />
     <Content Include="Global.asax" />
     <Content Include="Recursos\logoWeb.png" />
+    <Content Include="Vistas\ConfiguracionMonedas.aspx" />
     <Content Include="Vistas\ConfiguracionProductos.aspx" />
     <Content Include="Vistas\CrearCotizacion.aspx" />
     <Content Include="Vistas\DashboardAdministrador.aspx" />
@@ -122,7 +123,11 @@
   <ItemGroup>
     <Compile Include="BaseDatos\Conn.cs" />
     <Compile Include="BaseDatos\ConnSQL.cs" />
+<<<<<<< HEAD
     <Compile Include="Controladores\ctrCotizacion.cs" />
+=======
+    <Compile Include="Controladores\ctrMoneda.cs" />
+>>>>>>> Ventana de Configuracion de Productos funcional
     <Compile Include="Controladores\ctrPlazo.cs" />
     <Compile Include="Controladores\ctrProducto.cs" />
     <Compile Include="Controladores\ctrTasa.cs" />
@@ -132,8 +137,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Modelos\mdlCotizacion.cs" />
     <Compile Include="Modelos\mdlEstadisticasDashboard.cs" />
+=======
+    <Compile Include="Modelos\mdlMoneda.cs" />
+>>>>>>> Ventana de Configuracion de Productos funcional
     <Compile Include="Modelos\mdlPlazo.cs" />
     <Compile Include="Modelos\mdlProducto.cs" />
     <Compile Include="Modelos\mdlTasa.cs" />
@@ -143,6 +152,13 @@
     <Compile Include="Utilidades\escribirLog.cs" />
     <Compile Include="Utilidades\util.cs" />
     <Compile Include="Utilidades\variablesGlobales.cs" />
+    <Compile Include="Vistas\ConfiguracionMonedas.aspx.cs">
+      <DependentUpon>ConfiguracionMonedas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\ConfiguracionMonedas.aspx.designer.cs">
+      <DependentUpon>ConfiguracionMonedas.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\ConfiguracionProductos.aspx.cs">
       <DependentUpon>ConfiguracionProductos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

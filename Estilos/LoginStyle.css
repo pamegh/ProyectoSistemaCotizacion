@@ -1,5 +1,4 @@
-﻿/* Reset y estilos base */
-* {
+﻿* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -20,7 +19,6 @@ body {
     width: 100%;
 }
 
-/* Header */
 .header {
     background: #1693A5;
     color: #FFFFFF;
@@ -86,7 +84,6 @@ body {
     stroke: #FFFFFF;
 }
 
-/* Login Wrapper */
 .login-wrapper {
     display: flex;
     justify-content: center;
@@ -101,7 +98,6 @@ body {
     max-width: 480px;
 }
 
-/* Login Card */
 .login-card {
     background: #FFFFFF;
     border: 3px solid #1693A5;
@@ -110,7 +106,6 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Login Icon */
 .login-icon {
     width: 80px;
     height: 80px;
@@ -128,7 +123,6 @@ body {
         stroke: #FFFFFF;
     }
 
-/* Login Title */
 .login-title {
     font-size: 2rem;
     font-weight: 700;
@@ -144,7 +138,6 @@ body {
     margin-bottom: 30px;
 }
 
-/* Mensaje de error/éxito */
 .mensaje {
     display: block;
     padding: 12px 15px;
@@ -167,7 +160,6 @@ body {
     border: 1px solid #cfc;
 }
 
-/* Form Groups */
 .form-group {
     margin-bottom: 20px;
 }
@@ -211,7 +203,6 @@ body {
         color: #999;
     }
 
-/* Validation Error */
 .validation-error {
     display: block;
     color: #c33;
@@ -220,7 +211,6 @@ body {
     font-style: italic;
 }
 
-/* Checkbox Group */
 .form-group-checkbox {
     display: flex;
     align-items: center;
@@ -242,7 +232,6 @@ body {
     user-select: none;
 }
 
-/* Buttons - Siguiendo estándares */
 .btn {
     padding: 12px 35px;
     border: none;
@@ -276,7 +265,6 @@ body {
     display: block;
 }
 
-/* Login Footer */
 .login-footer {
     margin-top: 25px;
     text-align: center;
@@ -299,7 +287,6 @@ body {
         text-decoration: underline;
     }
 
-/* Test Users Section */
 .test-users {
     margin-top: 30px;
     padding-top: 25px;
@@ -334,7 +321,6 @@ body {
         font-weight: 700;
     }
 
-/* Responsive */
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
@@ -369,7 +355,7 @@ body {
 }
 .logo-img,
 .logo-img-admin {
-    width: 160px; /* tamaño pequeño */
+    width: 160px;
     height: auto;
 }
 
