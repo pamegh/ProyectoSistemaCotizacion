@@ -29,7 +29,7 @@ namespace ProyectoSistemaCotizacion.Controladores
             }
         }
 
-        public int InsertarProducto(mdlProducto datos)
+        public bool InsertarProducto(mdlProducto datos)
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_InsertarProducto", conn))
@@ -38,7 +38,7 @@ namespace ProyectoSistemaCotizacion.Controladores
 
                 cmd.Parameters.AddWithValue("@codigo", datos.Codigo);
                 cmd.Parameters.AddWithValue("@nombre", datos.Nombre);
-                cmd.Parameters.AddWithValue("@moneda_id", datos.MonedaId);
+                cmd.Parameters.AddWithValue("@moneda", datos.Moneda);
                 cmd.Parameters.AddWithValue("@creado_por", "Sistema");
 
                 conn.Open();
@@ -48,14 +48,12 @@ namespace ProyectoSistemaCotizacion.Controladores
                     if (dr.Read())
                     {
                         datos.Mensaje = dr["mensaje"].ToString();
-
-                        if (Convert.ToInt32(dr["resultado"]) == 1)
-                            return Convert.ToInt32(dr["producto_id"]);
+                        return Convert.ToInt32(dr["resultado"]) == 1;
                     }
                 }
             }
 
-            return 0;
+            return false;
         }
 
         public bool ActualizarProducto(mdlProducto datos)
@@ -70,7 +68,7 @@ namespace ProyectoSistemaCotizacion.Controladores
 
                 cmd.Parameters.AddWithValue("@producto_id", datos.ProductoId);
                 cmd.Parameters.AddWithValue("@nombre", datos.Nombre);
-                cmd.Parameters.AddWithValue("@moneda_id", datos.MonedaId);
+                cmd.Parameters.AddWithValue("@moneda", datos.Moneda);
                 cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
 
                 conn.Open();
@@ -138,9 +136,7 @@ namespace ProyectoSistemaCotizacion.Controladores
                         producto.ProductoId = Convert.ToInt32(dr["producto_id"]);
                         producto.Codigo = dr["codigo"].ToString();
                         producto.Nombre = dr["nombre"].ToString();
-                        producto.MonedaId = dr.IsDBNull(dr.GetOrdinal("moneda_id"))
-    ? 0
-    : dr.GetInt32(dr.GetOrdinal("moneda_id"));
+                        producto.Moneda = dr["moneda"].ToString();
                         producto.Estado = dr["estado"].ToString();
                     }
                 }

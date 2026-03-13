@@ -15,6 +15,7 @@ namespace ProyectoSistemaCotizacion.Controladores
         private ConnSQL conn = new ConnSQL();
         private string _SQLConnection = Conn.GetConnectionStrings();
 
+        // LISTAR
         public DataTable ListarTasas()
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
@@ -29,6 +30,7 @@ namespace ProyectoSistemaCotizacion.Controladores
             }
         }
 
+        // INSERTAR
         public bool InsertarTasa(mdlTasa datos)
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
@@ -56,6 +58,7 @@ namespace ProyectoSistemaCotizacion.Controladores
             return false;
         }
 
+        // ACTUALIZAR
         public bool ActualizarTasa(mdlTasa datos)
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
@@ -82,10 +85,9 @@ namespace ProyectoSistemaCotizacion.Controladores
             return false;
         }
 
+        // ELIMINAR
         public bool EliminarTasa(int tasaId)
         {
-            bool eliminado = false;
-
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_EliminarTasa", conn))
             {
@@ -95,17 +97,10 @@ namespace ProyectoSistemaCotizacion.Controladores
                 cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
 
                 conn.Open();
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    if (dr.Read())
-                    {
-                        eliminado = Convert.ToInt32(dr["resultado"]) == 1;
-                    }
-                }
+                cmd.ExecuteNonQuery();
             }
 
-            return eliminado;
+            return true;
         }
 
         public DataTable ObtenerTablaFinanciera()
@@ -144,13 +139,10 @@ namespace ProyectoSistemaCotizacion.Controladores
                 {
                     if (dr.Read())
                     {
-                        tasa = new mdlTasa();
-
-                        if (dr["tasa_id"] != DBNull.Value)
-                            tasa.TasaId = Convert.ToInt32(dr["tasa_id"]);
-
-                        if (dr["tasa_anual"] != DBNull.Value)
-                            tasa.TasaAnual = Convert.ToDecimal(dr["tasa_anual"]);
+                        tasa.TasaId = Convert.ToInt32(dr["tasa_id"]);
+                        tasa.ProductoId = productoId;
+                        tasa.PlazoId = plazoId;
+                        tasa.TasaAnual = Convert.ToDecimal(dr["tasa_anual"]);
                     }
                 }
             }

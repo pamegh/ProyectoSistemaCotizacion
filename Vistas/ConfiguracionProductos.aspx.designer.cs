@@ -42,15 +42,6 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected global::System.Web.UI.WebControls.GridView gvTablaFinanciera;
 
         /// <summary>
-        /// Control btnRefrescar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnRefrescar;
-
-        /// <summary>
         /// Control ddlEntidad.
         /// </summary>
         /// <remarks>
@@ -87,15 +78,6 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected global::System.Web.UI.WebControls.DropDownList ddlProductoBuscar;
 
         /// <summary>
-        /// Control pnlNombreProducto.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlNombreProducto;
-
-        /// <summary>
         /// Control txtNombreProducto.
         /// </summary>
         /// <remarks>
@@ -103,69 +85,6 @@ namespace ProyectoSistemaCotizacion.Vistas
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNombreProducto;
-
-        /// <summary>
-        /// Control pnlMonedaProducto.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlMonedaProducto;
-
-        /// <summary>
-        /// Control ddlMonedaProducto.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlMonedaProducto;
-
-        /// <summary>
-        /// Control btnNuevaMoneda.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNuevaMoneda;
-
-        /// <summary>
-        /// Control pnlPlazosProducto.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlPlazosProducto;
-
-        /// <summary>
-        /// Control chkPlazos.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkPlazos;
-
-        /// <summary>
-        /// Control pnlTasasProducto.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlTasasProducto;
-
-        /// <summary>
-        /// Control gvTasasProducto.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvTasasProducto;
 
         /// <summary>
         /// Control pnlPlazo.
@@ -186,15 +105,6 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected global::System.Web.UI.WebControls.DropDownList ddlPlazoBuscar;
 
         /// <summary>
-        /// Control pnlMesesPlazo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlMesesPlazo;
-
-        /// <summary>
         /// Control txtMesesPlazo.
         /// </summary>
         /// <remarks>
@@ -204,58 +114,13 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected global::System.Web.UI.WebControls.TextBox txtMesesPlazo;
 
         /// <summary>
-        /// Control pnlDiasPlazo.
+        /// Control txtDiasPlazo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlDiasPlazo;
-
-        /// <summary>
-        /// Control ddlDiasPlazo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlDiasPlazo;
-
-        /// <summary>
-        /// Control pnlProductosPlazo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlProductosPlazo;
-
-        /// <summary>
-        /// Control chkProductosPlazo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkProductosPlazo;
-
-        /// <summary>
-        /// Control pnlTasasPlazo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlTasasPlazo;
-
-        /// <summary>
-        /// Control gvTasasPlazo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvTasasPlazo;
+        protected global::System.Web.UI.WebControls.TextBox txtDiasPlazo;
 
         /// <summary>
         /// Control pnlTasaFiltros.
@@ -285,15 +150,6 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected global::System.Web.UI.WebControls.DropDownList ddlPlazoTasa;
 
         /// <summary>
-        /// Control pnlTasaEditar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlTasaEditar;
-
-        /// <summary>
         /// Control txtTasaEditar.
         /// </summary>
         /// <remarks>
@@ -319,15 +175,6 @@ namespace ProyectoSistemaCotizacion.Vistas
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnEliminar;
-
-        /// <summary>
-        /// Control btnNuevo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNuevo;
 
         /// <summary>
         /// Control lblMensaje.

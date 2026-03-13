@@ -55,23 +55,8 @@ namespace ProyectoSistemaCotizacion.Controladores
             return plazo;
         }
 
-        public int InsertarPlazo(mdlPlazo datos)
+        public bool InsertarPlazo(mdlPlazo datos)
         {
-            if (datos == null)
-                return 0;
-
-            if (datos.Meses < 0 || datos.Dias < 0)
-            {
-                datos.Mensaje = "Los valores no pueden ser negativos.";
-                return 0;
-            }
-
-            if (datos.Meses == 0 && datos.Dias == 0)
-            {
-                datos.Mensaje = "Debe ingresar meses o días.";
-                return 0;
-            }
-
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_InsertarPlazo", conn))
             {
@@ -88,16 +73,12 @@ namespace ProyectoSistemaCotizacion.Controladores
                     if (dr.Read())
                     {
                         datos.Mensaje = dr["mensaje"].ToString();
-
-                        if (Convert.ToInt32(dr["resultado"]) == 1)
-                        {
-                            return Convert.ToInt32(dr["plazo_id"]);
-                        }
+                        return Convert.ToInt32(dr["resultado"]) == 1;
                     }
                 }
             }
 
-            return 0;
+            return false;
         }
 
         public bool ActualizarPlazo(mdlPlazo datos)
