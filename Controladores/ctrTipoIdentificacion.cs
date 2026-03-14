@@ -14,6 +14,9 @@ namespace ProyectoSistemaCotizacion.Controladores
         private ConnSQL conn = new ConnSQL();
         private string _SQLConnection = Conn.GetConnectionStrings();
 
+        /// <summary>
+        /// Obtiene todos los tipos de identificacion activos desde la base de datos.
+        /// </summary>
         public List<mdlTipoIdentificacion> ObtenerTodos()
         {
             List<mdlTipoIdentificacion> lista = new List<mdlTipoIdentificacion>();
@@ -25,7 +28,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandTimeout = 60;
-
                     conexion.Open();
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
@@ -45,7 +47,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                                 Estado = Convert.ToBoolean(dr["estado"]),
                                 FechaCreacion = Convert.ToDateTime(dr["fecha_creacion"])
                             };
-
                             lista.Add(modelo);
                         }
                     }
@@ -57,6 +58,16 @@ namespace ProyectoSistemaCotizacion.Controladores
             }
 
             return lista;
+        }
+
+        /// <summary>
+        /// Obtiene un tipo de identificacion especifico por su ID.
+        /// Usado por Registro.aspx.cs y MiCuenta.aspx.cs para validar
+        /// dinamicamente longitud y formato segun el tipo seleccionado.
+        /// </summary>
+        public mdlTipoIdentificacion ObtenerPorId(int tipoIdentificacionId)
+        {
+            return ObtenerTodos().FirstOrDefault(t => t.TipoIdentificacionId == tipoIdentificacionId);
         }
     }
 }

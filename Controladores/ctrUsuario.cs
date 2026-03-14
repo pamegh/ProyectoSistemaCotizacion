@@ -7,7 +7,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
-
 namespace ProyectoSistemaCotizacion.Controladores
 {
     public class ctrUsuario
@@ -27,15 +26,14 @@ namespace ProyectoSistemaCotizacion.Controladores
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandTimeout = 60;
+
                     cmd.Parameters.Add("@correo", SqlDbType.VarChar, 100).Value =
                         string.IsNullOrWhiteSpace(datos.Correo)
                             ? (object)DBNull.Value
                             : datos.Correo.Trim();
 
                     string hash = SeguridadContrasena.CalcularSHA256(datos.Contrasena.Trim());
-
                     cmd.Parameters.Add("@contrasena", SqlDbType.VarChar, 255).Value = hash;
-
 
                     conn.Open();
 
@@ -48,8 +46,7 @@ namespace ProyectoSistemaCotizacion.Controladores
                         }
 
                         int usuarioId = dr["usuario_id"] != DBNull.Value
-                            ? Convert.ToInt32(dr["usuario_id"])
-                            : 0;
+                            ? Convert.ToInt32(dr["usuario_id"]) : 0;
 
                         if (usuarioId == 0)
                         {
@@ -72,22 +69,13 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-            catch (SqlException ex)
-            {
-                datos.Mensaje = "Error SQL: " + ex.Message;
-                return false;
-            }
-            catch (Exception ex)
-            {
-                datos.Mensaje = "Error general: " + ex.Message;
-                return false;
-            }
+            catch (SqlException ex) { datos.Mensaje = "Error SQL: " + ex.Message; return false; }
+            catch (Exception ex) { datos.Mensaje = "Error general: " + ex.Message; return false; }
         }
 
         public bool RegistrarUsuario(mdlUsuario datos)
         {
-            if (datos == null)
-                return false;
+            if (datos == null) return false;
 
             try
             {
@@ -97,30 +85,15 @@ namespace ProyectoSistemaCotizacion.Controladores
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandTimeout = 60;
 
-                    cmd.Parameters.Add("@identificacion", SqlDbType.VarChar, 30)
-                        .Value = datos.Identificacion?.Trim();
-
-                    cmd.Parameters.Add("@nombre_completo", SqlDbType.VarChar, 150)
-                        .Value = datos.NombreCompleto?.Trim();
-
-                    cmd.Parameters.Add("@telefono", SqlDbType.VarChar, 20)
-                        .Value = string.IsNullOrWhiteSpace(datos.Telefono)
-                            ? (object)DBNull.Value
-                            : datos.Telefono.Trim();
-
-                    cmd.Parameters.Add("@correo", SqlDbType.VarChar, 100)
-                        .Value = datos.Correo?.Trim();
-
-                    string hash = SeguridadContrasena.CalcularSHA256(datos.Contrasena.Trim());
-
-                    cmd.Parameters.Add("@contrasena", SqlDbType.VarChar, 255)
-                        .Value = hash;
-
-                    cmd.Parameters.Add("@tipo_identificacion_id", SqlDbType.Int)
-                        .Value = datos.TipoIdentificacionId;
-
-                    cmd.Parameters.Add("@creado_por", SqlDbType.VarChar, 50)
-                        .Value = "Sistema";
+                    cmd.Parameters.Add("@identificacion", SqlDbType.VarChar, 30).Value = datos.Identificacion?.Trim();
+                    cmd.Parameters.Add("@nombre_completo", SqlDbType.VarChar, 150).Value = datos.NombreCompleto?.Trim();
+                    cmd.Parameters.Add("@telefono", SqlDbType.VarChar, 20).Value =
+                        string.IsNullOrWhiteSpace(datos.Telefono) ? (object)DBNull.Value : datos.Telefono.Trim();
+                    cmd.Parameters.Add("@correo", SqlDbType.VarChar, 100).Value = datos.Correo?.Trim();
+                    cmd.Parameters.Add("@contrasena", SqlDbType.VarChar, 255).Value =
+                        SeguridadContrasena.CalcularSHA256(datos.Contrasena.Trim());
+                    cmd.Parameters.Add("@tipo_identificacion_id", SqlDbType.Int).Value = datos.TipoIdentificacionId;
+                    cmd.Parameters.Add("@creado_por", SqlDbType.VarChar, 50).Value = "Sistema";
 
                     conn.Open();
 
@@ -133,34 +106,20 @@ namespace ProyectoSistemaCotizacion.Controladores
                         }
 
                         int usuarioId = dr["usuario_id"] != DBNull.Value
-                            ? Convert.ToInt32(dr["usuario_id"])
-                            : 0;
+                            ? Convert.ToInt32(dr["usuario_id"]) : 0;
 
                         string mensaje = dr["mensaje"]?.ToString();
 
-                        if (usuarioId == 0)
-                        {
-                            datos.Mensaje = mensaje;
-                            return false;
-                        }
+                        if (usuarioId == 0) { datos.Mensaje = mensaje; return false; }
 
                         datos.UsuarioId = usuarioId;
                         datos.Mensaje = mensaje;
-
                         return true;
                     }
                 }
             }
-            catch (SqlException ex)
-            {
-                datos.Mensaje = "Error SQL: " + ex.Message;
-                return false;
-            }
-            catch (Exception ex)
-            {
-                datos.Mensaje = "Error general: " + ex.Message;
-                return false;
-            }
+            catch (SqlException ex) { datos.Mensaje = "Error SQL: " + ex.Message; return false; }
+            catch (Exception ex) { datos.Mensaje = "Error general: " + ex.Message; return false; }
         }
 
         public mdlUsuario ObtenerUsuarioPorId(int usuarioId)
@@ -182,41 +141,30 @@ namespace ProyectoSistemaCotizacion.Controladores
                     {
                         if (dr.Read())
                         {
-                            usuario.UsuarioId = dr["usuario_id"] != DBNull.Value 
-                                ? Convert.ToInt32(dr["usuario_id"]) 
-                                : 0;
-                            
-                            usuario.TipoIdentificacionId = dr["tipo_identificacion_id"] != DBNull.Value 
-                                ? Convert.ToInt32(dr["tipo_identificacion_id"]) 
-                                : 0;
-                            
-                            usuario.Identificacion = dr["identificacion"] != DBNull.Value 
-                                ? dr["identificacion"].ToString() 
-                                : "";
-                            
-                            usuario.NombreCompleto = dr["nombre_completo"] != DBNull.Value 
-                                ? dr["nombre_completo"].ToString() 
-                                : "";
-                            
-                            usuario.Telefono = dr["telefono"] != DBNull.Value 
-                                ? dr["telefono"].ToString() 
-                                : "";
-                            
-                            usuario.Correo = dr["correo"] != DBNull.Value 
-                                ? dr["correo"].ToString() 
-                                : "";
+                            usuario.UsuarioId = dr["usuario_id"] != DBNull.Value ? Convert.ToInt32(dr["usuario_id"]) : 0;
+                            usuario.TipoIdentificacionId = dr["tipo_identificacion_id"] != DBNull.Value ? Convert.ToInt32(dr["tipo_identificacion_id"]) : 0;
+                            usuario.Identificacion = dr["identificacion"] != DBNull.Value ? dr["identificacion"].ToString() : "";
+                            usuario.NombreCompleto = dr["nombre_completo"] != DBNull.Value ? dr["nombre_completo"].ToString() : "";
+                            usuario.Telefono = dr["telefono"] != DBNull.Value ? dr["telefono"].ToString() : "";
+                            usuario.Correo = dr["correo"] != DBNull.Value ? dr["correo"].ToString() : "";
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Log error - en producción usar un logger
                 System.Diagnostics.Debug.WriteLine("Error en ObtenerUsuarioPorId: " + ex.Message);
             }
 
             return usuario;
         }
+
+        /// <summary>
+        /// Actualiza los datos de un usuario existente.
+        /// La validacion de longitud y formato de la identificacion NO se hace aqui:
+        /// se realiza dinamicamente en Registro.aspx.cs y MiCuenta.aspx.cs
+        /// segun el tipo seleccionado, antes de llamar a este metodo.
+        /// </summary>
         public bool ActualizarUsuario(mdlUsuario datos, string contrasenaActual = null, string contrasenaNueva = null)
         {
             if (datos == null)
@@ -226,115 +174,58 @@ namespace ProyectoSistemaCotizacion.Controladores
                 return false;
             }
 
-            // ── Tipo de identificación ────────────────────────────────────
+            // Tipo de identificacion
             if (datos.TipoIdentificacionId <= 0)
             {
                 datos.Mensaje = "Debe seleccionar un tipo de identificación.";
                 return false;
             }
 
-            // ── Identificación ────────────────────────────────────────────
+            // Identificacion no vacia (longitud/formato ya validados en la vista)
             if (string.IsNullOrWhiteSpace(datos.Identificacion))
             {
                 datos.Mensaje = "La identificación es requerida.";
                 return false;
             }
 
-            string id = datos.Identificacion.Trim();
-
-            switch (datos.TipoIdentificacionId)
-            {
-                case 1: // Cédula Física: X-XXXX-XXXX
-                    if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^\d{1}-\d{4}-\d{4}$"))
-                    {
-                        datos.Mensaje = "La Cédula Física debe tener el formato X-XXXX-XXXX.";
-                        return false;
-                    }
-                    break;
-
-                case 2: // Cédula Jurídica: 3-XXX-XXXXXX
-                    if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^3-\d{3}-\d{6}$"))
-                    {
-                        datos.Mensaje = "La Cédula Jurídica debe tener el formato 3-XXX-XXXXXX.";
-                        return false;
-                    }
-                    break;
-
-                case 3: // DIMEX: 11 o 12 dígitos
-                    if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^\d{11,12}$"))
-                    {
-                        datos.Mensaje = "El DIMEX debe tener 11 o 12 dígitos.";
-                        return false;
-                    }
-                    break;
-
-                case 4: // Pasaporte: 6-20 alfanuméricos
-                    if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^[A-Za-z0-9]{6,20}$"))
-                    {
-                        datos.Mensaje = "El pasaporte debe tener entre 6 y 20 caracteres alfanuméricos.";
-                        return false;
-                    }
-                    break;
-
-                default:
-                    if (id.Length < 6)
-                    {
-                        datos.Mensaje = "La identificación debe tener al menos 6 caracteres.";
-                        return false;
-                    }
-                    break;
-            }
-
-            // ── Nombre completo ───────────────────────────────────────────
+            // Nombre completo
             if (string.IsNullOrWhiteSpace(datos.NombreCompleto))
             {
                 datos.Mensaje = "El nombre completo es requerido.";
                 return false;
             }
-
             if (datos.NombreCompleto.Trim().Length < 3)
             {
                 datos.Mensaje = "El nombre completo debe tener al menos 3 caracteres.";
                 return false;
             }
 
-            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.NombreCompleto.Trim(),
-                @"^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]+$"))
-            {
-                datos.Mensaje = "El nombre completo solo debe contener letras y espacios.";
-                return false;
-            }
-
-            // ── Teléfono (obligatorio, formato CR) ────────────────────────
+            // Telefono obligatorio con formato CR (8 digitos, inicia con 2,4,6,7 u 8)
             if (string.IsNullOrWhiteSpace(datos.Telefono))
             {
                 datos.Mensaje = "El teléfono es requerido.";
                 return false;
             }
-
-            string tel = datos.Telefono.Trim().Replace("-", "").Replace(" ", "");
-
-            if (!System.Text.RegularExpressions.Regex.IsMatch(tel, @"^[24678]\d{7}$"))
+            string telLimpio = datos.Telefono.Trim().Replace("-", "").Replace(" ", "");
+            if (!System.Text.RegularExpressions.Regex.IsMatch(telLimpio, @"^[24678]\d{7}$"))
             {
                 datos.Mensaje = "El teléfono debe tener 8 dígitos y ser un número costarricense válido (inicia con 2, 4, 6, 7 u 8).";
                 return false;
             }
 
-            // ── Correo ────────────────────────────────────────────────────
+            // Correo
             if (string.IsNullOrWhiteSpace(datos.Correo))
             {
                 datos.Mensaje = "El correo es requerido.";
                 return false;
             }
-
-            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.Correo.Trim(),
-                @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.Correo, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
                 datos.Mensaje = "El formato del correo es inválido.";
                 return false;
             }
 
-            // ── Contraseña nueva ──────────────────────────────────────────
+            // Contrasena nueva si se esta cambiando
             if (!string.IsNullOrEmpty(contrasenaActual) && !string.IsNullOrEmpty(contrasenaNueva))
             {
                 if (contrasenaNueva.Length < 6)
@@ -344,7 +235,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                 }
             }
 
-            // ── Llamada a la base de datos ────────────────────────────────
             try
             {
                 using (SqlConnection conn = new SqlConnection(_SQLConnection))
@@ -357,13 +247,14 @@ namespace ProyectoSistemaCotizacion.Controladores
                     cmd.Parameters.Add("@tipo_identificacion_id", SqlDbType.Int).Value = datos.TipoIdentificacionId;
                     cmd.Parameters.Add("@identificacion", SqlDbType.VarChar, 30).Value = datos.Identificacion.Trim();
                     cmd.Parameters.Add("@nombre_completo", SqlDbType.VarChar, 150).Value = datos.NombreCompleto.Trim();
-                    cmd.Parameters.Add("@telefono", SqlDbType.VarChar, 20).Value =
-                        string.IsNullOrWhiteSpace(datos.Telefono) ? (object)DBNull.Value : datos.Telefono.Trim();
+                    cmd.Parameters.Add("@telefono", SqlDbType.VarChar, 20).Value = datos.Telefono.Trim();
                     cmd.Parameters.Add("@correo", SqlDbType.VarChar, 100).Value = datos.Correo.Trim();
+
                     cmd.Parameters.Add("@contrasena_actual", SqlDbType.VarChar, 255).Value =
                         string.IsNullOrEmpty(contrasenaActual) ? (object)DBNull.Value : contrasenaActual;
                     cmd.Parameters.Add("@contrasena_nueva", SqlDbType.VarChar, 255).Value =
                         string.IsNullOrEmpty(contrasenaNueva) ? (object)DBNull.Value : contrasenaNueva;
+
                     cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "Sistema";
 
                     conn.Open();
@@ -378,20 +269,13 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-            catch (SqlException ex)
-            {
-                datos.Mensaje = "Error SQL: " + ex.Message;
-                return false;
-            }
-            catch (Exception ex)
-            {
-                datos.Mensaje = "Error general: " + ex.Message;
-                return false;
-            }
+            catch (SqlException ex) { datos.Mensaje = "Error SQL: " + ex.Message; return false; }
+            catch (Exception ex) { datos.Mensaje = "Error general: " + ex.Message; return false; }
 
             datos.Mensaje = "No se pudo actualizar el usuario.";
             return false;
         }
+
         public bool CambiarEstadoUsuario(int usuarioId, string estado)
         {
             try
@@ -404,7 +288,7 @@ namespace ProyectoSistemaCotizacion.Controladores
 
                     cmd.Parameters.Add("@usuario_id", SqlDbType.Int).Value = usuarioId;
                     cmd.Parameters.Add("@estado", SqlDbType.VarChar, 20).Value = estado;
-                    cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "sistema";
+                    cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "Sistema";
 
                     conn.Open();
 
@@ -415,18 +299,11 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-            catch (SqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine("SQL Error en CambiarEstadoUsuario: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Error en CambiarEstadoUsuario: " + ex.Message);
-            }
+            catch (SqlException ex) { System.Diagnostics.Debug.WriteLine("SQL Error en CambiarEstadoUsuario: " + ex.Message); }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine("Error en CambiarEstadoUsuario: " + ex.Message); }
 
             return false;
         }
-
 
         public List<mdlUsuario> ListarUsuarios()
         {
@@ -436,26 +313,22 @@ namespace ProyectoSistemaCotizacion.Controladores
             using (SqlCommand cmd = new SqlCommand("sp_ListarUsuarios", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
-                conn.Open ();
+                conn.Open();
 
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        mdlUsuario usuario= new mdlUsuario();
-
+                        mdlUsuario usuario = new mdlUsuario();
                         usuario.UsuarioId = Convert.ToInt32(dr["usuario_id"]);
                         usuario.Identificacion = dr["identificacion"].ToString();
                         usuario.NombreCompleto = dr["nombre_completo"].ToString();
                         usuario.Telefono = dr["telefono"].ToString();
                         usuario.Correo = dr["correo"].ToString();
-                        usuario.Rol= dr["rol"].ToString();
+                        usuario.Rol = dr["rol"].ToString();
                         usuario.Estado = dr["estado"].ToString();
                         lista.Add(usuario);
-
                     }
-                    
                 }
             }
             return lista;
@@ -472,35 +345,22 @@ namespace ProyectoSistemaCotizacion.Controladores
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandTimeout = 60;
-
                     conn.Open();
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         if (dr.Read())
                         {
-                            estadisticas.TotalUsuarios = dr["total_usuarios"] != DBNull.Value
-                                ? Convert.ToInt32(dr["total_usuarios"])
-                                : 0;
-
-                            estadisticas.CotizacionesActivas = dr["cotizaciones_activas"] != DBNull.Value
-                                ? Convert.ToInt32(dr["cotizaciones_activas"])
-                                : 0;
-
-                            estadisticas.ReportesGenerados = dr["reportes_generados"] != DBNull.Value
-                                ? Convert.ToInt32(dr["reportes_generados"])
-                                : 0;
-
-                            estadisticas.ProductosDisponibles = dr["productos_disponibles"] != DBNull.Value
-                                ? Convert.ToInt32(dr["productos_disponibles"])
-                                : 0;
+                            estadisticas.TotalUsuarios = dr["total_usuarios"] != DBNull.Value ? Convert.ToInt32(dr["total_usuarios"]) : 0;
+                            estadisticas.CotizacionesActivas = dr["cotizaciones_activas"] != DBNull.Value ? Convert.ToInt32(dr["cotizaciones_activas"]) : 0;
+                            estadisticas.ReportesGenerados = dr["reportes_generados"] != DBNull.Value ? Convert.ToInt32(dr["reportes_generados"]) : 0;
+                            estadisticas.ProductosDisponibles = dr["productos_disponibles"] != DBNull.Value ? Convert.ToInt32(dr["productos_disponibles"]) : 0;
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                // Si hay error, devolver todos en 0
                 estadisticas.TotalUsuarios = 0;
                 estadisticas.CotizacionesActivas = 0;
                 estadisticas.ReportesGenerados = 0;
@@ -509,6 +369,7 @@ namespace ProyectoSistemaCotizacion.Controladores
 
             return estadisticas;
         }
+
         public bool CambiarRolUsuario(int usuarioId, string nuevoRol, string modificadoPor)
         {
             try
@@ -528,22 +389,12 @@ namespace ProyectoSistemaCotizacion.Controladores
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         if (dr.Read())
-                        {
                             return Convert.ToInt32(dr["resultado"]) == 1;
-                        }
                     }
                 }
             }
-            catch (SqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine("SQL Error en CambiarRolUsuario: " + ex.Message);
-                return false;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Error en CambiarRolUsuario: " + ex.Message);
-                return false;
-            }
+            catch (SqlException ex) { System.Diagnostics.Debug.WriteLine("SQL Error en CambiarRolUsuario: " + ex.Message); return false; }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine("Error en CambiarRolUsuario: " + ex.Message); return false; }
 
             return false;
         }
