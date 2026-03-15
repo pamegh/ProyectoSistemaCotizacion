@@ -2,7 +2,6 @@
 using ProyectoSistemaCotizacion.Modelos;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,75 +9,39 @@ using System.Web;
 
 namespace ProyectoSistemaCotizacion.Controladores
 {
-    public class ctrPlazo
+    public class ctrMoneda
     {
         private ConnSQL conn = new ConnSQL();
-        private string _SQLConnection = Conn.GetConnectionStrings();
+        private string _SQLConnection = Conn.GetConnectionStrings(); 
 
-        public DataTable ListarPlazos()
+        public DataTable ListarMonedas()
         {
-            using (SqlConnection conn = new SqlConnection(_SQLConnection))
-            using (SqlCommand cmd = new SqlCommand("sp_ListarPlazos", conn))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                return dt;
-            }
-        }
-
-        public mdlPlazo ObtenerPlazoPorId(int plazoId)
-        {
-            mdlPlazo plazo = new mdlPlazo();
+            DataTable dt = new DataTable();
 
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
-            using (SqlCommand cmd = new SqlCommand("sp_ObtenerPlazoPorId", conn))
+            using (SqlCommand cmd = new SqlCommand("sp_ListarMonedas", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@plazo_id", plazoId);
 
                 conn.Open();
 
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    if (dr.Read())
-                    {
-                        plazo.PlazoId = Convert.ToInt32(dr["plazo_id"]);
-                        plazo.Meses = Convert.ToInt32(dr["meses"]);
-                        plazo.Dias = Convert.ToInt32(dr["dias"]);
-                    }
-                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
             }
 
-            return plazo;
+            return dt;
         }
 
-        public int InsertarPlazo(mdlPlazo datos)
+        public bool InsertarMoneda(mdlMoneda datos)
         {
-            if (datos == null)
-                return 0;
-
-            if (datos.Meses < 0 || datos.Dias < 0)
-            {
-                datos.Mensaje = "Los valores no pueden ser negativos.";
-                return 0;
-            }
-
-            if (datos.Meses == 0 && datos.Dias == 0)
-            {
-                datos.Mensaje = "Debe ingresar meses o días.";
-                return 0;
-            }
-
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
-            using (SqlCommand cmd = new SqlCommand("sp_InsertarPlazo", conn))
+            using (SqlCommand cmd = new SqlCommand("sp_InsertarMoneda", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@meses", datos.Meses);
-                cmd.Parameters.AddWithValue("@dias", datos.Dias);
+                cmd.Parameters.AddWithValue("@codigo", datos.Codigo);
+                cmd.Parameters.AddWithValue("@nombre", datos.Nombre);
+                cmd.Parameters.AddWithValue("@simbolo", datos.Simbolo);
                 cmd.Parameters.AddWithValue("@creado_por", "Sistema");
 
                 conn.Open();
@@ -88,28 +51,53 @@ namespace ProyectoSistemaCotizacion.Controladores
                     if (dr.Read())
                     {
                         datos.Mensaje = dr["mensaje"].ToString();
-
-                        if (Convert.ToInt32(dr["resultado"]) == 1)
-                        {
-                            return Convert.ToInt32(dr["plazo_id"]);
-                        }
+                        return Convert.ToInt32(dr["resultado"]) == 1;
                     }
                 }
             }
 
-            return 0;
+            return false;
         }
 
-        public bool ActualizarPlazo(mdlPlazo datos)
+        public mdlMoneda ObtenerMonedaPorId(int monedaId)
+        {
+            mdlMoneda moneda = new mdlMoneda();
+
+            using (SqlConnection conn = new SqlConnection(_SQLConnection))
+            using (SqlCommand cmd = new SqlCommand("sp_ObtenerMonedaPorId", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@moneda_id", monedaId);
+
+                conn.Open();
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        moneda.MonedaId = Convert.ToInt32(dr["moneda_id"]);
+                        moneda.Codigo = dr["codigo"].ToString();
+                        moneda.Nombre = dr["nombre"].ToString();
+                        moneda.Simbolo = dr["simbolo"].ToString();
+                        moneda.Estado = dr["estado"].ToString();
+                    }
+                }
+            }
+
+            return moneda;
+        }
+
+        public bool ActualizarMoneda(mdlMoneda datos)
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
-            using (SqlCommand cmd = new SqlCommand("sp_ActualizarPlazo", conn))
+            using (SqlCommand cmd = new SqlCommand("sp_ActualizarMoneda", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@plazo_id", datos.PlazoId);
-                cmd.Parameters.AddWithValue("@meses", datos.Meses);
-                cmd.Parameters.AddWithValue("@dias", datos.Dias);
+                cmd.Parameters.AddWithValue("@moneda_id", datos.MonedaId);
+                cmd.Parameters.AddWithValue("@codigo", datos.Codigo);
+                cmd.Parameters.AddWithValue("@nombre", datos.Nombre);
+                cmd.Parameters.AddWithValue("@simbolo", datos.Simbolo);
                 cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
 
                 conn.Open();
@@ -127,19 +115,16 @@ namespace ProyectoSistemaCotizacion.Controladores
             return false;
         }
 
-        public bool EliminarPlazo(int plazoId, out string mensaje)
+        public bool EliminarMoneda(int monedaId, out string mensaje)
         {
             mensaje = "";
 
-            if (plazoId <= 0)
-                return false;
-
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
-            using (SqlCommand cmd = new SqlCommand("sp_EliminarPlazo", conn))
+            using (SqlCommand cmd = new SqlCommand("sp_EliminarMoneda", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@plazo_id", plazoId);
+                cmd.Parameters.AddWithValue("@moneda_id", monedaId);
                 cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
 
                 conn.Open();
@@ -156,5 +141,6 @@ namespace ProyectoSistemaCotizacion.Controladores
 
             return false;
         }
-    }
+    
+}
 }
