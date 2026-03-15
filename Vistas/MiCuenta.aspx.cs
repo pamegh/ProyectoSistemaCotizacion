@@ -15,19 +15,8 @@ namespace ProyectoSistemaCotizacion.Vistas
     {
         ctrUsuario ctrUsuario = new ctrUsuario();
         ctrTipoIdentificacion ctrTipoIdentificacion = new ctrTipoIdentificacion();
+        mdlUsuario usuarioSesion;
 
-        // ─────────────────────────────────────────────────────────────────────
-        // Genera un diccionario JSON indexado por el ID del tipo:
-        //   { "1": { placeholder, hint, maxLength, soloNumerico, patronRegex, longitudMin },
-        //     "2": { ... }, ... }
-        // El ASPX lo consume con: var configTipos = <%= TiposIdentificacionJson %>;
-        // y luego accede con: configTipos[ddl.value]
-        //
-        // placeholder/hint son amigables para el usuario.
-        // La Cedula Juridica exige que inicie con 3 (validado en el servidor tambien).
-        // El NITE tiene su propia entrada separada del Pasaporte.
-        // Las cedulas se guardan SIN guiones en la BD; el formato visual es solo UX.
-        // ─────────────────────────────────────────────────────────────────────
         public string TiposIdentificacionJson
         {
             get
@@ -36,10 +25,8 @@ namespace ProyectoSistemaCotizacion.Vistas
                 {
                     List<mdlTipoIdentificacion> tipos = ctrTipoIdentificacion.ObtenerTodos();
 
-                    // Hints y placeholders amigables por codigo de tipo
                     var hints = new Dictionary<string, string[]>
                     {
-                        // codigo => [ placeholder, hint ]
                         { "FISICA",    new[]{ "Ej: 123456789",         "9 dígitos numéricos" } },
                         { "JURIDICA",  new[]{ "Ej: 3101234567",        "10 dígitos, debe iniciar con 3" } },
                         { "DIMEX",     new[]{ "Ej: 11712345678",       "11 o 12 dígitos numéricos" } },
@@ -66,7 +53,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                             hint = hints[codigo][1];
                         }
 
-                        // Clave: el ID numerico como string (para que configTipos[ddl.value] funcione)
                         sb.AppendFormat("\"{0}\":{{", t.TipoIdentificacionId);
                         sb.AppendFormat("\"placeholder\":\"{0}\",", EscapeJson(placeholder));
                         sb.AppendFormat("\"hint\":\"{0}\",", EscapeJson(hint));
@@ -110,7 +96,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             if (!IsPostBack)
             {
                 CargarTiposIdentificacion();
-                mdlUsuario usuarioSesion = (mdlUsuario)Session["Usuario"];
+                usuarioSesion = (mdlUsuario)Session["Usuario"];
                 CargarDatos(usuarioSesion.UsuarioId);
             }
         }
@@ -191,7 +177,18 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void btnAtras_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
+           usuarioSesion = (mdlUsuario)Session["Usuario"];
+
+            if (usuarioSesion == null)
+            {
+                Response.Redirect("~/Vistas/Login.aspx");
+                return;
+            }
+
+            if (usuarioSesion.Rol == "ADMIN")
+                Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
+            else
+                Response.Redirect("~/Vistas/DashboardUsuario.aspx");
         }
 
         protected void btnGuardar_Click(object sender, EventArgs e)
@@ -204,7 +201,6 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             try
             {
-                // 1. Tipo de identificacion
                 int tipoId = Convert.ToInt32(ddlTipoIdentificacion.SelectedValue);
                 if (tipoId <= 0)
                 {
@@ -212,20 +208,17 @@ namespace ProyectoSistemaCotizacion.Vistas
                     return;
                 }
 
-                // 2. Identificacion no vacia
                 if (string.IsNullOrWhiteSpace(txtIdentificacion.Text))
                 {
                     MostrarMensaje("La identificación es obligatoria.", false);
                     return;
                 }
 
-                // 3. Validacion dinamica por tipo (longitud + patron + regla Juridica)
                 mdlTipoIdentificacion tipo = ctrTipoIdentificacion.ObtenerPorId(tipoId);
                 if (tipo != null)
                 {
                     string id = txtIdentificacion.Text.Trim();
 
-                    // Longitud
                     if (id.Length < tipo.LongitudMin || id.Length > tipo.LongitudMax)
                     {
                         string msg = (tipo.LongitudMin == tipo.LongitudMax)
@@ -235,7 +228,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                         return;
                     }
 
-                    // Patron regex de la BD
                     if (!string.IsNullOrWhiteSpace(tipo.PatronRegex))
                     {
                         if (!Regex.IsMatch(id, tipo.PatronRegex))
@@ -248,7 +240,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                         }
                     }
 
-                    // Regla especifica: Cedula Juridica debe iniciar con 3
                     if (tipo.Codigo != null &&
                         tipo.Codigo.Trim().ToUpper() == "JURIDICA" &&
                         !id.StartsWith("3"))
@@ -273,7 +264,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                 string actual = null;
                 string nueva = null;
 
-                // 4. Cambio de contrasena
                 if (pnlCambioContrasena.Visible)
                 {
                     if (!string.IsNullOrWhiteSpace(txtActual.Text) &&
@@ -295,7 +285,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                     }
                 }
 
-                // 5. Guardar
                 bool resultado = ctrUsuario.ActualizarUsuario(usuario, actual, nueva);
 
                 if (resultado)
