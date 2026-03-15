@@ -131,8 +131,7 @@ ID="btnNuevaMoneda"
 runat="server"
 Text="+"
 CssClass="btn btn-primary"
-PostBackUrl="ConfiguracionMonedas.aspx" />
-
+OnClientClick="window.open('ConfiguracionMonedas.aspx','_blank'); return false;" />
 </div>
 
 </asp:Panel>
@@ -283,7 +282,11 @@ ID="ddlProductoTasa"
 runat="server"
 CssClass="form-control"
 AutoPostBack="true"
+AppendDataBoundItems="true"
 OnSelectedIndexChanged="ddlProductoTasa_SelectedIndexChanged">
+
+<asp:ListItem Value="">-- Seleccione producto --</asp:ListItem>
+
 </asp:DropDownList>
 
 </div>
@@ -317,7 +320,7 @@ step="0.0001">
 </asp:Panel>
 
 </asp:Panel>
-
+    </asp:Panel>
 <div class="mt-3 d-grid gap-2">
 
 <asp:Button
@@ -351,16 +354,124 @@ OnClick="btnNuevo_Click" />
         CssClass="fw-bold">
     </asp:Label>
 </div>
-</asp:Panel>
+
+</div>
+
+<div class="card mt-3">
+
+<div class="card-header bg-warning text-dark">
+Administración de Impuestos
+</div>
+
+<div class="card-body">
+
+<div class="mb-3">
+<label>Impuesto activo</label>
+
+<asp:Label
+ID="lblImpuestoActivo"
+runat="server"
+CssClass="form-control fw-bold text-success">
+</asp:Label>
+
+</div>
+
+<div class="mb-3">
+
+<label>Seleccionar impuesto</label>
+
+<asp:DropDownList
+ID="ddlImpuestos"
+runat="server"
+CssClass="form-control"
+AutoPostBack="true"
+OnSelectedIndexChanged="ddlImpuestos_SelectedIndexChanged">
+</asp:DropDownList>
+
+</div>
+
+
+
+<div class="mb-3">
+
+<label>Nombre</label>
+
+<asp:TextBox
+ID="txtNombreImpuesto"
+runat="server"
+CssClass="form-control">
+</asp:TextBox>
+
+</div>
+
+<div class="mb-3">
+
+<label>Porcentaje (%)</label>
+
+<asp:TextBox
+ID="txtPorcentajeImpuesto"
+runat="server"
+CssClass="form-control"
+TextMode="Number"
+step="0.01">
+</asp:TextBox>
+
+</div>
+
+<div class="d-grid gap-2">
+
+<asp:Button
+ID="btnGuardarImpuesto"
+runat="server"
+Text="Guardar"
+CssClass="btn btn-success"
+OnClick="btnGuardarImpuesto_Click" />
+
+<asp:Button
+ID="btnEliminarImpuesto"
+runat="server"
+Text="Eliminar"
+CssClass="btn btn-danger"
+OnClick="btnEliminarImpuesto_Click" />
+
+<asp:Button
+ID="btnNuevoImpuesto"
+runat="server"
+Text="Nuevo"
+CssClass="btn btn-secondary"
+OnClick="btnNuevoImpuesto_Click" />
+
+    <div class="mt-2">
+<asp:Label 
+    ID="lblMensajeImpuesto"
+    runat="server"
+    CssClass="fw-bold text-success">
+</asp:Label>
+</div>
+</div>
 
 </div>
 </div>
+
 </div>
 
 </div>
 </div>
+
+</div
+    <asp:Button 
+ID="btnRecargarMonedas"
+runat="server"
+Style="display:none"
+OnClick="btnRecargarMonedas_Click" />
 
 </form>
+    <script>
 
+window.addEventListener("focus", function () {
+    __doPostBack('<%= btnRecargarMonedas.UniqueID %>', '');
+});
+
+    </script>
 </body>
 </html>

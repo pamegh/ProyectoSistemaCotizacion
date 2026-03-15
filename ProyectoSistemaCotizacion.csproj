@@ -126,6 +126,7 @@
     <Compile Include="BaseDatos\ConnSQL.cs" />
     <Compile Include="Controladores\ctrCotizacion.cs" />
     <Compile Include="Controladores\ctrMoneda.cs" />
+    <Compile Include="Controladores\ctrParametros.cs" />
     <Compile Include="Controladores\ctrPlazo.cs" />
     <Compile Include="Controladores\ctrProducto.cs" />
     <Compile Include="Controladores\ctrTasa.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Modelos\mdlMoneda.cs" />
     <Compile Include="Modelos\mdlCotizacion.cs" />
     <Compile Include="Modelos\mdlEstadisticasDashboard.cs" />
+    <Compile Include="Modelos\mdlParametros.cs" />
     <Compile Include="Modelos\mdlPlazo.cs" />
     <Compile Include="Modelos\mdlProducto.cs" />
     <Compile Include="Modelos\mdlTasa.cs" />

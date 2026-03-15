@@ -14,10 +14,23 @@
 
 <div class="container mt-4">
 
+    <div class="d-flex justify-content-between mb-3">
+
+</div>
+
 <div class="card">
 
 <div class="card-header bg-dark text-white">
 Administración de Monedas
+    <div style="position:absolute; top:15px; right:20px;">
+
+<asp:Button ID="btnCerrar"
+runat="server"
+Text="Atrás"
+CssClass="btn btn-danger btn-sm"
+OnClientClick="window.close(); return false;" />
+
+</div>
 </div>
 
 <div class="card-body">

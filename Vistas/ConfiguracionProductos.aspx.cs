@@ -16,6 +16,8 @@ namespace ProyectoSistemaCotizacion.Vistas
         ctrPlazo ctrPlazo = new ctrPlazo();
         ctrTasa ctrTasa = new ctrTasa();
         ctrMoneda ctrMoneda = new ctrMoneda();
+
+        ctrParametros impuesto;
         bool ModoNuevo
         {
             get { return ViewState["ModoNuevo"] != null && (bool)ViewState["ModoNuevo"]; }
@@ -36,6 +38,8 @@ namespace ProyectoSistemaCotizacion.Vistas
                 CargarMonedas();
                 CargarDias();
                 ddlEntidad_SelectedIndexChanged(null, null);
+                CargarImpuestos();
+                CargarImpuestoActivo();
             }
 
             string evento = Request["__EVENTTARGET"];
@@ -59,6 +63,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void ddlEntidad_SelectedIndexChanged(object sender, EventArgs e)
         {
+            pnlFormulario.Visible = true;
 
             if (ModoOperacion == "Eliminar")
             {
@@ -127,8 +132,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                         new ListItem(texto, row["plazo_id"].ToString())
                     );
                 }
-
-                ddlPlazoBuscar.Items.Insert(0, new ListItem("-- Seleccione --", ""));
 
                 if (ModoNuevo)
                     ddlPlazoBuscar.Visible = false;
@@ -282,8 +285,122 @@ namespace ProyectoSistemaCotizacion.Vistas
             ViewState["TasaId"] = null;
         }
 
+        protected void ddlImpuestos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ctrParametros ctr = new ctrParametros();
+
+            mdlParametros impuesto = ctr.ObtenerParametroPorId(
+                Convert.ToInt32(ddlImpuestos.SelectedValue)
+            );
+
+            txtNombreImpuesto.Text = impuesto.Descripcion;
+            txtPorcentajeImpuesto.Text = impuesto.Valor;
+        }
+
+        private void CargarImpuestoActivo()
+        {
+            ctrParametros ctr = new ctrParametros();
+
+            mdlParametros impuesto = ctr.ObtenerImpuestoActivo();
+
+            if (impuesto.ParametroId > 0)
+            {
+                lblImpuestoActivo.Text =
+                impuesto.Descripcion + " (" + impuesto.Valor + "%)";
+            }
+        }
+
+        protected void btnGuardarImpuesto_Click(object sender, EventArgs e)
+        {
+            ctrParametros ctr = new ctrParametros();
+
+            mdlParametros parametro = new mdlParametros();
+
+            parametro.Clave = "IMPUESTO";
+            parametro.Valor = txtPorcentajeImpuesto.Text;
+            parametro.Descripcion = txtNombreImpuesto.Text;
+            parametro.Estado = "ACTIVO";
+
+            ctr.InsertarParametro(parametro);
+
+            CargarImpuestos();
+
+            ddlImpuestos.SelectedIndex = ddlImpuestos.Items.Count - 1;
+
+            string mensaje;
+            ctr.ActivarImpuesto(Convert.ToInt32(ddlImpuestos.SelectedValue), out mensaje);
+
+            lblMensajeImpuesto.Text = "Impuesto guardado y activado correctamente";
+
+            CargarImpuestoActivo();
+            LimpiarFormularioImpuesto();
+        }
+
+        private void CargarImpuestos()
+        {
+            ctrParametros ctr = new ctrParametros();
+
+            ddlImpuestos.DataSource = ctr.ListarParametros();
+            ddlImpuestos.DataTextField = "descripcion";
+            ddlImpuestos.DataValueField = "parametro_id";
+            ddlImpuestos.DataBind();
+
+            ddlImpuestos.Items.Insert(0, new ListItem("-- Seleccione impuesto --", ""));
+        }
+
+        protected void btnEliminarImpuesto_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(ddlImpuestos.SelectedValue))
+            {
+                lblMensajeImpuesto.Text = "Seleccione un impuesto para eliminar";
+                return;
+            }
+
+            ctrParametros ctr = new ctrParametros();
+
+            int parametroId = Convert.ToInt32(ddlImpuestos.SelectedValue);
+
+            string mensaje;
+
+            if (ctr.EliminarParametro(parametroId, out mensaje))
+            {
+                lblMensajeImpuesto.Text = mensaje;
+
+                CargarImpuestos();
+                CargarImpuestoActivo();
+            }
+            else
+            {
+                lblMensajeImpuesto.Text = mensaje;
+            }
+            LimpiarFormularioImpuesto();
+        }
+
+        protected void btnNuevoImpuesto_Click(object sender, EventArgs e)
+        {
+            LimpiarFormularioImpuesto();
+
+            ddlImpuestos.Visible = false;
+
+            lblMensajeImpuesto.Text = "Ingrese un nuevo impuesto";
+        }
+
+        private void LimpiarFormularioImpuesto()
+        {
+            txtNombreImpuesto.Text = "";
+            txtPorcentajeImpuesto.Text = "";
+
+            ddlImpuestos.ClearSelection();
+
+            ddlImpuestos.Visible = true;
+
+            lblMensajeImpuesto.Text = "";
+        }
         protected void ddlPlazoTasa_SelectedIndexChanged(object sender, EventArgs e)
         {
+            txtTasaEditar.Text = "";
+            ViewState["TasaId"] = null;
+
             if (ddlProductoTasa.SelectedValue == "" || ddlPlazoTasa.SelectedValue == "")
                 return;
 
@@ -298,7 +415,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                 txtTasaEditar.Text = tasa.TasaAnual.ToString("0.####");
             }
         }
-
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
 
@@ -639,21 +755,18 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             CargarTablaFinanciera();
 
-            ModoNuevo = false;
-            ModoOperacion = "Editar";
-
             string mensaje = lblMensaje.Text;
             string css = lblMensaje.CssClass;
-
+            ModoOperacion = "";
             LimpiarFormulario();
+           
 
-            lblMensaje.Text = mensaje;
-            lblMensaje.CssClass = css;
 
         }
 
         protected void btnEliminar_Click(object sender, EventArgs e)
         {
+            pnlFormulario.Visible = true;
             ModoOperacion = "Eliminar";
 
             lblMensaje.Text = "Modo eliminación activado. Seleccione el registro y presione Guardar.";
@@ -840,40 +953,38 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected void chkPlazos_SelectedIndexChanged(object sender, EventArgs e)
         {
             DataTable dt = new DataTable();
-
-            dt.Columns.Add("PlazoId");
             dt.Columns.Add("Plazo");
+            dt.Columns.Add("PlazoId");
             dt.Columns.Add("Tasa");
-
-            int productoId = 0;
-
-            if (!string.IsNullOrEmpty(ddlProductoBuscar.SelectedValue))
-                productoId = Convert.ToInt32(ddlProductoBuscar.SelectedValue);
 
             foreach (ListItem item in chkPlazos.Items)
             {
                 if (item.Selected)
                 {
-                    int plazoId = Convert.ToInt32(item.Value);
+                    DataRow row = dt.NewRow();
+                    row["Plazo"] = item.Text;
+                    row["PlazoId"] = item.Value;
 
-                    decimal tasa = 0;
-
-                    if (productoId > 0)
+                    if (ModoNuevo)
                     {
-                        mdlTasa tasaExistente =
-                            ctrTasa.ObtenerTasaPorProductoYPlazo(productoId, plazoId);
+                        row["Tasa"] = "";
+                    }
+                    else
+                    {
+                        int productoId = Convert.ToInt32(ddlProductoBuscar.SelectedValue);
+                        int plazoId = Convert.ToInt32(item.Value);
 
-                        if (tasaExistente != null)
-                            tasa = tasaExistente.TasaAnual;
+                        mdlTasa tasa = ctrTasa.ObtenerTasaPorProductoYPlazo(productoId, plazoId);
+
+                        row["Tasa"] = tasa != null ? tasa.TasaAnual.ToString("0.####") : "";
                     }
 
-                    dt.Rows.Add(plazoId, item.Text, tasa);
+                    dt.Rows.Add(row);
                 }
             }
 
             gvTasasProducto.DataSource = dt;
             gvTasasProducto.DataBind();
-
         }
 
         protected void chkProductosPlazo_SelectedIndexChanged(object sender, EventArgs e)
@@ -883,6 +994,17 @@ namespace ProyectoSistemaCotizacion.Vistas
             dt.Columns.Add("ProductoId");
             dt.Columns.Add("Producto");
             dt.Columns.Add("Tasa");
+
+            if (ModoNuevo)
+            {
+                gvTasasProducto.DataSource = null;
+                gvTasasProducto.DataBind();
+
+                gvTasasPlazo.DataSource = null;
+                gvTasasPlazo.DataBind();
+
+                return;
+            }
 
             int plazoId = Convert.ToInt32(ddlPlazoBuscar.SelectedValue);
 
@@ -912,33 +1034,42 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void btnNuevo_Click(object sender, EventArgs e)
         {
+            pnlFormulario.Visible = true;
             ModoNuevo = true;
             ModoOperacion = "Nuevo";
 
-            if (ddlEntidad.SelectedValue == "Producto")
-            {
-                ddlProductoBuscar.Visible = false;
-                txtNombreProducto.Text = "";
-            }
-            else if (ddlEntidad.SelectedValue == "Plazo")
-            {
-                ddlPlazoBuscar.Visible = false;
+            txtNombreProducto.Text = "";
 
-                txtMesesPlazo.Text = "";
+            if (ddlMonedaProducto.Items.Count > 0)
+                ddlMonedaProducto.SelectedIndex = 0;
 
-                ddlDiasPlazo.SelectedIndex = 0;
-            }
+            foreach (ListItem item in chkPlazos.Items)
+                item.Selected = false;
 
-            else if (ddlEntidad.SelectedValue == "Tasa")
-            {
-                ddlProductoTasa.Visible = false;
-                ddlPlazoTasa.Visible = false;
-                txtTasaEditar.Text = "";
-                ViewState["TasaId"] = null;
-            }
+            gvTasasProducto.DataSource = null;
+            gvTasasProducto.DataBind();
+
+            txtMesesPlazo.Text = "";
+            ddlDiasPlazo.SelectedIndex = 0;
+
+            foreach (ListItem item in chkProductosPlazo.Items)
+                item.Selected = false;
+
+            gvTasasPlazo.DataSource = null;
+            gvTasasPlazo.DataBind();
+
+            txtTasaEditar.Text = "";
+            ViewState["TasaId"] = null;
+
+            ddlProductoBuscar.Visible = false;
+            ddlPlazoBuscar.Visible = false;
 
             lblMensaje.Text = "Modo creación activado";
             lblMensaje.CssClass = "text-success";
+
+            ViewState["ListaTasas"] = null;
+            gvTasasProducto.DataSource = null;
+            gvTasasProducto.DataBind();
         }
 
         private void CargarMonedas()
@@ -960,45 +1091,34 @@ namespace ProyectoSistemaCotizacion.Vistas
             chkPlazos.DataBind();
         }
 
-        private void LimpiarFormulario()
+        void LimpiarFormulario()
         {
-            ddlEntidad.SelectedIndex = 0;
-
-            pnlFormulario.Visible = true;
-
-            pnlProducto.Visible = false;
-            pnlPlazo.Visible = false;
-            pnlTasaFiltros.Visible = false;
-
-            if (ddlProductoBuscar.Items.Count > 0)
-                ddlProductoBuscar.SelectedIndex = 0;
-
             txtNombreProducto.Text = "";
-
-            if (ddlMonedaProducto.Items.Count > 0)
-                ddlMonedaProducto.SelectedIndex = 0;
-
-            if (ddlPlazoBuscar.Items.Count > 0)
-                ddlPlazoBuscar.SelectedIndex = 0;
-
             txtMesesPlazo.Text = "";
-            ddlDiasPlazo.SelectedIndex = 0;
-
-            if (ddlProductoTasa.Items.Count > 0)
-                ddlProductoTasa.SelectedIndex = 0;
-
-            if (ddlPlazoTasa.Items.Count > 0)
-                ddlPlazoTasa.SelectedIndex = 0;
-
             txtTasaEditar.Text = "";
 
+            ddlMonedaProducto.SelectedIndex = 0;
+            ddlDiasPlazo.SelectedIndex = 0;
+
             foreach (ListItem item in chkPlazos.Items)
+                item.Selected = false;
+
+            foreach (ListItem item in chkProductosPlazo.Items)
                 item.Selected = false;
 
             gvTasasProducto.DataSource = null;
             gvTasasProducto.DataBind();
 
+            gvTasasPlazo.DataSource = null;
+            gvTasasPlazo.DataBind();
 
+            ViewState["TasaId"] = null;
+
+            pnlFormulario.Visible = false;
+            ddlEntidad.SelectedIndex = 0;
+
+            ModoNuevo = false;
+            ModoOperacion = "Editar";
         }
 
         private void CargarDias()
@@ -1030,6 +1150,11 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected void btnAtras_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
+        }
+
+        protected void btnRecargarMonedas_Click(object sender, EventArgs e)
+        {
+            CargarMonedas();
         }
     }
 }

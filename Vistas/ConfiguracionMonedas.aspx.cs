@@ -17,6 +17,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             if (!IsPostBack)
             {
                 CargarMonedas();
+                ddlMoneda.Visible = true;
             }
         }
         private void CargarMonedas()
@@ -76,6 +77,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
 
             CargarMonedas();
+            LimpiarFormulario();
         }
 
         protected void btnEliminar_Click(object sender, EventArgs e)
@@ -97,6 +99,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
 
             CargarMonedas();
+            LimpiarFormulario();
         }
 
         protected void btnNuevo_Click(object sender, EventArgs e)
@@ -107,7 +110,21 @@ namespace ProyectoSistemaCotizacion.Vistas
             txtNombre.Text = "";
             txtSimbolo.Text = "";
 
+            ddlMoneda.Visible = false;
+
             lblMensaje.Text = "Modo creación activado";
+            lblMensaje.CssClass = "text-info";
         }
+
+        private void LimpiarFormulario()
+        {
+            txtCodigo.Text = "";
+            txtNombre.Text = "";
+            txtSimbolo.Text = "";
+
+            ddlMoneda.SelectedIndex = 0;
+            ddlMoneda.Visible = true;
+        }
+
     }
 }
