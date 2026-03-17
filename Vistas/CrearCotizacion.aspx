@@ -156,6 +156,7 @@
 
         <!-- Detalle Mensual Cotización -->
         <h3>Detalle Mensual Cotización</h3>
+           
 
         <asp:GridView ID="gvDetalleCotizacion" runat="server" AutoGenerateColumns="false" CssClass="tabla-cotizacion">
 
@@ -173,6 +174,8 @@
 
 </asp:GridView>
 
+                           
+
             <!-- RESULTADO -->
             <asp:Panel ID="pnlResultado" runat="server" Visible="true" CssClass="card" style="margin-top:20px;">
 
@@ -184,6 +187,13 @@
                 <asp:Label ID="lblInteresNeto" runat="server"></asp:Label>
 
             </asp:Panel>
+
+                <asp:Button 
+                    ID="btnGuardar" 
+                    runat="server" 
+                    Text="Guardar Cotización"
+                    CssClass="btn btn-success"
+                    OnClick="btnGuardarCotizacion_Click" />
 
         </main>
 

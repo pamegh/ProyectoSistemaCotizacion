@@ -20,9 +20,10 @@ namespace ProyectoSistemaCotizacion.Vistas
         ctrPlazo ctrPlz = new ctrPlazo();
         ctrTasa ctrTasa = new ctrTasa();
         ctrUsuario ctrUsuario = new ctrUsuario();
+        ctrCotizacion ctrCot = new ctrCotizacion();
 
 
-        
+
         protected void Page_Load(object sender, EventArgs e)
         {
            // if (Session["Usuario"] == null)
@@ -48,17 +49,29 @@ namespace ProyectoSistemaCotizacion.Vistas
 
     protected void btnCalcular_Click(object sender, EventArgs e)
         {
+            lblNumero.Text = ctrCot.ObtenerSiguienteNumeroCotizacion();
 
-            int usuarioId = Convert.ToInt32(hfUsuarioId.Value);
-            var usuario = ctrUsuario.ObtenerUsuarioPorId(usuarioId);
-            if (usuario == null)
+            int usuarioId;
+
+            if (!int.TryParse(hfUsuarioId.Value, out usuarioId))
             {
                 lblMensaje.Text = "Debe seleccionar el cliente.";
-                lblMensaje.CssClass = "mensaje mensaje-error";
                 lblMensaje.Visible = true;
                 return;
             }
-            
+            var usuario = ctrUsuario.ObtenerUsuarioPorId(usuarioId);
+
+            lblCliente.Text = usuario.NombreCompleto;
+            lblTelefono.Text = usuario.Telefono;
+            lblCorreo.Text = usuario.Correo;
+
+            if (usuario == null)
+            {
+                lblMensaje.Text = "Cliente no encontrado.";
+                lblMensaje.Visible = true;
+                return;
+            }
+
 
 
             //  Valida campos
@@ -92,6 +105,8 @@ namespace ProyectoSistemaCotizacion.Vistas
 
 
             CalcularCotizacion(monto, tasa, plazo);
+
+
 
 
         }
@@ -130,19 +145,18 @@ namespace ProyectoSistemaCotizacion.Vistas
             gvDetalleCotizacion.DataSource = detalleMensual;
             gvDetalleCotizacion.DataBind();
 
-
             // 🔹 GridView resumen vertical
             List<mdlDetalleFila> resumen = new List<mdlDetalleFila>();
 
             resumen.Add(new mdlDetalleFila { Campo = "Número", Valor = lblNumero.Text });
+            lblNumero.Text = ctrCot.ObtenerSiguienteNumeroCotizacion();
             resumen.Add(new mdlDetalleFila { Campo = "Cliente", Valor = lblCliente.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Teléfono", Valor = lblTelefono.Text });
+            resumen.Add(new mdlDetalleFila { Campo = "Correo", Valor = lblCorreo.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Producto", Valor = ddlProducto.SelectedItem.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Monto", Valor = monto.ToString("C") });
             resumen.Add(new mdlDetalleFila { Campo = "Plazo", Valor = plazo.ToString() });
-
             resumen.Add(new mdlDetalleFila { Campo = "", Valor = "" });
-
             resumen.Add(new mdlDetalleFila { Campo = "Tasa", Valor = tasa.ToString("N2") + " %" });
             resumen.Add(new mdlDetalleFila { Campo = "Impuesto", Valor = (impuestoPorcentaje * 100) + " %" });
             resumen.Add(new mdlDetalleFila { Campo = "Interés Neto", Valor = totalNeto.ToString("C") });
@@ -151,6 +165,12 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             gvResumenCotizacion.DataSource = resumen;
             gvResumenCotizacion.DataBind();
+
+            // Guardar totales en ViewState
+            ViewState["TotalBruto"] = totalInteresBruto;
+            ViewState["TotalImpuesto"] = totalImpuesto;
+            ViewState["TotalNeto"] = totalNeto;
+
         }
 
         private decimal ObtenerTasaProducto()
@@ -246,7 +266,44 @@ namespace ProyectoSistemaCotizacion.Vistas
             return resultado;
         }
 
+        protected void btnGuardarCotizacion_Click(object sender, EventArgs e)
+        {
+            GuardarCotizacion();
+        }
 
+        private void GuardarCotizacion()
+        {
+            string numero = lblNumero.Text;
+            int usuarioId = Convert.ToInt32(hfUsuarioId.Value);
+            int productoId = Convert.ToInt32(ddlProducto.SelectedValue);
+            int plazoId = Convert.ToInt32(ddlPlazo.SelectedValue);
+            decimal monto = Convert.ToDecimal(txtMonto.Text);
+            decimal tasa = ObtenerTasaProducto();
+            decimal impuesto = 13; // %
+
+            decimal totalBruto = Convert.ToDecimal(ViewState["TotalBruto"]);
+            decimal totalImpuesto = Convert.ToDecimal(ViewState["TotalImpuesto"]);
+            decimal totalNeto = Convert.ToDecimal(ViewState["TotalNeto"]);
+
+            string creadoPor = "admin"; // luego lo sacamos de sesión
+
+            string resultado = ctrCot.InsertarCotizacion(
+                numero,
+                usuarioId,
+                productoId,
+                plazoId,
+                monto,
+                tasa,
+                impuesto,
+                totalBruto,
+                totalImpuesto,
+                totalNeto,
+                creadoPor
+            );
+
+            lblMensaje.Text = "Cotización guardada correctamente: " + resultado;
+            lblMensaje.Visible = true;
+        }
 
     }
 }
