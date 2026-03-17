@@ -11,18 +11,22 @@ using System.Web.UI.WebControls;
 
 
 
+
 namespace ProyectoSistemaCotizacion.Vistas
 {
     public partial class CrearCotizacion : System.Web.UI.Page
     {
         ctrProducto ctrProd = new ctrProducto();
         ctrPlazo ctrPlz = new ctrPlazo();
-        ctrTasa crtTasa = new ctrTasa();
+        ctrTasa ctrTasa = new ctrTasa();
+        ctrUsuario ctrUsuario = new ctrUsuario();
+
+
         
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Usuario"] == null)
-                Response.Redirect("Login.aspx");
+           // if (Session["Usuario"] == null)
+             //   Response.Redirect("Login.aspx");
 
             if (!IsPostBack)
             {
@@ -44,7 +48,21 @@ namespace ProyectoSistemaCotizacion.Vistas
 
     protected void btnCalcular_Click(object sender, EventArgs e)
         {
+
+            int usuarioId = Convert.ToInt32(hfUsuarioId.Value);
+            var usuario = ctrUsuario.ObtenerUsuarioPorId(usuarioId);
+            if (usuario == null)
+            {
+                lblMensaje.Text = "Debe seleccionar el cliente.";
+                lblMensaje.CssClass = "mensaje mensaje-error";
+                lblMensaje.Visible = true;
+                return;
+            }
+            
+
+
             //  Valida campos
+
             if (ddlProducto.SelectedIndex == 0 ||
                 ddlPlazo.SelectedIndex == 0 ||
                 string.IsNullOrWhiteSpace(txtMonto.Text))
@@ -59,7 +77,9 @@ namespace ProyectoSistemaCotizacion.Vistas
             decimal monto = Convert.ToDecimal(txtMonto.Text);
             decimal tasa = ObtenerTasaProducto();
 
-            if (tasa == null)
+            
+
+            if (tasa == 0)
             {
                 lblMensaje.Text = "No existe una tasa configurada para el producto y plazo seleccionado.";
                 lblMensaje.CssClass = "mensaje mensaje-error";
@@ -69,6 +89,8 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             int plazo = Convert.ToInt32(ddlPlazo.SelectedValue);
 
+
+
             CalcularCotizacion(monto, tasa, plazo);
 
 
@@ -76,6 +98,8 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         private void CalcularCotizacion(decimal monto, decimal tasa, int plazo)
         {
+            List<mdlDetalleCotizacion> detalleMensual = new List<mdlDetalleCotizacion>();
+
             decimal tasaMensual = tasa / 12 / 100;
             decimal impuestoPorcentaje = 0.13m;
 
@@ -92,27 +116,41 @@ namespace ProyectoSistemaCotizacion.Vistas
                 totalInteresBruto += interesBruto;
                 totalImpuesto += impuestoMes;
                 totalNeto += interesNeto;
+
+                detalleMensual.Add(new mdlDetalleCotizacion
+                {
+                    Mes = i,
+                    InteresBruto = interesBruto,
+                    Impuesto = impuestoMes,
+                    InteresNeto = interesNeto
+                });
             }
 
-            //  Llenar tabla resumen
+            // 🔹 GridView detalle mensual
+            gvDetalleCotizacion.DataSource = detalleMensual;
+            gvDetalleCotizacion.DataBind();
 
-            lblNumero.Text = "001"; // aquí luego ponemos consecutivo real
-            //lblCliente.Text = txtCliente.Text;
-            //lblTelefono.Text = txtTelefono.Text;
-            //lblCorreo.Text = txtCorreo.Text;
-            lblProducto.Text = ddlProducto.SelectedItem.Text;
-            lblMonto.Text = monto.ToString("C");
-            lblPlazo.Text = ddlPlazo.SelectedItem.Text;
-            Label1.Text = tasa.ToString("N2") + " %";
-            lblImpuestoPorc.Text = "13 %";
 
-            Label2.Text = totalInteresBruto.ToString("C");
-            lblImpuestoTotal.Text = totalImpuesto.ToString("C");
-            lblNetoTotal.Text = totalNeto.ToString("C");
+            // 🔹 GridView resumen vertical
+            List<mdlDetalleFila> resumen = new List<mdlDetalleFila>();
 
-            lblMensaje.Text = "Cotización generada correctamente.";
-            lblMensaje.CssClass = "mensaje mensaje-exito";
-            lblMensaje.Visible = true;
+            resumen.Add(new mdlDetalleFila { Campo = "Número", Valor = lblNumero.Text });
+            resumen.Add(new mdlDetalleFila { Campo = "Cliente", Valor = lblCliente.Text });
+            resumen.Add(new mdlDetalleFila { Campo = "Teléfono", Valor = lblTelefono.Text });
+            resumen.Add(new mdlDetalleFila { Campo = "Producto", Valor = ddlProducto.SelectedItem.Text });
+            resumen.Add(new mdlDetalleFila { Campo = "Monto", Valor = monto.ToString("C") });
+            resumen.Add(new mdlDetalleFila { Campo = "Plazo", Valor = plazo.ToString() });
+
+            resumen.Add(new mdlDetalleFila { Campo = "", Valor = "" });
+
+            resumen.Add(new mdlDetalleFila { Campo = "Tasa", Valor = tasa.ToString("N2") + " %" });
+            resumen.Add(new mdlDetalleFila { Campo = "Impuesto", Valor = (impuestoPorcentaje * 100) + " %" });
+            resumen.Add(new mdlDetalleFila { Campo = "Interés Neto", Valor = totalNeto.ToString("C") });
+
+            
+
+            gvResumenCotizacion.DataSource = resumen;
+            gvResumenCotizacion.DataBind();
         }
 
         private decimal ObtenerTasaProducto()
@@ -129,7 +167,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 return 0;
             }
 
-            mdlTasa tasaObj = crtTasa.ObtenerTasaPorProductoYPlazo(productoId, plazoId);
+            mdlTasa tasaObj = ctrTasa.ObtenerTasaPorProductoYPlazo(productoId, plazoId);
 
             if (tasaObj == null)
             {
@@ -159,8 +197,8 @@ namespace ProyectoSistemaCotizacion.Vistas
             DataTable dt = ctrProd.ListarProductos();
 
             ddlProducto.DataSource = dt;
-            ddlProducto.DataTextField = "nombre";   // Carga Combobox con los campos "nombre y codigo" desde bd
-            ddlProducto.DataValueField = "codigo";      
+            ddlProducto.DataTextField = "nombre";   // Carga Combobox con los campos "nombre y producto_id" desde bd
+            ddlProducto.DataValueField = "producto_id";   //producto_id   
             ddlProducto.DataBind();
             ddlProducto.Items.Insert(0, new ListItem("-- Seleccione --", "0"));
         }
@@ -177,6 +215,38 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             ddlPlazo.Items.Insert(0, new ListItem("-- Seleccione --", "0"));
         }
+
+        protected void txtBuscarUsuario_TextChanged(object sender, EventArgs e)
+        {
+            string nombre = txtBuscarUsuario.Text;
+
+            lblMensaje.Text = "Buscando usuario: " + nombre;
+            lblMensaje.Visible = true;
+        }
+
+        [System.Web.Services.WebMethod]
+        [System.Web.Script.Services.ScriptMethod]
+        public static List<string> BuscarUsuariosAjax(string prefixText, int count)
+        {
+            ctrUsuario ctr = new ctrUsuario();
+
+            var lista = ctr.ListarUsuarios();
+
+            var resultado = lista
+                .Where(u => u.NombreCompleto.ToLower().Contains(prefixText.ToLower()) || u.Identificacion.Contains(prefixText))
+                .Select(u => AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(
+                    "(" + u.Identificacion + ") " + u.NombreCompleto,
+                    u.UsuarioId.ToString()))
+
+                .Take(count)
+                .ToList();
+
+
+
+            return resultado;
+        }
+
+
 
     }
 }

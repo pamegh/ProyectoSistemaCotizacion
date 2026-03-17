@@ -1,0 +1,15 @@
+﻿
+.grid-detalle {
+    width: 400px;
+    border-collapse: collapse;
+}
+
+    .grid-detalle td {
+        border: 1px solid black;
+        padding: 6px;
+    }
+
+        .grid-detalle td:first-child {
+            font-weight: bold;
+            width: 150px;
+        }

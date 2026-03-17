@@ -33,7 +33,7 @@
             <!-- Mensaje de éxito / error -->
             <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje" Visible="false"></asp:Label>
 
-            <!-- Búsqueda -->
+            <!-- Búsqueda de usuario  -->
             <div class="search-box">
                 <asp:TextBox
                     ID="txtBuscar"

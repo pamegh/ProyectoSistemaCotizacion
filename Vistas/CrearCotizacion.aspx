@@ -1,5 +1,7 @@
 ﻿
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CrearCotizacion.aspx.cs" Inherits="ProyectoSistemaCotizacion.Vistas.CrearCotizacion" %>
+<!-- AutoCompleteExtender: AjaxControlToolkit -->
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -15,6 +17,8 @@
 
 <body>
 <form id="form2" runat="server">
+
+    <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
 
 <div class="page-wrapper">
 
@@ -47,17 +51,59 @@
             </ul>
         </aside>
 
-        <!-- CONTENIDO 
+        <!-- CONTENIDO -->
         <main class="content">
 
             <h1 class="dashboard-title">Generar Cotización</h1>
 
+
             <!-- Tarjeta -->
+
+        
             <div class="card" style="max-width:600px;">
 
 
                 <!-- Mensaje -->
                 <asp:Label ID="lblMensaje" runat="server" Visible="false" CssClass="mensaje mensaje mensaje-error"></asp:Label>
+        
+                <!-- Buscar usuario -->
+
+                                    <div class="form-group">
+
+                        <label>Buscar usuario</label>
+
+                        <asp:TextBox 
+                            ID="txtBuscarUsuario" 
+                            runat="server" 
+                            CssClass="form-input">
+                        </asp:TextBox>
+
+                        <asp:HiddenField ID="hfUsuarioId" runat="server" />
+
+
+
+                        <ajax:AutoCompleteExtender
+                            ID="AutoCompleteExtender1"
+                            runat="server"
+                            TargetControlID="txtBuscarUsuario"
+                            ServiceMethod="BuscarUsuariosAjax"
+                            MinimumPrefixLength="2"
+                            CompletionInterval="100"
+                            EnableCaching="false"
+                            CompletionSetCount="10"
+                            OnClientItemSelected="usuarioSeleccionado">
+                        </ajax:AutoCompleteExtender>
+
+                           <script>
+                          function usuarioSeleccionado(sender, e) {
+                           var id = e.get_value(); 
+                           document.getElementById('<%= hfUsuarioId.ClientID %>').value = id;
+                          }
+                          </script>
+
+                    </div>
+                
+               
 
                 <!-- Producto -->
                 <div class="form-group">
@@ -84,89 +130,51 @@
                     OnClick="btnCalcular_Click" />
 
             </div>
-        
 
-         <!-- Estructura de crear cotización -->
+        <!--BOTONES INVISIBLES, usados para almacenar información del usuario -->
+            <asp:Label ID="lblNumero" runat="server" Visible="false" />
+            <asp:Label ID="lblCliente" runat="server" Visible="false" />
+                <asp:Label ID="lblTelefono" runat="server" Visible="false" />
+                <asp:Label ID="lblCorreo" runat="server" Visible="false" />
+        <!-- Estructura de crear cotización GRIDVIEW-->
 
-        <div class="card cotizacion-panel">
+                           <h3>Detalle Cotización</h3>
 
-    <table class="tabla-cotizacion-resumen">
+                <asp:GridView 
+                    ID="gvResumenCotizacion" 
+                    runat="server"
+                    AutoGenerateColumns="false"
+                    ShowHeader="false"
+                    CssClass="tabla-cotizacion">
 
-        <tr>
-            <td class="titulo">Número de cotización</td>
-            <td><asp:Label ID="lblNumero" runat="server" /></td>
-        </tr>
+                    <Columns>
+                        <asp:BoundField DataField="Campo" />
+                        <asp:BoundField DataField="Valor" />
+                    </Columns>
 
-        <tr>
-            <td class="titulo">Cliente</td>
-            <td><asp:Label ID="lblCliente" runat="server" /></td>
-        </tr>
+                </asp:GridView>
 
-        <tr>
-            <td class="titulo">Teléfono</td>
-            <td><asp:Label ID="lblTelefono" runat="server" /></td>
-        </tr>
+        <!-- Detalle Mensual Cotización -->
+        <h3>Detalle Mensual Cotización</h3>
 
-        <tr>
-            <td class="titulo">Correo</td>
-            <td><asp:Label ID="lblCorreo" runat="server" /></td>
-        </tr>
+        <asp:GridView ID="gvDetalleCotizacion" runat="server" AutoGenerateColumns="false" CssClass="tabla-cotizacion">
 
-        <tr>
-            <td class="titulo">Producto</td>
-            <td><asp:Label ID="lblProducto" runat="server" /></td>
-        </tr>
+    <Columns>
 
-        <tr>
-            <td class="titulo">Monto</td>
-            <td><asp:Label ID="lblMonto" runat="server" /></td>
-        </tr>
+        <asp:BoundField DataField="Mes" HeaderText="Mes" />
 
-        <tr>
-            <td class="titulo">Plazo</td>
-            <td><asp:Label ID="lblPlazo" runat="server" /></td>
-        </tr>
+        <asp:BoundField DataField="InteresBruto" HeaderText="Interés Bruto" DataFormatString="{0:C}" />
 
-        <tr>
-            <td class="titulo">Tasa</td>
-            <td><asp:Label ID="Label1" runat="server" /></td>
-        </tr>
+        <asp:BoundField DataField="Impuesto" HeaderText="Impuesto" DataFormatString="{0:C}" />
 
-        <tr>
-            <td class="titulo">Impuesto</td>
-            <td><asp:Label ID="lblImpuestoPorc" runat="server" /></td>
-        </tr>
+        <asp:BoundField DataField="InteresNeto" HeaderText="Interés Neto" DataFormatString="{0:C}" />
 
-    </table>
+    </Columns>
 
-    <hr />
-
-    <table class="tabla-cotizacion-resumen totales">
-
-        <tr>
-            <td class="titulo">Monto Total Interés Bruto</td>
-            <td><asp:Label ID="Label2" runat="server" /></td>
-        </tr>
-
-        <tr>
-            <td class="titulo">Monto Total Impuesto</td>
-            <td><asp:Label ID="lblImpuestoTotal" runat="server" /></td>
-        </tr>
-
-        <tr>
-            <td class="titulo">Monto Total Neto</td>
-            <td><asp:Label ID="lblNetoTotal" runat="server" /></td>
-        </tr>
-
-    </table>
-
-</div>
-
-        <!-- Botom -->
-
+</asp:GridView>
 
             <!-- RESULTADO -->
-            <asp:Panel ID="pnlResultado" runat="server" Visible="false" CssClass="card" style="margin-top:20px;">
+            <asp:Panel ID="pnlResultado" runat="server" Visible="true" CssClass="card" style="margin-top:20px;">
 
                 <h2>Resultado</h2>
 
