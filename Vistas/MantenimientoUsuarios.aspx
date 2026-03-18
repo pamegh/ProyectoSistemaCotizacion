@@ -1,12 +1,13 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MantenimientoUsuarios.aspx.cs" Inherits="ProyectoSistemaCotizacion.Vistas.MantenimientoUsuarios" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MantenimientoUsuarios.aspx.cs"
+    Inherits="ProyectoSistemaCotizacion.Vistas.MantenimientoUsuarios" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Administración de Usuarios</title>
-    <link href="../Estilos/DashboardAdmin.css" rel="stylesheet" />
-    <link href="../Estilos/MantenimientoUsuarios.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <title>Mantenimiento de Usuarios</title>
+    <link href="~/Estilos/MantenimientoUsuarios.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 <form id="form1" runat="server">
@@ -16,29 +17,24 @@
         <div class="header-container">
             <div class="logo">Sistema de Cotizaciones</div>
             <div class="nav">
-                <a href="DashboardAdministrador.aspx">
-               <i class="fa-solid fa-arrow-left"></i> Volver al Dashboard
-               </a>
+                <a href="DashboardAdministrador.aspx">Inicio</a>
             </div>
         </div>
     </div>
 
-    <!-- MENSAJE DE FEEDBACK -->
+    <!-- CONTENEDOR PRINCIPAL -->
     <div class="main-container">
         <div class="card">
 
-            <h2 class="title">Administración de Usuarios</h2>
+            <h2 class="title">Mantenimiento de Usuarios</h2>
             <p class="subtitle">Gestión de usuarios del sistema</p>
 
-            <!-- Mensaje de éxito / error -->
-            <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje" Visible="false"></asp:Label>
+            <!-- Mensaje de resultado -->
+            <asp:Label ID="lblMensaje" runat="server" Visible="false"></asp:Label>
 
-            <!-- Búsqueda de usuario  -->
+            <!-- Búsqueda -->
             <div class="search-box">
-                <asp:TextBox
-                    ID="txtBuscar"
-                    runat="server"
-                    CssClass="input"
+                <asp:TextBox ID="txtBuscar" runat="server" CssClass="input"
                     Placeholder="Buscar usuario por nombre..."
                     AutoPostBack="true"
                     OnTextChanged="txtBuscar_TextChanged"
@@ -46,7 +42,7 @@
                 </asp:TextBox>
             </div>
 
-            <!-- Tabla de usuarios -->
+            <!-- GRID -->
             <asp:GridView
                 ID="gvUsuarios"
                 runat="server"
@@ -54,7 +50,6 @@
                 CssClass="tabla"
                 OnRowCommand="gvUsuarios_RowCommand"
                 OnRowDataBound="gvUsuarios_RowDataBound">
-
                 <Columns>
                     <asp:BoundField DataField="UsuarioId"      HeaderText="ID" />
                     <asp:BoundField DataField="NombreCompleto" HeaderText="Nombre" />
@@ -64,9 +59,7 @@
 
                     <asp:TemplateField HeaderText="Estado">
                         <ItemTemplate>
-                            <asp:Label
-                                ID="lblEstado"
-                                runat="server"
+                            <asp:Label ID="lblEstado" runat="server"
                                 Text='<%# Eval("Estado") %>'>
                             </asp:Label>
                         </ItemTemplate>
@@ -75,35 +68,79 @@
                     <asp:TemplateField HeaderText="Acciones">
                         <ItemTemplate>
 
-                            <!-- Botón cambiar ROL (Usuario ↔ Administrador) -->
-                            <asp:LinkButton
-                                ID="btnCambiarRol"
-                                runat="server"
+                            <%-- Editar datos (abre panel) --%>
+                            <asp:LinkButton ID="btnEditar" runat="server"
+                                CommandName="Editar"
+                                CommandArgument='<%# Eval("UsuarioId") %>'
+                                CssClass="btn-action"
+                                ToolTip="Editar usuario">
+                                <i class="fa-solid fa-user-pen"></i>
+                            </asp:LinkButton>
+
+                            <%-- Cambiar Rol --%>
+                            <asp:LinkButton ID="btnCambiarRol" runat="server"
                                 CommandName="CambiarRol"
                                 CommandArgument='<%# Eval("UsuarioId") + "|" + Eval("Rol") %>'
                                 CssClass="btn-action"
-                                ToolTip='<%# Eval("Rol").ToString() == "Administrador" ? "Quitar Administrador" : "Hacer Administrador" %>'
-                                OnClientClick="return confirm('¿Está seguro de cambiar el rol de este usuario?');">
+                                OnClientClick="return confirm('¿Desea cambiar el rol de este usuario?');">
                                 <i class="fa-solid fa-user-shield"></i>
                             </asp:LinkButton>
 
-                            <!-- Botón cambiar ESTADO (Activo ↔ Inactivo) -->
-                            <asp:LinkButton
-                                ID="btnCambiarEstado"
-                                runat="server"
+                            <%-- Cambiar Estado --%>
+                            <asp:LinkButton ID="btnCambiarEstado" runat="server"
                                 CommandName="Estado"
                                 CommandArgument='<%# Eval("UsuarioId") + "|" + Eval("Estado") %>'
                                 CssClass="btn-action btn-danger"
-                                ToolTip='<%# Eval("Estado").ToString() == "Activo" ? "Desactivar usuario" : "Activar usuario" %>'
                                 OnClientClick="return confirm('¿Está seguro de cambiar el estado del usuario?');">
                                 <i class="fa-solid fa-power-off"></i>
                             </asp:LinkButton>
 
                         </ItemTemplate>
                     </asp:TemplateField>
-
                 </Columns>
             </asp:GridView>
+
+            <!-- PANEL DE EDICIÓN (se muestra al pulsar Editar) -->
+            <asp:Panel ID="pnlEditar" runat="server" Visible="false" CssClass="panel-editar">
+
+                <h3 class="title">Editar Usuario</h3>
+
+                <asp:HiddenField ID="hfUsuarioId" runat="server" />
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Identificación <small>(no editable)</small></label>
+                        <asp:TextBox ID="txtIdentificacionEdit" runat="server"
+                            CssClass="input" Enabled="false" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <asp:TextBox ID="txtNombreEdit" runat="server" CssClass="input" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <asp:TextBox ID="txtTelefonoEdit" runat="server" CssClass="input" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <asp:TextBox ID="txtCorreoEdit" runat="server" CssClass="input" />
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <asp:Button ID="btnGuardarEdicion" runat="server" Text="Guardar Cambios"
+                        CssClass="btn btn-primary" OnClick="btnGuardarEdicion_Click" />
+                    <asp:Button ID="btnCancelarEdicion" runat="server" Text="Cancelar"
+                        CssClass="btn btn-secondary" OnClick="btnCancelarEdicion_Click"
+                        CausesValidation="false" />
+                </div>
+
+            </asp:Panel>
 
         </div>
     </div>
@@ -112,14 +149,9 @@
         function buscarUsuario() {
             __doPostBack('<%= txtBuscar.UniqueID %>', '');
         }
-
         window.onload = function () {
-            var textbox = document.getElementById('<%= txtBuscar.ClientID %>');
-            if (textbox) {
-                var len = textbox.value.length;
-                textbox.focus();
-                textbox.setSelectionRange(len, len);
-            }
+            var tb = document.getElementById('<%= txtBuscar.ClientID %>');
+            if (tb) { var l = tb.value.length; tb.focus(); tb.setSelectionRange(l, l); }
         };
     </script>
 
