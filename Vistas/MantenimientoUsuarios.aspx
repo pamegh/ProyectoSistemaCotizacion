@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Mantenimiento de Usuarios</title>
-    <link href="~/Estilos/MantenimientoUsuarios.css" rel="stylesheet" />
+    <link href="../Estilos/MantenimientoUsuarios.css?v=2" rel="stylesheet" type="text/css" />
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
