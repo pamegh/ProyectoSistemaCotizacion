@@ -390,7 +390,14 @@ OnSelectedIndexChanged="ddlImpuestos_SelectedIndexChanged">
 
 </div>
 
-
+    <div class="mb-3">
+    <label>Clave</label>
+    <asp:TextBox
+        ID="txtClaveImpuesto"
+        runat="server"
+        CssClass="form-control">
+    </asp:TextBox>
+</div>
 
 <div class="form-group">
 

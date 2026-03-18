@@ -304,7 +304,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             hfParametroId.Value = ddlImpuestos.SelectedValue;
 
             mdlParametros impuesto = ctr.ObtenerParametroPorId(impuestoId);
-
+            txtClaveImpuesto.Text = impuesto.Clave;
             txtNombreImpuesto.Text = impuesto.Descripcion;
             txtPorcentajeImpuesto.Text = impuesto.Valor;
 
@@ -329,9 +329,21 @@ namespace ProyectoSistemaCotizacion.Vistas
             ctrParametros ctr = new ctrParametros();
             mdlParametros parametro = new mdlParametros();
 
-            parametro.Clave = "IMPUESTO";
-            parametro.Valor = txtPorcentajeImpuesto.Text;
-            parametro.Descripcion = txtNombreImpuesto.Text;
+            parametro.Clave = txtClaveImpuesto.Text.Trim().ToUpper();
+            parametro.Valor = txtPorcentajeImpuesto.Text.Trim();
+            parametro.Descripcion = txtNombreImpuesto.Text.Trim();
+
+            if (string.IsNullOrEmpty(parametro.Clave))
+            {
+                lblMensajeImpuesto.Text = "Debe ingresar la clave";
+                return;
+            }
+
+            if (string.IsNullOrEmpty(parametro.Valor))
+            {
+                lblMensajeImpuesto.Text = "Debe ingresar el porcentaje";
+                return;
+            }
 
             bool resultado;
             int idActivo = 0;
@@ -342,9 +354,8 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 var actual = ctr.ObtenerParametroPorId(parametro.ParametroId);
                 parametro.Estado = actual.Estado;
-                lblMensajeImpuesto.Text = "ID enviado: " + parametro.ParametroId;
-                resultado = ctr.ActualizarParametro(parametro);
 
+                resultado = ctr.ActualizarParametro(parametro);
                 idActivo = parametro.ParametroId;
 
                 lblMensajeImpuesto.Text = parametro.Mensaje;
@@ -369,9 +380,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             ddlImpuestos.SelectedValue = idActivo.ToString();
 
             CargarImpuestoActivo();
-
-                LimpiarFormularioImpuesto();
-            
+            LimpiarFormularioImpuesto();
         }
 
         private void CargarImpuestos()
@@ -416,20 +425,15 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void btnNuevoImpuesto_Click(object sender, EventArgs e)
         {
-            // 🔥 LIMPIAR TODO
             LimpiarFormularioImpuesto();
 
-            // 🔥 ASEGURAR QUE NO HAY ID
             hfParametroId.Value = "";
 
-            // 🔥 QUITAR SELECCIÓN
             ddlImpuestos.ClearSelection();
             ddlImpuestos.Visible = false;
 
-            // 🔥 MENSAJE
             lblMensajeImpuesto.Text = "Ingrese un nuevo impuesto";
 
-            // 🔥 OPCIONAL: cambiar texto del botón
             btnGuardarImpuesto.Text = "Guardar";
 
             txtNombreImpuesto.Focus();
@@ -437,6 +441,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         private void LimpiarFormularioImpuesto()
         {
+            txtClaveImpuesto.Text = "";
             txtNombreImpuesto.Text = "";
             txtPorcentajeImpuesto.Text = "";
 
@@ -824,7 +829,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             chkProductosPlazo.DataSource = productos;
             chkProductosPlazo.DataBind();
 
-            // 🔥 FALTABA ESTO
+            
             CargarMonedas();
         }
 
@@ -1187,10 +1192,17 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         private void CargarMonedas()
         {
-            ddlMonedaProducto.DataSource = ctrMoneda.ListarMonedas();
-            ddlMonedaProducto.DataTextField = "nombre";
-            ddlMonedaProducto.DataValueField = "moneda_id";
-            ddlMonedaProducto.DataBind();
+            DataTable dt = ctrMoneda.ListarMonedas();
+
+            ddlMonedaProducto.Items.Clear();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                ddlMonedaProducto.Items.Add(new ListItem(
+                    $"{row["Nombre"]} ({row["Simbolo"]})",
+                    row["moneda_id"].ToString()
+                ));
+            }
 
             ddlMonedaProducto.Items.Insert(0,
                 new ListItem("-- Seleccione moneda --", ""));
@@ -1244,31 +1256,26 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         private void InicializarPantalla()
         {
-            // DATA
             CargarTablaFinanciera();
             CargarMonedas();
             CargarDias();
             CargarImpuestos();
             CargarImpuestoActivo();
 
-            // UI
             pnlFormulario.Visible = false;
             pnlProducto.Visible = false;
             pnlPlazo.Visible = false;
             pnlTasaFiltros.Visible = false;
 
-            // DROPDOWNS SIN SELECCIÓN 🔥
             ResetDropDown(ddlEntidad);
             ResetDropDown(ddlProductoBuscar);
             ResetDropDown(ddlPlazoBuscar);
             ResetDropDown(ddlProductoTasa);
             ResetDropDown(ddlPlazoTasa);
 
-            // MENSAJE
             pnlMensaje.Visible = false;
             lblMensaje.Text = "";
 
-            // ESTADO
             ModoOperacion = "";
             ModoNuevo = false;
         }
