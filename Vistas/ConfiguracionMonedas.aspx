@@ -24,6 +24,10 @@
 Administración de Monedas
     <div style="position:absolute; top:15px; right:20px;">
 
+
+        <asp:Label ID="lblMensaje"
+runat="server"
+CssClass="mt-3 fw-bold"></asp:Label>
 <asp:Button ID="btnCerrar"
 runat="server"
 Text="Atrás"
@@ -93,10 +97,6 @@ CssClass="btn btn-secondary"
 OnClick="btnNuevo_Click"/>
 
 </div>
-
-<asp:Label ID="lblMensaje"
-runat="server"
-CssClass="mt-3 fw-bold"></asp:Label>
 
 </div>
 

@@ -34,22 +34,35 @@ namespace ProyectoSistemaCotizacion.Vistas
         {
             if (!IsPostBack)
             {
-                CargarTablaFinanciera();
-                CargarMonedas();
-                CargarDias();
-                ddlEntidad_SelectedIndexChanged(null, null);
-                CargarImpuestos();
-                CargarImpuestoActivo();
-            }
-
-            string evento = Request["__EVENTTARGET"];
-
-            if (evento == "RecargarMonedas")
-            {
-                CargarMonedas();
+                InicializarPantalla();
             }
         }
 
+        private void MostrarMensaje(string texto, string tipo)
+        {
+            pnlMensaje.Visible = true;
+            lblMensaje.Text = texto;
+
+            string clase = "alert ";
+
+            switch (tipo)
+            {
+                case "success":
+                    clase += "alert-success";
+                    break;
+                case "error":
+                    clase += "alert-danger";
+                    break;
+                case "warning":
+                    clase += "alert-warning";
+                    break;
+                default:
+                    clase += "alert-info";
+                    break;
+            }
+
+            lblMensaje.CssClass = clase + " d-block text-center fw-bold";
+        }
         private void CargarTablaFinanciera()
         {
             gvTablaFinanciera.DataSource = ctrTasa.ObtenerTablaFinanciera();
@@ -65,17 +78,17 @@ namespace ProyectoSistemaCotizacion.Vistas
         {
             pnlFormulario.Visible = true;
 
+            LimpiarInputs();
+
             if (ModoOperacion == "Eliminar")
             {
                 MostrarModoEliminar();
                 return;
             }
-            pnlFormulario.Visible = true;
 
             pnlProducto.Visible = false;
             pnlPlazo.Visible = false;
             pnlTasaFiltros.Visible = false;
-
 
             if (ddlEntidad.SelectedValue == "Producto")
             {
@@ -87,20 +100,14 @@ namespace ProyectoSistemaCotizacion.Vistas
                 ddlProductoBuscar.DataBind();
 
                 ddlProductoBuscar.Items.Insert(0, new ListItem("-- Seleccione --", ""));
-
+                ddlProductoBuscar.SelectedIndex = -1;
                 CargarPlazos();
 
-                if (ModoNuevo)
-                    ddlProductoBuscar.Visible = false;
-                else
-                    ddlProductoBuscar.Visible = true;
+                ddlProductoBuscar.Visible = !ModoNuevo;
             }
             else if (ddlEntidad.SelectedValue == "Plazo")
             {
                 pnlPlazo.Visible = true;
-                ddlPlazoBuscar.Visible = true;
-                ddlProductoTasa.Visible = true;
-                ddlPlazoTasa.Visible = true;
 
                 chkProductosPlazo.DataSource = ctrProducto.ListarProductos();
                 chkProductosPlazo.DataTextField = "nombre";
@@ -112,7 +119,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 ddlPlazoBuscar.Items.Clear();
                 ddlPlazoBuscar.Items.Insert(0, new ListItem("-- Seleccione --", ""));
 
-                foreach (System.Data.DataRow row in dtPlazos.Rows)
+                foreach (DataRow row in dtPlazos.Rows)
                 {
                     int meses = Convert.ToInt32(row["meses"]);
                     int dias = Convert.ToInt32(row["dias"]);
@@ -133,10 +140,8 @@ namespace ProyectoSistemaCotizacion.Vistas
                     );
                 }
 
-                if (ModoNuevo)
-                    ddlPlazoBuscar.Visible = false;
-                else
-                    ddlPlazoBuscar.Visible = true;
+                ddlPlazoBuscar.SelectedIndex = -1;
+                ddlPlazoBuscar.Visible = !ModoNuevo;
             }
             else if (ddlEntidad.SelectedValue == "Tasa")
             {
@@ -149,9 +154,9 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 ddlProductoTasa.Items.Insert(0,
                     new ListItem("-- Seleccione Producto --", ""));
+                ddlProductoTasa.SelectedIndex = -1;
 
                 var dtPlazos = ctrPlazo.ListarPlazos();
-
 
                 ddlPlazoTasa.Items.Clear();
                 ddlPlazoTasa.Items.Insert(0, new ListItem("-- Seleccione Plazo --", ""));
@@ -180,14 +185,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                     );
                 }
 
-                ddlPlazoTasa.Items.Insert(0,
-                    new ListItem("-- Seleccione Plazo --", ""));
-
-                if (ModoNuevo)
-                {
-                    ddlProductoTasa.Visible = true;
-                    ddlPlazoTasa.Visible = true;
-                }
+                ddlPlazoTasa.SelectedIndex = -1;
             }
         }
 
@@ -196,26 +194,35 @@ namespace ProyectoSistemaCotizacion.Vistas
             if (ModoOperacion == "Eliminar" || ModoNuevo)
                 return;
 
-            if (!string.IsNullOrEmpty(ddlProductoBuscar.SelectedValue))
+            if (string.IsNullOrEmpty(ddlProductoBuscar.SelectedValue))
+                return;
+
+            pnlFormulario.Visible = true;
+            pnlProducto.Visible = true;
+
+            ModoOperacion = "Editar";
+
+            MostrarMensaje("Modo edición activado", "warning");
+
+            int id = Convert.ToInt32(ddlProductoBuscar.SelectedValue);
+            mdlProducto prod = ctrProducto.ObtenerProductoPorId(id);
+
+            txtNombreProducto.Text = prod.Nombre;
+
+            if (ddlMonedaProducto.Items.FindByValue(prod.MonedaId.ToString()) != null)
             {
-                pnlFormulario.Visible = true;
-                pnlProducto.Visible = true;
-
-                ModoOperacion = "Editar";
-
-                lblMensaje.Text = "Modo edición activado";
-                lblMensaje.CssClass = "text-warning";
-
-                int id = Convert.ToInt32(ddlProductoBuscar.SelectedValue);
-                mdlProducto prod = ctrProducto.ObtenerProductoPorId(id);
-
-                txtNombreProducto.Text = prod.Nombre;
-
-                if (ddlMonedaProducto.Items.FindByValue(prod.MonedaId.ToString()) != null)
-                {
-                    ddlMonedaProducto.SelectedValue = prod.MonedaId.ToString();
-                }
+                ddlMonedaProducto.SelectedValue = prod.MonedaId.ToString();
             }
+        }
+
+        private void LimpiarInputs()
+        {
+            txtNombreProducto.Text = "";
+            txtMesesPlazo.Text = "";
+            txtTasaEditar.Text = "";
+
+            if (ddlMonedaProducto.Items.Count > 0)
+                ddlMonedaProducto.SelectedIndex = 0;
         }
 
         protected void ddlPlazoBuscar_SelectedIndexChanged(object sender, EventArgs e)
@@ -287,14 +294,21 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void ddlImpuestos_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(ddlImpuestos.SelectedValue))
+                return;
+
             ctrParametros ctr = new ctrParametros();
 
-            mdlParametros impuesto = ctr.ObtenerParametroPorId(
-                Convert.ToInt32(ddlImpuestos.SelectedValue)
-            );
+            int impuestoId = Convert.ToInt32(ddlImpuestos.SelectedValue);
+
+            hfParametroId.Value = ddlImpuestos.SelectedValue;
+
+            mdlParametros impuesto = ctr.ObtenerParametroPorId(impuestoId);
 
             txtNombreImpuesto.Text = impuesto.Descripcion;
             txtPorcentajeImpuesto.Text = impuesto.Valor;
+
+            lblMensajeImpuesto.Text = "Editando: " + impuesto.Descripcion;
         }
 
         private void CargarImpuestoActivo()
@@ -313,27 +327,51 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected void btnGuardarImpuesto_Click(object sender, EventArgs e)
         {
             ctrParametros ctr = new ctrParametros();
-
             mdlParametros parametro = new mdlParametros();
 
             parametro.Clave = "IMPUESTO";
             parametro.Valor = txtPorcentajeImpuesto.Text;
             parametro.Descripcion = txtNombreImpuesto.Text;
-            parametro.Estado = "ACTIVO";
 
-            ctr.InsertarParametro(parametro);
+            bool resultado;
+            int idActivo = 0;
 
-            CargarImpuestos();
+            if (!string.IsNullOrEmpty(hfParametroId.Value))
+            {
+                parametro.ParametroId = Convert.ToInt32(hfParametroId.Value);
 
-            ddlImpuestos.SelectedIndex = ddlImpuestos.Items.Count - 1;
+                var actual = ctr.ObtenerParametroPorId(parametro.ParametroId);
+                parametro.Estado = actual.Estado;
+                lblMensajeImpuesto.Text = "ID enviado: " + parametro.ParametroId;
+                resultado = ctr.ActualizarParametro(parametro);
+
+                idActivo = parametro.ParametroId;
+
+                lblMensajeImpuesto.Text = parametro.Mensaje;
+            }
+            else
+            {
+                parametro.Estado = "ACTIVO";
+
+                resultado = ctr.InsertarParametro(parametro);
+
+                CargarImpuestos();
+
+                idActivo = Convert.ToInt32(ddlImpuestos.Items[ddlImpuestos.Items.Count - 1].Value);
+
+                lblMensajeImpuesto.Text = parametro.Mensaje;
+            }
 
             string mensaje;
-            ctr.ActivarImpuesto(Convert.ToInt32(ddlImpuestos.SelectedValue), out mensaje);
+            ctr.ActivarImpuesto(idActivo, out mensaje);
 
-            lblMensajeImpuesto.Text = "Impuesto guardado y activado correctamente";
+            CargarImpuestos();
+            ddlImpuestos.SelectedValue = idActivo.ToString();
 
             CargarImpuestoActivo();
-            LimpiarFormularioImpuesto();
+
+                LimpiarFormularioImpuesto();
+            
         }
 
         private void CargarImpuestos()
@@ -378,11 +416,23 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void btnNuevoImpuesto_Click(object sender, EventArgs e)
         {
+            // 🔥 LIMPIAR TODO
             LimpiarFormularioImpuesto();
 
+            // 🔥 ASEGURAR QUE NO HAY ID
+            hfParametroId.Value = "";
+
+            // 🔥 QUITAR SELECCIÓN
+            ddlImpuestos.ClearSelection();
             ddlImpuestos.Visible = false;
 
+            // 🔥 MENSAJE
             lblMensajeImpuesto.Text = "Ingrese un nuevo impuesto";
+
+            // 🔥 OPCIONAL: cambiar texto del botón
+            btnGuardarImpuesto.Text = "Guardar";
+
+            txtNombreImpuesto.Focus();
         }
 
         private void LimpiarFormularioImpuesto()
@@ -393,6 +443,8 @@ namespace ProyectoSistemaCotizacion.Vistas
             ddlImpuestos.ClearSelection();
 
             ddlImpuestos.Visible = true;
+
+            hfParametroId.Value = "";
 
             lblMensajeImpuesto.Text = "";
         }
@@ -429,15 +481,13 @@ namespace ProyectoSistemaCotizacion.Vistas
             {
                 if (string.IsNullOrEmpty(txtNombreProducto.Text))
                 {
-                    lblMensaje.Text = "Debe ingresar el nombre del producto.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("Debe ingresar el nombre del producto.", "error");
                     return;
                 }
 
                 if (string.IsNullOrEmpty(ddlMonedaProducto.SelectedValue))
                 {
-                    lblMensaje.Text = "Debe seleccionar una moneda.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("Debe seleccionar una moneda.", "error");
                     return;
                 }
 
@@ -453,8 +503,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                     if (productoId == 0)
                     {
-                        lblMensaje.Text = prod.Mensaje;
-                        lblMensaje.CssClass = "text-danger";
+                        MostrarMensaje(prod.Mensaje, "error");
                         return;
                     }
 
@@ -487,15 +536,13 @@ namespace ProyectoSistemaCotizacion.Vistas
                         }
                     }
 
-                    lblMensaje.Text = "Producto creado correctamente con sus tasas.";
-                    lblMensaje.CssClass = "text-success";
+                    MostrarMensaje("Producto creado correctamente con sus tasas.", "success");
                 }
                 else
                 {
                     if (string.IsNullOrEmpty(ddlProductoBuscar.SelectedValue))
                     {
-                        lblMensaje.Text = "Seleccione un producto.";
-                        lblMensaje.CssClass = "text-danger";
+                        MostrarMensaje("Seleccione un producto.", "error");
                         return;
                     }
 
@@ -538,13 +585,11 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                     if (resultado)
                     {
-                        lblMensaje.Text = "Producto y tasas actualizados correctamente.";
-                        lblMensaje.CssClass = "text-success";
+                        MostrarMensaje("Producto y tasas actualizados correctamente.", "success");
                     }
                     else
                     {
-                        lblMensaje.Text = "Error al actualizar el producto.";
-                        lblMensaje.CssClass = "text-danger";
+                        MostrarMensaje("Error al actualizar el producto.", "error");
                     }
                 }
 
@@ -555,8 +600,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             {
                 if (string.IsNullOrEmpty(txtMesesPlazo.Text) && string.IsNullOrEmpty(ddlDiasPlazo.SelectedValue))
                 {
-                    lblMensaje.Text = "Debe ingresar meses o días para el plazo.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("Debe ingresar meses o días para el plazo.", "error");
                     return;
                 }
 
@@ -570,8 +614,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 if (meses < 0 || dias < 0)
                 {
-                    lblMensaje.Text = "Los valores no pueden ser negativos.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("Los valores no pueden ser negativos.", "error");
                     return;
                 }
 
@@ -597,8 +640,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                     if (meses == 0 && dias == 0)
                     {
-                        lblMensaje.Text = "Debe ingresar meses o días.";
-                        lblMensaje.CssClass = "text-danger";
+                        MostrarMensaje("Debe ingresar meses o días.", "error");
                         return;
                     }
 
@@ -606,8 +648,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                     if (plazoId == 0)
                     {
-                        lblMensaje.Text = plazo.Mensaje;
-                        lblMensaje.CssClass = "text-danger";
+                        MostrarMensaje(plazo.Mensaje, "error");
                         return;
                     }
 
@@ -629,8 +670,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                         ctrTasa.InsertarTasa(tasaObj);
                     }
 
-                    lblMensaje.Text = "Plazo creado correctamente.";
-                    lblMensaje.CssClass = "text-success";
+                    MostrarMensaje("Plazo creado correctamente.", "success");
                 }
                 else
                 {
@@ -674,11 +714,10 @@ namespace ProyectoSistemaCotizacion.Vistas
                         }
                     }
 
-                    lblMensaje.Text = resultado
-                        ? "Plazo y tasas actualizados correctamente."
-                        : "Error al actualizar el plazo.";
-
-                    lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
+                    MostrarMensaje(
+                resultado ? "Plazo y tasas actualizados correctamente." : "Error al actualizar el plazo.",
+                resultado ? "success" : "error"
+            );
                 }
             }
             else if (ddlEntidad.SelectedValue == "Tasa")
@@ -686,8 +725,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 if (string.IsNullOrEmpty(ddlProductoTasa.SelectedValue) ||
                     string.IsNullOrEmpty(ddlPlazoTasa.SelectedValue))
                 {
-                    lblMensaje.Text = "Debe seleccionar producto y plazo.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("Debe seleccionar producto y plazo.", "error");
                     return;
                 }
 
@@ -698,15 +736,13 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 if (!decimal.TryParse(txtTasaEditar.Text, out tasaValor))
                 {
-                    lblMensaje.Text = "Debe ingresar una tasa válida.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("Debe ingresar una tasa válida.", "error");
                     return;
                 }
 
                 if (tasaValor <= 0)
                 {
-                    lblMensaje.Text = "La tasa debe ser mayor a 0.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("La tasa debe ser mayor a 0.", "error");
                     return;
                 }
 
@@ -725,18 +761,19 @@ namespace ProyectoSistemaCotizacion.Vistas
                     resultado = ctrTasa.ActualizarTasa(tasa);
 
                     ModoOperacion = "Editar";
-                    lblMensaje.Text = resultado
-                        ? "Tasa actualizada correctamente."
-                        : "Error al actualizar la tasa.";
+                    MostrarMensaje(
+    resultado ? "Tasa actualizada correctamente." : "Error al actualizar la tasa.",
+    resultado ? "success" : "error"
+);
                 }
                 else
                 {
                     resultado = ctrTasa.InsertarTasa(tasa);
 
-                    ModoOperacion = "Nuevo";
-                    lblMensaje.Text = resultado
-                        ? "Tasa creada correctamente."
-                        : "Error al crear la tasa.";
+                    MostrarMensaje(
+           resultado ? "Tasa guardada correctamente." : "Error al guardar la tasa.",
+           resultado ? "success" : "error"
+       );
                 }
 
                 lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
@@ -744,35 +781,117 @@ namespace ProyectoSistemaCotizacion.Vistas
                 if (ViewState["TasaId"] != null)
                 {
                     ModoOperacion = "Editar";
-                    lblMensaje.Text = "Tasa actualizada correctamente.";
+                    MostrarMensaje("Tasa actualizada correctamente.", "success");
                 }
                 else
                 {
                     ModoOperacion = "Nuevo";
-                    lblMensaje.Text = "Tasa creada correctamente.";
+                    MostrarMensaje("Tasa creada correctamente.", "success");
                 }
             }
 
             CargarTablaFinanciera();
+            RecargarCombos();
 
             string mensaje = lblMensaje.Text;
             string css = lblMensaje.CssClass;
-            ModoOperacion = "";
-            LimpiarFormulario();
-           
+            
+                LimpiarFormulario();
+            ddlProductoBuscar.ClearSelection();
+
+            if (ddlProductoBuscar.Items.Count > 0)
+                ddlProductoBuscar.SelectedIndex = 0;
+
+            if (ddlPlazoBuscar.Items.Count > 0)
+                ddlPlazoBuscar.SelectedIndex = 0;
 
 
+
+        }
+
+        private void RecargarCombos()
+        {
+            var productos = ctrProducto.ListarProductos();
+
+            ddlProductoBuscar.DataSource = productos;
+            ddlProductoBuscar.DataBind();
+            ddlProductoBuscar.Items.Insert(0, new ListItem("-- Seleccione --", ""));
+
+            ddlProductoTasa.DataSource = productos;
+            ddlProductoTasa.DataBind();
+            ddlProductoTasa.Items.Insert(0, new ListItem("-- Seleccione --", ""));
+
+            chkProductosPlazo.DataSource = productos;
+            chkProductosPlazo.DataBind();
+
+            // 🔥 FALTABA ESTO
+            CargarMonedas();
+        }
+
+        private void LimpiarCampos()
+        {
+            txtNombreProducto.Text = "";
+
+            if (ddlMonedaProducto.Items.Count > 0)
+                ddlMonedaProducto.SelectedIndex = 0;
+
+            if (ddlProductoBuscar.Items.Count > 0)
+            {
+                ddlProductoBuscar.ClearSelection();
+                ddlProductoBuscar.SelectedIndex = 0;
+            }
+
+            foreach (ListItem item in chkPlazos.Items)
+                item.Selected = false;
+
+            gvTasasProducto.DataSource = null;
+            gvTasasProducto.DataBind();
+
+            // PLAZO
+            if (ddlPlazoBuscar.Items.Count > 0)
+            {
+                ddlPlazoBuscar.ClearSelection();
+                ddlPlazoBuscar.SelectedIndex = 0;
+            }
+
+            txtMesesPlazo.Text = "";
+
+            if (ddlDiasPlazo.Items.Count > 0)
+                ddlDiasPlazo.SelectedIndex = 0;
+
+            foreach (ListItem item in chkProductosPlazo.Items)
+                item.Selected = false;
+
+            gvTasasPlazo.DataSource = null;
+            gvTasasPlazo.DataBind();
+
+            // TASA
+            if (ddlProductoTasa.Items.Count > 0)
+            {
+                ddlProductoTasa.ClearSelection();
+                ddlProductoTasa.SelectedIndex = 0;
+            }
+
+            if (ddlPlazoTasa.Items.Count > 0)
+            {
+                ddlPlazoTasa.ClearSelection();
+                ddlPlazoTasa.SelectedIndex = 0;
+            }
+
+            txtTasaEditar.Text = "";
+            ViewState["TasaId"] = null;
         }
 
         protected void btnEliminar_Click(object sender, EventArgs e)
         {
             pnlFormulario.Visible = true;
             ModoOperacion = "Eliminar";
-
-            lblMensaje.Text = "Modo eliminación activado. Seleccione el registro y presione Guardar.";
-            lblMensaje.CssClass = "text-danger";
-
             MostrarModoEliminar();
+            MostrarMensaje(
+       "Modo eliminación activado. Seleccione el registro y presione Guardar.",
+       "warning"
+   );
+
         }
         private void EjecutarEliminacion()
         {
@@ -780,8 +899,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             {
                 if (string.IsNullOrEmpty(ddlProductoBuscar.SelectedValue))
                 {
-                    lblMensaje.Text = "Seleccione un producto para eliminar.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("Seleccione un producto para eliminar.", "error");
                     return;
                 }
 
@@ -790,15 +908,14 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 bool resultado = ctrProducto.EliminarProducto(id, out mensaje);
 
-                lblMensaje.Text = mensaje;
-                lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
+                MostrarMensaje(mensaje, resultado ? "success" : "error");
             }
 
             else if (ddlEntidad.SelectedValue == "Plazo")
             {
                 if (string.IsNullOrEmpty(ddlPlazoBuscar.SelectedValue))
                 {
-                    lblMensaje.Text = "Seleccione un plazo para eliminar.";
+                    MostrarMensaje("Seleccione un plazo para eliminar.", "error");
                     lblMensaje.CssClass = "text-danger";
                     return;
                 }
@@ -808,16 +925,14 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 bool resultado = ctrPlazo.EliminarPlazo(id, out mensaje);
 
-                lblMensaje.Text = mensaje;
-                lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
+                MostrarMensaje(mensaje, resultado ? "success" : "error");
             }
 
             else if (ddlEntidad.SelectedValue == "Tasa")
             {
                 if (ddlProductoTasa.SelectedValue == "" || ddlPlazoTasa.SelectedValue == "")
                 {
-                    lblMensaje.Text = "Seleccione producto y plazo.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("Seleccione producto y plazo.", "error");
                     return;
                 }
 
@@ -828,18 +943,16 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 if (tasa == null)
                 {
-                    lblMensaje.Text = "No existe tasa para eliminar.";
-                    lblMensaje.CssClass = "text-danger";
+                    MostrarMensaje("No existe tasa para eliminar.", "error");
                     return;
                 }
 
                 bool resultado = ctrTasa.EliminarTasa(tasa.TasaId);
 
-                lblMensaje.Text = resultado
-                    ? "Tasa eliminada correctamente."
-                    : "Error al eliminar la tasa.";
-
-                lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
+                MostrarMensaje(
+          resultado ? "Tasa eliminada correctamente." : "Error al eliminar la tasa.",
+          resultado ? "success" : "error"
+      );
             }
 
             CargarTablaFinanciera();
@@ -857,6 +970,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             {
                 pnlProducto.Visible = true;
 
+                ddlProductoBuscar.Items.Clear();
                 ddlProductoBuscar.DataSource = ctrProducto.ListarProductos();
                 ddlProductoBuscar.DataTextField = "nombre";
                 ddlProductoBuscar.DataValueField = "producto_id";
@@ -1064,8 +1178,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             ddlProductoBuscar.Visible = false;
             ddlPlazoBuscar.Visible = false;
 
-            lblMensaje.Text = "Modo creación activado";
-            lblMensaje.CssClass = "text-success";
+            MostrarMensaje("Modo creación activado", "success");
 
             ViewState["ListaTasas"] = null;
             gvTasasProducto.DataSource = null;
@@ -1097,9 +1210,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             txtMesesPlazo.Text = "";
             txtTasaEditar.Text = "";
 
-            ddlMonedaProducto.SelectedIndex = 0;
-            ddlDiasPlazo.SelectedIndex = 0;
-
             foreach (ListItem item in chkPlazos.Items)
                 item.Selected = false;
 
@@ -1114,11 +1224,6 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             ViewState["TasaId"] = null;
 
-            pnlFormulario.Visible = false;
-            ddlEntidad.SelectedIndex = 0;
-
-            ModoNuevo = false;
-            ModoOperacion = "Editar";
         }
 
         private void CargarDias()
@@ -1134,17 +1239,48 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         protected void btnRefrescar_Click(object sender, EventArgs e)
         {
-            ModoNuevo = false;
-            ModoOperacion = "";
+            InicializarPantalla();
+        }
 
-            LimpiarFormulario();
-
+        private void InicializarPantalla()
+        {
+            // DATA
             CargarTablaFinanciera();
+            CargarMonedas();
+            CargarDias();
+            CargarImpuestos();
+            CargarImpuestoActivo();
 
-            ddlEntidad.SelectedIndex = 0;
+            // UI
+            pnlFormulario.Visible = false;
+            pnlProducto.Visible = false;
+            pnlPlazo.Visible = false;
+            pnlTasaFiltros.Visible = false;
 
-            lblMensaje.Text = "Pantalla reiniciada.";
-            lblMensaje.CssClass = "text-info";
+            // DROPDOWNS SIN SELECCIÓN 🔥
+            ResetDropDown(ddlEntidad);
+            ResetDropDown(ddlProductoBuscar);
+            ResetDropDown(ddlPlazoBuscar);
+            ResetDropDown(ddlProductoTasa);
+            ResetDropDown(ddlPlazoTasa);
+
+            // MENSAJE
+            pnlMensaje.Visible = false;
+            lblMensaje.Text = "";
+
+            // ESTADO
+            ModoOperacion = "";
+            ModoNuevo = false;
+        }
+
+        private void ResetDropDown(DropDownList ddl)
+        {
+            ddl.ClearSelection();
+
+            if (ddl.Items.Count > 0)
+            {
+                ddl.SelectedIndex = -1; // 🔥 clave real
+            }
         }
 
         protected void btnAtras_Click(object sender, EventArgs e)
@@ -1152,9 +1288,5 @@ namespace ProyectoSistemaCotizacion.Vistas
             Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
         }
 
-        protected void btnRecargarMonedas_Click(object sender, EventArgs e)
-        {
-            CargarMonedas();
-        }
     }
 }

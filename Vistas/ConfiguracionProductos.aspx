@@ -29,7 +29,9 @@
 
 <h2 class="page-title">Configuración de Productos</h2>
 
-</div>
+</div> 
+
+ 
 
 <div class="card-header bg-primary text-white">
 Tabla Financiera
@@ -62,6 +64,14 @@ AutoGenerateColumns="true">
     ↻
 </asp:LinkButton>
 </div>
+
+      <asp:Panel ID="pnlMensaje" runat="server" Visible="false" CssClass="mt-3">
+    <asp:Label 
+        ID="lblMensaje" 
+        runat="server" 
+        CssClass="alert d-block text-center fw-bold">
+    </asp:Label>
+</asp:Panel>
 
 <div class="card-body">
 
@@ -336,7 +346,7 @@ runat="server"
 Text="Eliminar"
 CssClass="btn btn-danger"
 OnClick="btnEliminar_Click"
-OnClientClick="return confirm('¿Seguro que desea eliminar?');" />
+    />
 
 <asp:Button
 ID="btnNuevo"
@@ -345,16 +355,7 @@ Text="Nuevo"
 CssClass="btn btn-secondary"
 OnClick="btnNuevo_Click" />
 </div>
-
-
-<div class="mt-2">
-    <asp:Label 
-        ID="lblMensaje" 
-        runat="server" 
-        CssClass="fw-bold">
-    </asp:Label>
 </div>
-
 </div>
 
 <div class="card mt-3">
@@ -377,6 +378,7 @@ CssClass="form-control fw-bold text-success">
 </div>
 
 <div class="mb-3">
+    <asp:HiddenField ID="hfParametroId" runat="server" />
 
 <label>Seleccionar impuesto</label>
 
@@ -458,20 +460,6 @@ OnClick="btnNuevoImpuesto_Click" />
 </div>
 </div>
 
-</div
-    <asp:Button 
-ID="btnRecargarMonedas"
-runat="server"
-Style="display:none"
-OnClick="btnRecargarMonedas_Click" />
-
 </form>
-    <script>
-
-window.addEventListener("focus", function () {
-    __doPostBack('<%= btnRecargarMonedas.UniqueID %>', '');
-});
-
-    </script>
 </body>
 </html>

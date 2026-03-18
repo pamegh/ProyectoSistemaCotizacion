@@ -74,7 +74,6 @@ namespace ProyectoSistemaCotizacion.Vistas
 
 
 
-            //  Valida campos
 
             if (ddlProducto.SelectedIndex == 0 ||
                 ddlPlazo.SelectedIndex == 0 ||
@@ -86,7 +85,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                 return;
             }
 
-            // lee los datos
             decimal monto = Convert.ToDecimal(txtMonto.Text);
             decimal tasa = ObtenerTasaProducto();
 
@@ -114,9 +112,18 @@ namespace ProyectoSistemaCotizacion.Vistas
         private void CalcularCotizacion(decimal monto, decimal tasa, int plazo)
         {
             List<mdlDetalleCotizacion> detalleMensual = new List<mdlDetalleCotizacion>();
+            ctrParametros ctrParam = new ctrParametros();
+            mdlParametros impuestoActivo = ctrParam.ObtenerImpuestoActivo();
 
             decimal tasaMensual = tasa / 12 / 100;
-            decimal impuestoPorcentaje = 0.13m;
+            if (impuestoActivo == null || string.IsNullOrEmpty(impuestoActivo.Valor))
+            {
+                lblMensaje.Text = "No hay impuesto activo configurado.";
+                lblMensaje.Visible = true;
+                return;
+            }
+
+            decimal impuestoPorcentaje = Convert.ToDecimal(impuestoActivo.Valor) / 100;
 
             decimal totalInteresBruto = 0;
             decimal totalImpuesto = 0;
@@ -141,11 +148,9 @@ namespace ProyectoSistemaCotizacion.Vistas
                 });
             }
 
-            // 🔹 GridView detalle mensual
             gvDetalleCotizacion.DataSource = detalleMensual;
             gvDetalleCotizacion.DataBind();
 
-            // 🔹 GridView resumen vertical
             List<mdlDetalleFila> resumen = new List<mdlDetalleFila>();
 
             resumen.Add(new mdlDetalleFila { Campo = "Número", Valor = lblNumero.Text });
@@ -166,10 +171,10 @@ namespace ProyectoSistemaCotizacion.Vistas
             gvResumenCotizacion.DataSource = resumen;
             gvResumenCotizacion.DataBind();
 
-            // Guardar totales en ViewState
             ViewState["TotalBruto"] = totalInteresBruto;
             ViewState["TotalImpuesto"] = totalImpuesto;
             ViewState["TotalNeto"] = totalNeto;
+            ViewState["Impuesto"] = impuestoPorcentaje * 100;
 
         }
 
@@ -217,8 +222,8 @@ namespace ProyectoSistemaCotizacion.Vistas
             DataTable dt = ctrProd.ListarProductos();
 
             ddlProducto.DataSource = dt;
-            ddlProducto.DataTextField = "nombre";   // Carga Combobox con los campos "nombre y producto_id" desde bd
-            ddlProducto.DataValueField = "producto_id";   //producto_id   
+            ddlProducto.DataTextField = "nombre";
+            ddlProducto.DataValueField = "producto_id";
             ddlProducto.DataBind();
             ddlProducto.Items.Insert(0, new ListItem("-- Seleccione --", "0"));
         }
@@ -279,13 +284,14 @@ namespace ProyectoSistemaCotizacion.Vistas
             int plazoId = Convert.ToInt32(ddlPlazo.SelectedValue);
             decimal monto = Convert.ToDecimal(txtMonto.Text);
             decimal tasa = ObtenerTasaProducto();
-            decimal impuesto = 13; // %
+
+            decimal impuesto = Convert.ToDecimal(ViewState["Impuesto"]);
 
             decimal totalBruto = Convert.ToDecimal(ViewState["TotalBruto"]);
             decimal totalImpuesto = Convert.ToDecimal(ViewState["TotalImpuesto"]);
             decimal totalNeto = Convert.ToDecimal(ViewState["TotalNeto"]);
 
-            string creadoPor = "admin"; // luego lo sacamos de sesión
+            string creadoPor = "admin";
 
             string resultado = ctrCot.InsertarCotizacion(
                 numero,

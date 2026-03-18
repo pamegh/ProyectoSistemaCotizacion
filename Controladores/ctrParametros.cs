@@ -122,24 +122,31 @@ namespace ProyectoSistemaCotizacion.Controladores
         {
             mensaje = "";
 
-            using (SqlConnection conn = new SqlConnection(_SQLConnection))
-            using (SqlCommand cmd = new SqlCommand("sp_EliminarParametro", conn))
+            try
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@parametro_id", parametroId);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
-                conn.Open();
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(_SQLConnection))
+                using (SqlCommand cmd = new SqlCommand("sp_EliminarParametro", conn))
                 {
-                    if (dr.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@parametro_id", parametroId);
+                    cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
+
+                    conn.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        mensaje = dr["mensaje"].ToString();
-                        return Convert.ToInt32(dr["resultado"]) == 1;
+                        if (dr.Read())
+                        {
+                            mensaje = dr["mensaje"].ToString();
+                            return Convert.ToInt32(dr["resultado"]) == 1;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                mensaje = "Error: " + ex.Message;
             }
 
             return false;
