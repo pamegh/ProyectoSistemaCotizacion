@@ -4,78 +4,69 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Configuración de Monedas</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../Estilos/ConfiguracionMonedas.css?v=3" rel="stylesheet" type="text/css" />
 </head>
-
 <body>
 
 <form id="form1" runat="server">
 
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between mb-3">
-
-</div>
+<div class="container">
 
 <div class="card">
 
-<div class="card-header bg-dark text-white">
+<div class="card-header">
 Administración de Monedas
-    <div style="position:absolute; top:15px; right:20px;">
-
-
-        <asp:Label ID="lblMensaje"
-runat="server"
-CssClass="mt-3 fw-bold"></asp:Label>
-<asp:Button ID="btnCerrar"
+    <asp:Button ID="btnCerrar"
 runat="server"
 Text="Atrás"
-CssClass="btn btn-danger btn-sm"
+CssClass="btn-close"
 OnClientClick="window.close(); return false;" />
-
-</div>
 </div>
 
 <div class="card-body">
 
-<div class="mb-3">
+<asp:Label ID="lblMensaje"
+runat="server"
+CssClass="mensaje"
+Visible="false"></asp:Label>
+
+<div class="form-group">
 <label>Moneda</label>
 
 <asp:DropDownList ID="ddlMoneda"
 runat="server"
-CssClass="form-control"
+CssClass="form-select"
 AutoPostBack="true"
 OnSelectedIndexChanged="ddlMoneda_SelectedIndexChanged">
 </asp:DropDownList>
 
 </div>
 
-<div class="mb-3">
+<div class="form-group">
 <label>Código</label>
 
 <asp:TextBox ID="txtCodigo"
 runat="server"
-CssClass="form-control"/>
+CssClass="form-input"/>
 </div>
 
-<div class="mb-3">
+<div class="form-group">
 <label>Nombre</label>
 
 <asp:TextBox ID="txtNombre"
 runat="server"
-CssClass="form-control"/>
+CssClass="form-input"/>
 </div>
 
-<div class="mb-3">
+<div class="form-group">
 <label>Símbolo</label>
 
 <asp:TextBox ID="txtSimbolo"
 runat="server"
-CssClass="form-control"/>
+CssClass="form-input"/>
 </div>
 
-<div class="d-grid gap-2">
+<div class="button-group">
 
 <asp:Button ID="btnGuardar"
 runat="server"
@@ -107,4 +98,4 @@ OnClick="btnNuevo_Click"/>
 </form>
 
 </body>
-</html>
+</html></html>
