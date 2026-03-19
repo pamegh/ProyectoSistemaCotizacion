@@ -11,7 +11,6 @@
 <body>
     <form id="form1" runat="server">
         <div class="page-wrapper">
-        <!-- Header -->
         <header class="header">
             <div class="container">
                 <div class="header-content">
@@ -41,11 +40,9 @@
             </div>
         </header>
 
-        <!-- Login Container -->
         <div class="login-wrapper">
             <div class="login-container">
                 <div class="login-card">
-                    <!-- Icono de usuario -->
                     <div class="login-icon">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M15 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -56,10 +53,8 @@
                     <h1 class="login-title">Iniciar Sesión</h1>
                     <p class="login-subtitle">Ingresa tus credenciales para acceder al sistema</p>
 
-                    <!-- Mensaje de error/éxito -->
                     <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje" Visible="false"></asp:Label>
 
-                    <!-- Campo de Usuario -->
                     <div class="form-group">
                         <label for="txtUsuario" class="form-label">
                             <svg class="label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -77,7 +72,6 @@
                         </asp:RequiredFieldValidator>
                     </div>
 
-                    <!-- Campo de Contraseña -->
                     <div class="form-group">
                         <label for="txtContrasena" class="form-label">
                             <svg class="label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -95,13 +89,7 @@
                         </asp:RequiredFieldValidator>
                     </div>
 
-                    <!-- Recordar sesión -->
-                    <div class="form-group-checkbox">
-                        <asp:CheckBox ID="chkRecordar" runat="server" CssClass="form-checkbox" />
-                        <label for="chkRecordar" class="checkbox-label">Recordar mi sesión</label>
-                    </div>
 
-                    <!-- Botón de login -->
                     <asp:Button ID="btnIniciarSesion" runat="server" Text="Iniciar Sesión" CssClass="btn btn-primary btn-block" OnClick="btnIniciarSesion_Click" />
 
                    <asp:HyperLink 
@@ -113,7 +101,6 @@
 </asp:HyperLink>
 
 
-                    <!-- Usuarios de prueba -->
                     <div class="test-users">
                         <p class="test-title">👤 Usuarios de prueba:</p>
                         <div class="test-user-grid">

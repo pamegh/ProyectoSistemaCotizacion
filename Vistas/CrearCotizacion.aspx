@@ -16,11 +16,21 @@
 
 <div class="pagina-cotizacion">
 
-    <!-- IZQUIERDA (RESULTADOS) -->
     <div class="col-resultados">
 
-        <!-- Resumen -->
         <div class="card">
+            <div class="page-header">
+
+    <asp:Button 
+        ID="btnAtras"
+        runat="server"
+        Text="←"
+        CssClass="btn-back-icon"
+        OnClick="btnVolver_Click" />
+
+    <h2 class="page-title">Crear Cotización</h2>
+
+</div>
             <div class="card-header card-header-primary">
                 Detalle Cotización
             </div>
@@ -41,7 +51,6 @@
             </div>
         </div>
 
-        <!-- Detalle mensual -->
         <div class="card">
             <div class="card-header card-header-dark">
                 Detalle Mensual
@@ -55,9 +64,9 @@
                     CssClass="tabla">
                     <Columns>
                         <asp:BoundField DataField="Mes"          HeaderText="Mes" />
-                        <asp:BoundField DataField="InteresBruto" HeaderText="Interés Bruto"  DataFormatString="{0:C}" />
-                        <asp:BoundField DataField="Impuesto"     HeaderText="Impuesto"        DataFormatString="{0:C}" />
-                        <asp:BoundField DataField="InteresNeto"  HeaderText="Interés Neto"    DataFormatString="{0:C}" />
+                        <asp:BoundField DataField="InteresBrutoFmt" HeaderText="Interés Bruto" />
+<asp:BoundField DataField="ImpuestoFmt" HeaderText="Impuesto" />
+<asp:BoundField DataField="InteresNetoFmt" HeaderText="Interés Neto" />
                     </Columns>
                 </asp:GridView>
 
@@ -66,7 +75,6 @@
 
     </div>
 
-    <!-- DERECHA (FORMULARIO) -->
     <div class="col-formulario">
 
         <div class="card">
@@ -75,12 +83,12 @@
             </div>
             <div class="card-body">
 
-                <!-- MENSAJE -->
                 <asp:Label ID="lblMensaje" runat="server" Visible="false" CssClass="mensaje mensaje-error"></asp:Label>
 
-                <!-- Buscar usuario -->
-                <div class="form-group">
-                    <label class="form-label">Buscar usuario</label>
+                <div class="form-group" id="divBuscarUsuario" runat="server">
+                    <label id="lblTituloUsuario" runat="server" class="form-label">
+    Buscar usuario
+</label>
 
                     <asp:TextBox 
                         ID="txtBuscarUsuario" 
@@ -110,31 +118,41 @@
                     </script>
                 </div>
 
-                <!-- Producto -->
                 <div class="form-group">
                     <label class="form-label">Producto</label>
-                    <asp:DropDownList ID="ddlProducto" runat="server" CssClass="form-select"></asp:DropDownList>
+                    <asp:DropDownList 
+    ID="ddlProducto" 
+    runat="server" 
+    CssClass="form-select"
+    onchange="limpiarMensaje()">
+</asp:DropDownList>
                 </div>
 
-                <!-- Plazo -->
                 <div class="form-group">
                     <label class="form-label">Plazo</label>
-                    <asp:DropDownList ID="ddlPlazo" runat="server" CssClass="form-select"></asp:DropDownList>
+                    <asp:DropDownList 
+    ID="ddlPlazo" 
+    runat="server" 
+    CssClass="form-select"
+    onchange="limpiarMensaje()">
+</asp:DropDownList>
                 </div>
 
-                <!-- Monto -->
                 <div class="form-group">
                     <label class="form-label">Monto a invertir</label>
-                    <asp:TextBox ID="txtMonto" runat="server" CssClass="form-input"></asp:TextBox>
+                   <asp:TextBox 
+    ID="txtMonto" 
+    runat="server" 
+    CssClass="form-input"
+    oninput="limpiarMensaje()">
+</asp:TextBox>
                 </div>
 
-                <!-- Botón calcular -->
                 <asp:Button ID="btnCalcular" runat="server"
                     Text="Calcular Cotización"
                     CssClass="btn btn-primary"
                     OnClick="btnCalcular_Click" />
 
-                <!-- Resultado -->
                 <asp:Panel ID="pnlResultado" runat="server" CssClass="panel-resultado">
                     <asp:Label ID="lblTasa"         runat="server"></asp:Label><br />
                     <asp:Label ID="lblInteresBruto" runat="server"></asp:Label><br />
@@ -142,7 +160,6 @@
                     <asp:Label ID="lblInteresNeto"  runat="server"></asp:Label>
                 </asp:Panel>
 
-                <!-- Guardar -->
                 <asp:Button 
                     ID="btnGuardar" 
                     runat="server" 
@@ -150,7 +167,6 @@
                     CssClass="btn btn-primary"
                     OnClick="btnGuardarCotizacion_Click" />
 
-                <!-- Volver -->
                 <asp:Button 
                     ID="btnVolver" 
                     runat="server" 
@@ -165,12 +181,19 @@
 
 </div>
 
-<!-- Labels ocultos (NO se tocan) -->
 <asp:Label ID="lblNumero"   runat="server" Visible="false" />
 <asp:Label ID="lblCliente"  runat="server" Visible="false" />
 <asp:Label ID="lblTelefono" runat="server" Visible="false" />
 <asp:Label ID="lblCorreo"   runat="server" Visible="false" />
 
 </form>
+    <script>
+        function limpiarMensaje() {
+            var lbl = document.getElementById('<%= lblMensaje.ClientID %>');
+            if (lbl) {
+                lbl.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>

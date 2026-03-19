@@ -37,7 +37,7 @@
         <aside class="sidebar">
             <ul class="menu">
                 <li>
-                    <a href="RealizarCotizacion.aspx">
+                    <a href="CrearCotizacion.aspx">
                         Realizar Cotización
                     </a>
                 </li>

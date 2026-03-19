@@ -239,7 +239,8 @@ body {
 
 /* Estilos específicos para inputs de impuesto */
 #txtNombreImpuesto,
-#txtPorcentajeImpuesto {
+#txtPorcentajeImpuesto,
+#txtClaveImpuesto {
     width: 100%;
     padding: 10px 14px;
     border: 2px solid #D8D8C0;
@@ -252,7 +253,8 @@ body {
 }
 
     #txtNombreImpuesto:focus,
-    #txtPorcentajeImpuesto:focus {
+    #txtPorcentajeImpuesto:focus,
+    #txtClaveImpuesto:focus {
         outline: none;
         border-color: #1693A5;
         box-shadow: 0 0 0 3px rgba(22, 147, 165, 0.1);

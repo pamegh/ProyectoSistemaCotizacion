@@ -28,9 +28,13 @@ namespace SistemaCotizacionAPF.Vistas
             {
                 Session["Usuario"] = datos;
 
+                Session["UsuarioId"] = datos.UsuarioId;
+                Session["Nombre"] = datos.NombreCompleto;
+                Session["Identificacion"] = datos.Identificacion;
+                Session["Rol"] = datos.Rol;
+
                 MostrarMensaje("¡Bienvenido " + datos.NombreCompleto + "!", "exito");
 
-                // El rol en la BD es "ADMIN"
                 if (datos.Rol != null && datos.Rol.ToUpper() == "ADMIN")
                 {
                     Response.Redirect("~/Vistas/DashboardAdministrador.aspx");

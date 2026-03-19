@@ -89,6 +89,8 @@
     <Content Include="Vistas\DashboardAdministrador.aspx" />
     <Content Include="Vistas\DashboardPrincipal.aspx" />
     <Content Include="Vistas\DashboardUsuario.aspx" />
+    <Content Include="Vistas\DetalleCotizacion.aspx" />
+    <Content Include="Vistas\HistorialCotizaciones.aspx" />
     <Content Include="Vistas\Login.aspx" />
     <Content Include="Vistas\MantenimientoUsuarios.aspx" />
     <Content Include="Vistas\MiCuenta.aspx" />
@@ -166,6 +168,20 @@
     </Compile>
     <Compile Include="Vistas\DashboardUsuario.aspx.designer.cs">
       <DependentUpon>DashboardUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\DetalleCotizacion.aspx.cs">
+      <DependentUpon>DetalleCotizacion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\DetalleCotizacion.aspx.designer.cs">
+      <DependentUpon>DetalleCotizacion.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\HistorialCotizaciones.aspx.cs">
+      <DependentUpon>HistorialCotizaciones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vistas\HistorialCotizaciones.aspx.designer.cs">
+      <DependentUpon>HistorialCotizaciones.aspx</DependentUpon>
     </Compile>
     <Compile Include="Vistas\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>

@@ -21,7 +21,7 @@
 <asp:Button 
     ID="btnAtras"
     runat="server"
-    Text="Volver"
+    Text="←"
     CssClass="btn-back-icon"
     OnClick="btnAtras_Click" />
 

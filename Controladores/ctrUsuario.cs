@@ -159,12 +159,6 @@ namespace ProyectoSistemaCotizacion.Controladores
             return usuario;
         }
 
-        /// <summary>
-        /// Actualiza los datos de un usuario existente.
-        /// La validacion de longitud y formato de la identificacion NO se hace aqui:
-        /// se realiza dinamicamente en Registro.aspx.cs y MiCuenta.aspx.cs
-        /// segun el tipo seleccionado, antes de llamar a este metodo.
-        /// </summary>
         public bool ActualizarUsuario(mdlUsuario datos, string contrasenaActual = null, string contrasenaNueva = null)
         {
             if (datos == null)
@@ -174,21 +168,18 @@ namespace ProyectoSistemaCotizacion.Controladores
                 return false;
             }
 
-            // Tipo de identificacion
             if (datos.TipoIdentificacionId <= 0)
             {
                 datos.Mensaje = "Debe seleccionar un tipo de identificación.";
                 return false;
             }
 
-            // Identificacion no vacia (longitud/formato ya validados en la vista)
             if (string.IsNullOrWhiteSpace(datos.Identificacion))
             {
                 datos.Mensaje = "La identificación es requerida.";
                 return false;
             }
 
-            // Nombre completo
             if (string.IsNullOrWhiteSpace(datos.NombreCompleto))
             {
                 datos.Mensaje = "El nombre completo es requerido.";
@@ -200,7 +191,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                 return false;
             }
 
-            // Telefono obligatorio con formato CR (8 digitos, inicia con 2,4,6,7 u 8)
             if (string.IsNullOrWhiteSpace(datos.Telefono))
             {
                 datos.Mensaje = "El teléfono es requerido.";
@@ -213,7 +203,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                 return false;
             }
 
-            // Correo
             if (string.IsNullOrWhiteSpace(datos.Correo))
             {
                 datos.Mensaje = "El correo es requerido.";
@@ -225,7 +214,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                 return false;
             }
 
-            // Contrasena nueva si se esta cambiando
             if (!string.IsNullOrEmpty(contrasenaActual) && !string.IsNullOrEmpty(contrasenaNueva))
             {
                 if (contrasenaNueva.Length < 6)

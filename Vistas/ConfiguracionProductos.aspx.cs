@@ -146,6 +146,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             else if (ddlEntidad.SelectedValue == "Tasa")
             {
                 pnlTasaFiltros.Visible = true;
+                ddlProductoTasa.Items.Clear();
 
                 ddlProductoTasa.DataSource = ctrProducto.ListarProductos();
                 ddlProductoTasa.DataTextField = "nombre";
@@ -1027,6 +1028,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             else if (ddlEntidad.SelectedValue == "Tasa")
             {
                 pnlTasaFiltros.Visible = true;
+                ddlProductoTasa.Items.Clear();
 
                 ddlProductoTasa.DataSource = ctrProducto.ListarProductos();
                 ddlProductoTasa.DataTextField = "nombre";

@@ -15,11 +15,20 @@ body {
     background-color: #D8D8C0;
 }
 
-/* ── HEADER ─────────────────────────────────── */
 .header {
-    background-color: #FFFFFF;
-    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* 🔥 lo manda a la izquierda */
+    gap: 15px;
+    padding: 20px 30px;
     border-bottom: 3px solid #1693A5;
+}
+
+.titulo-header {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1693A5;
+    margin: 0;
 }
 
 .header-container {
@@ -201,8 +210,24 @@ body {
     font-size: 0.85rem;
     border: 1px solid #f48fb1;
 }
+.btn-back-icon {
+    background: transparent;
+    color: #1693A5;
+    border: 2px solid #1693A5;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-/* ── BOTONES DE ACCIÓN ──────────────────────── */
+    .btn-back-icon:hover {
+        background-color: #1693A5;
+        color: #FFFFFF;
+        transform: translateY(-2px);
+    }
+
+
 .btn-action {
     color: #1693A5;
     font-size: 18px;

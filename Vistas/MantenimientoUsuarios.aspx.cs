@@ -252,5 +252,10 @@ namespace ProyectoSistemaCotizacion.Vistas
             lblMensaje.CssClass = esExito ? "mensaje mensaje-exito" : "mensaje mensaje-error";
             lblMensaje.Visible = true;
         }
+
+        protected void btnInicio_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("DashboardAdministrador.aspx");
+        }
     }
 }

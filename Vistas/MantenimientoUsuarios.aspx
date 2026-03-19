@@ -14,10 +14,16 @@
 
     <!-- HEADER -->
     <div class="header">
+
+         <asp:Button 
+        ID="btnInicio"
+        runat="server"
+        Text="← Inicio"
+        CssClass="btn-back-icon"
+        OnClick="btnInicio_Click" />
         <div class="header-container">
             <div class="logo">Sistema de Cotizaciones</div>
             <div class="nav">
-                <a href="DashboardAdministrador.aspx">Inicio</a>
             </div>
         </div>
     </div>

@@ -31,6 +31,27 @@ namespace ProyectoSistemaCotizacion.Controladores
 
             return dt;
         }
+        public string ObtenerSimboloMoneda(int productoId)
+        {
+            string simbolo = "";
+
+            using (SqlConnection conn = new SqlConnection(_SQLConnection))
+            using (SqlCommand cmd = new SqlCommand("sp_ObtenerMonedaPorProducto", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@producto_id", productoId);
+
+                conn.Open();
+
+                var result = cmd.ExecuteScalar();
+
+                if (result != null)
+                    simbolo = result.ToString();
+            }
+
+            return simbolo;
+        }
+
 
         public bool InsertarMoneda(mdlMoneda datos)
         {

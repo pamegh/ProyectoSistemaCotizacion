@@ -8,10 +8,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-
-
-
-
 namespace ProyectoSistemaCotizacion.Vistas
 {
     public partial class CrearCotizacion : System.Web.UI.Page
@@ -21,20 +17,37 @@ namespace ProyectoSistemaCotizacion.Vistas
         ctrTasa ctrTasa = new ctrTasa();
         ctrUsuario ctrUsuario = new ctrUsuario();
         ctrCotizacion ctrCot = new ctrCotizacion();
-
-
+        ctrMoneda ctrMoneda = new ctrMoneda();
 
         protected void Page_Load(object sender, EventArgs e)
         {
-           // if (Session["Usuario"] == null)
-             //   Response.Redirect("Login.aspx");
 
             if (!IsPostBack)
             {
                 CargarProductos();
                 CargarPlazos();
-            }
 
+                if (Session["UsuarioId"] != null)
+                {
+                    int usuarioId = Convert.ToInt32(Session["UsuarioId"]);
+                    string rol = Session["Rol"].ToString();
+
+                    if (rol != "ADMIN")
+                    {
+                        string nombre = Session["Nombre"].ToString();
+                        string id = Session["Identificacion"].ToString();
+
+                        txtBuscarUsuario.Text = $"({id}) {nombre}";
+                        hfUsuarioId.Value = usuarioId.ToString();
+
+                        txtBuscarUsuario.ReadOnly = true;
+
+                        AutoCompleteExtender1.Enabled = false;
+
+                        lblTituloUsuario.InnerText = "Usuario";
+                    }
+                }
+            }
         }
 
         protected void btnSalir_Click(object sender, EventArgs e)
@@ -43,15 +56,14 @@ namespace ProyectoSistemaCotizacion.Vistas
             Response.Redirect("Login.aspx");
         }
 
-
-
-       
-
     protected void btnCalcular_Click(object sender, EventArgs e)
         {
+            lblMensaje.Text = "";
+            lblMensaje.Visible = false;
             lblNumero.Text = ctrCot.ObtenerSiguienteNumeroCotizacion();
 
             int usuarioId;
+        
 
             if (!int.TryParse(hfUsuarioId.Value, out usuarioId))
             {
@@ -98,14 +110,11 @@ namespace ProyectoSistemaCotizacion.Vistas
                 return;
             }
 
-            int plazo = Convert.ToInt32(ddlPlazo.SelectedValue);
+            int plazo = int.Parse(ddlPlazo.SelectedItem.Text.Split(' ')[0]);
 
 
 
             CalcularCotizacion(monto, tasa, plazo);
-
-
-
 
         }
 
@@ -114,6 +123,8 @@ namespace ProyectoSistemaCotizacion.Vistas
             List<mdlDetalleCotizacion> detalleMensual = new List<mdlDetalleCotizacion>();
             ctrParametros ctrParam = new ctrParametros();
             mdlParametros impuestoActivo = ctrParam.ObtenerImpuestoActivo();
+            int productoId = Convert.ToInt32(ddlProducto.SelectedValue);
+            string simbolo = ctrMoneda.ObtenerSimboloMoneda(productoId);
 
             decimal tasaMensual = tasa / 12 / 100;
             if (impuestoActivo == null || string.IsNullOrEmpty(impuestoActivo.Valor))
@@ -144,7 +155,8 @@ namespace ProyectoSistemaCotizacion.Vistas
                     Mes = i,
                     InteresBruto = interesBruto,
                     Impuesto = impuestoMes,
-                    InteresNeto = interesNeto
+                    InteresNeto = interesNeto,
+                    Simbolo = simbolo
                 });
             }
 
@@ -159,12 +171,12 @@ namespace ProyectoSistemaCotizacion.Vistas
             resumen.Add(new mdlDetalleFila { Campo = "Teléfono", Valor = lblTelefono.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Correo", Valor = lblCorreo.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Producto", Valor = ddlProducto.SelectedItem.Text });
-            resumen.Add(new mdlDetalleFila { Campo = "Monto", Valor = monto.ToString("C") });
-            resumen.Add(new mdlDetalleFila { Campo = "Plazo", Valor = plazo.ToString() });
+            resumen.Add(new mdlDetalleFila { Campo = "Monto", Valor = $"{simbolo} {monto:N2}" });
+            resumen.Add(new mdlDetalleFila { Campo = "Plazo", Valor = ddlPlazo.SelectedItem.Text });
             resumen.Add(new mdlDetalleFila { Campo = "", Valor = "" });
             resumen.Add(new mdlDetalleFila { Campo = "Tasa", Valor = tasa.ToString("N2") + " %" });
             resumen.Add(new mdlDetalleFila { Campo = "Impuesto", Valor = (impuestoPorcentaje * 100) + " %" });
-            resumen.Add(new mdlDetalleFila { Campo = "Interés Neto", Valor = totalNeto.ToString("C") });
+            resumen.Add(new mdlDetalleFila { Campo = "Interés Neto", Valor = $"{simbolo} {totalNeto:N2}" });
 
             
 
@@ -205,17 +217,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             return tasaObj.TasaAnual;
         }
 
-        private decimal ObtenerTasa()
-        {
-            int prodctoId = Convert.ToInt32(ddlProducto.SelectedValue);
-            int plazoId = Convert.ToInt32(ddlPlazo.SelectedValue);
-
-            ctrTasa controlador = new ctrTasa();
-            mdlTasa tasa = controlador.ObtenerTasaPorProductoYPlazo(prodctoId, plazoId);
-
-            return tasa.TasaAnual;
-        }
-
         private void CargarProductos()
         {
             ctrProducto ctrProd = new ctrProducto();
@@ -234,7 +235,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             var dt = controlador.ListarPlazos();
 
             ddlPlazo.DataSource = dt;
-            ddlPlazo.DataTextField = "meses";
+            ddlPlazo.DataTextField = "descripcion";
             ddlPlazo.DataValueField = "plazo_id";
             ddlPlazo.DataBind();
 
@@ -248,7 +249,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             lblMensaje.Text = "Buscando usuario: " + nombre;
             lblMensaje.Visible = true;
         }
-
         [System.Web.Services.WebMethod]
         [System.Web.Script.Services.ScriptMethod]
         public static List<string> BuscarUsuariosAjax(string prefixText, int count)
@@ -293,28 +293,94 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             string creadoPor = "admin";
 
-            string resultado = ctrCot.InsertarCotizacion(
-                numero,
-                usuarioId,
-                productoId,
-                plazoId,
-                monto,
-                tasa,
-                impuesto,
-                totalBruto,
-                totalImpuesto,
-                totalNeto,
-                creadoPor
-            );
+            int cotizacionId = ctrCot.InsertarCotizacion(
+    numero,
+    usuarioId,
+    productoId,
+    plazoId,
+    monto,
+    tasa,
+    impuesto,
+    totalBruto,
+    totalImpuesto,
+    totalNeto,
+    creadoPor
+);
 
-            lblMensaje.Text = "Cotización guardada correctamente: " + resultado;
+            GuardarDetalleCotizacion(cotizacionId);
+
+            lblMensaje.Text = "Cotización guardada correctamente: " + cotizacionId;
+            lblMensaje.CssClass = "mensaje mensaje-exito";
             lblMensaje.Visible = true;
+
+            LimpiarFormulario();
+        }
+
+        private void GuardarDetalleCotizacion(int cotizacionId)
+        {
+            foreach (GridViewRow row in gvDetalleCotizacion.Rows)
+            {
+                int mes = Convert.ToInt32(row.Cells[0].Text);
+                decimal interesBruto = Convert.ToDecimal(row.Cells[1].Text.Replace("$", "").Replace("C", "").Trim());
+                decimal impuesto = Convert.ToDecimal(row.Cells[2].Text.Replace("$", "").Replace("C", "").Trim());
+                decimal interesNeto = Convert.ToDecimal(row.Cells[3].Text.Replace("$", "").Replace("C", "").Trim());
+
+                ctrCot.InsertarDetalleCotizacion(
+                    cotizacionId,
+                    mes,
+                    interesBruto,
+                    impuesto,
+                    interesNeto
+                );
+            }
+        }
+
+        private void LimpiarFormulario()
+        {
+            txtBuscarUsuario.Text = "";
+            txtMonto.Text = "";
+
+            hfUsuarioId.Value = "";
+
+            lblCliente.Text = "";
+            lblTelefono.Text = "";
+            lblCorreo.Text = "";
+            lblNumero.Text = "";
+
+            ddlProducto.SelectedIndex = 0;
+            ddlPlazo.SelectedIndex = 0;
+
+            gvResumenCotizacion.DataSource = null;
+            gvResumenCotizacion.DataBind();
+
+            gvDetalleCotizacion.DataSource = null;
+            gvDetalleCotizacion.DataBind();
+
+            ViewState["TotalBruto"] = null;
+            ViewState["TotalImpuesto"] = null;
+            ViewState["TotalNeto"] = null;
+            ViewState["Impuesto"] = null;
         }
 
         protected void btnVolver_Click(object sender, EventArgs e)
         {
-            Response.Redirect("DashboardAdministrador.aspx");
-        }
+            if (Session["Rol"] != null)
+            {
+                string rol = Session["Rol"].ToString().ToUpper();
 
+                if (rol == "ADMIN")
+                {
+                    Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
+                }
+                else
+                {
+                    Response.Redirect("~/Vistas/DashboardUsuario.aspx");
+                }
+            }
+            else
+            {
+                Response.Redirect("~/Login.aspx");
+            }
+        }
     }
 }

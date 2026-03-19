@@ -15,6 +15,40 @@ body {
     color: #000000;
 }
 
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.input-readonly {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.btn-back-icon {
+    background: transparent;
+    color: #1693A5;
+    border: 2px solid #1693A5;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-back-icon:hover {
+        background-color: #1693A5;
+        color: #FFFFFF;
+        transform: translateY(-2px);
+    }
+
 /* ── LAYOUT PRINCIPAL ───────────────────────── */
 .pagina-cotizacion {
     display: flex;

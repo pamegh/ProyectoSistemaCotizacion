@@ -39,5 +39,11 @@ namespace ProyectoSistemaCotizacion.Modelos
         public DateTime? FechaModificacion { get; set; }
 
         public string ModificadoPor { get; set; }
+
+        public string NombreCliente { get; set; }
+        public string Telefono { get; set; }
+        public string Correo { get; set; }
+        public string NombreProducto { get; set; }
+        public string PlazoDescripcion { get; set; }
     }
 }
