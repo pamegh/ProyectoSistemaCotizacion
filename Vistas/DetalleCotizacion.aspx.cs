@@ -56,7 +56,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             var detalle = ctrCot.ObtenerDetalleCotizacion(cotizacionId);
 
-            // 🔥 AQUÍ VA
+            
             foreach (var item in detalle)
             {
                 item.Simbolo = simbolo;
