@@ -32,20 +32,16 @@ namespace ProyectoSistemaCotizacion.Vistas
                     int usuarioId = Convert.ToInt32(Session["UsuarioId"]);
                     string rol = Session["Rol"].ToString();
 
-                    if (rol != "ADMIN")
-                    {
-                        string nombre = Session["Nombre"].ToString();
-                        string id = Session["Identificacion"].ToString();
+                    string nombre = Session["Nombre"].ToString();
+                    string id = Session["Identificacion"].ToString();
 
-                        txtBuscarUsuario.Text = $"({id}) {nombre}";
-                        hfUsuarioId.Value = usuarioId.ToString();
+                    txtBuscarUsuario.Text = $"({id}) {nombre}";
+                    hfUsuarioId.Value = usuarioId.ToString();
 
-                        txtBuscarUsuario.ReadOnly = true;
+                    txtBuscarUsuario.ReadOnly = true;
+                    AutoCompleteExtender1.Enabled = false;
 
-                        AutoCompleteExtender1.Enabled = false;
-
-                        lblTituloUsuario.InnerText = "Usuario";
-                    }
+                    lblTituloUsuario.InnerText = "Usuario";
                 }
             }
         }
@@ -115,6 +111,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
 
             CalcularCotizacion(monto, tasa, plazo);
+            GuardarCotizacion();
 
         }
 
@@ -166,7 +163,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             List<mdlDetalleFila> resumen = new List<mdlDetalleFila>();
 
             resumen.Add(new mdlDetalleFila { Campo = "Número", Valor = lblNumero.Text });
-            lblNumero.Text = ctrCot.ObtenerSiguienteNumeroCotizacion();
             resumen.Add(new mdlDetalleFila { Campo = "Cliente", Valor = lblCliente.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Teléfono", Valor = lblTelefono.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Correo", Valor = lblCorreo.Text });
@@ -187,6 +183,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             ViewState["TotalImpuesto"] = totalImpuesto;
             ViewState["TotalNeto"] = totalNeto;
             ViewState["Impuesto"] = impuestoPorcentaje * 100;
+
 
         }
 
@@ -271,11 +268,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             return resultado;
         }
 
-        protected void btnGuardarCotizacion_Click(object sender, EventArgs e)
-        {
-            GuardarCotizacion();
-        }
-
         private void GuardarCotizacion()
         {
             string numero = lblNumero.Text;
@@ -313,7 +305,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             lblMensaje.CssClass = "mensaje mensaje-exito";
             lblMensaje.Visible = true;
 
-            LimpiarFormulario();
         }
 
         private void GuardarDetalleCotizacion(int cotizacionId)

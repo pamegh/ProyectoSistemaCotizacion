@@ -518,8 +518,24 @@ namespace ProyectoSistemaCotizacion.Vistas
                         int plazoId = Convert.ToInt32(
                             ((HiddenField)row.FindControl("hfPlazoId")).Value);
 
-                        decimal tasa = Convert.ToDecimal(
-                            ((TextBox)row.FindControl("txtTasa")).Text);
+                        decimal tasa;
+                        bool esNumero = decimal.TryParse(
+                            ((TextBox)row.FindControl("txtTasa")).Text.Replace(",", "."),
+                            System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            out tasa);
+
+                        if (!esNumero)
+                        {
+                            MostrarMensaje("Ingrese una tasa válida.", "error");
+                            return;
+                        }
+
+                        if (tasa <= 0 || tasa > 99.9999m)
+                        {
+                            MostrarMensaje("La tasa debe ser mayor a 0 y menor o igual a 99.9999.", "error");
+                            return;
+                        }
 
                         mdlTasa tasaExistente =
                             ctrTasa.ObtenerTasaPorProductoYPlazo(productoId, plazoId);
@@ -538,6 +554,11 @@ namespace ProyectoSistemaCotizacion.Vistas
                         }
                         else
                         {
+                            if (tasaObj.TasaAnual > 99.9999m)
+                            {
+                                MostrarMensaje("ERROR REAL: tasa enviada es " + tasaObj.TasaAnual, "error");
+                                return;
+                            }
                             ctrTasa.InsertarTasa(tasaObj);
                         }
                     }
@@ -565,8 +586,22 @@ namespace ProyectoSistemaCotizacion.Vistas
                         int plazoId = Convert.ToInt32(
                             ((HiddenField)row.FindControl("hfPlazoId")).Value);
 
-                        decimal tasa = Convert.ToDecimal(
-                            ((TextBox)row.FindControl("txtTasa")).Text);
+                        decimal tasa;
+                        bool esNumero = decimal.TryParse(
+                            ((TextBox)row.FindControl("txtTasa")).Text,
+                            out tasa);
+
+                        if (!esNumero)
+                        {
+                            MostrarMensaje("Ingrese una tasa válida.", "error");
+                            return;
+                        }
+
+                        if (tasa <= 0 || tasa > 99.9999m)
+                        {
+                            MostrarMensaje("La tasa debe ser mayor a 0 y menor o igual a 99.9999.", "error");
+                            return;
+                        }
 
                         mdlTasa tasaExistente =
                             ctrTasa.ObtenerTasaPorProductoYPlazo(productoId, plazoId);
@@ -663,8 +698,22 @@ namespace ProyectoSistemaCotizacion.Vistas
                         int productoId = Convert.ToInt32(
                             ((HiddenField)row.FindControl("hfProductoId")).Value);
 
-                        decimal tasa = Convert.ToDecimal(
-                            ((TextBox)row.FindControl("txtTasa")).Text);
+                        decimal tasa;
+                        bool esNumero = decimal.TryParse(
+                            ((TextBox)row.FindControl("txtTasa")).Text,
+                            out tasa);
+
+                        if (!esNumero)
+                        {
+                            MostrarMensaje("Ingrese una tasa válida.", "error");
+                            return;
+                        }
+
+                        if (tasa <= 0 || tasa > 99.9999m)
+                        {
+                            MostrarMensaje("La tasa debe ser mayor a 0 y menor o igual a 99.9999.", "error");
+                            return;
+                        }
 
                         mdlTasa tasaObj = new mdlTasa
                         {
@@ -676,7 +725,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                         ctrTasa.InsertarTasa(tasaObj);
                     }
 
-                    MostrarMensaje("Plazo creado correctamente.", "success");
+                    MostrarMensaje("Plazo creado correctamente.", "success"); ;
                 }
                 else
                 {
@@ -696,8 +745,22 @@ namespace ProyectoSistemaCotizacion.Vistas
                         int productoId = Convert.ToInt32(
                             ((HiddenField)row.FindControl("hfProductoId")).Value);
 
-                        decimal tasa = Convert.ToDecimal(
-                            ((TextBox)row.FindControl("txtTasa")).Text);
+                        decimal tasa;
+                        bool esNumero = decimal.TryParse(
+                            ((TextBox)row.FindControl("txtTasa")).Text,
+                            out tasa);
+
+                        if (!esNumero)
+                        {
+                            MostrarMensaje("Ingrese una tasa válida.", "error");
+                            return;
+                        }
+
+                        if (tasa <= 0 || tasa > 99.9999m)
+                        {
+                            MostrarMensaje("La tasa debe ser mayor a 0 y menor o igual a 99.9999.", "error");
+                            return;
+                        }
 
                         mdlTasa tasaExistente =
                             ctrTasa.ObtenerTasaPorProductoYPlazo(productoId, plazoId);
@@ -746,9 +809,9 @@ namespace ProyectoSistemaCotizacion.Vistas
                     return;
                 }
 
-                if (tasaValor <= 0)
+                if (tasaValor <= 0 || tasaValor > 99.9999m)
                 {
-                    MostrarMensaje("La tasa debe ser mayor a 0.", "error");
+                    MostrarMensaje("La tasa debe ser mayor a 0 y menor o igual a 99.9999.", "error");
                     return;
                 }
 

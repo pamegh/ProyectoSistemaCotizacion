@@ -153,20 +153,6 @@
                     CssClass="btn btn-primary"
                     OnClick="btnCalcular_Click" />
 
-                <asp:Panel ID="pnlResultado" runat="server" CssClass="panel-resultado">
-                    <asp:Label ID="lblTasa"         runat="server"></asp:Label><br />
-                    <asp:Label ID="lblInteresBruto" runat="server"></asp:Label><br />
-                    <asp:Label ID="lblImpuesto"     runat="server"></asp:Label><br />
-                    <asp:Label ID="lblInteresNeto"  runat="server"></asp:Label>
-                </asp:Panel>
-
-                <asp:Button 
-                    ID="btnGuardar" 
-                    runat="server" 
-                    Text="Guardar Cotización"
-                    CssClass="btn btn-primary"
-                    OnClick="btnGuardarCotizacion_Click" />
-
                 <asp:Button 
                     ID="btnVolver" 
                     runat="server" 

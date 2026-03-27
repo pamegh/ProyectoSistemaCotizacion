@@ -12,13 +12,12 @@
 <body>
 <form id="form1" runat="server">
 
-    <!-- HEADER -->
     <div class="header">
 
          <asp:Button 
         ID="btnInicio"
         runat="server"
-        Text="← Inicio"
+        Text="←"
         CssClass="btn-back-icon"
         OnClick="btnInicio_Click" />
         <div class="header-container">
@@ -28,17 +27,14 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL -->
     <div class="main-container">
         <div class="card">
 
             <h2 class="title">Mantenimiento de Usuarios</h2>
             <p class="subtitle">Gestión de usuarios del sistema</p>
 
-            <!-- Mensaje de resultado -->
             <asp:Label ID="lblMensaje" runat="server" Visible="false"></asp:Label>
 
-            <!-- Búsqueda -->
             <div class="search-box">
                 <asp:TextBox ID="txtBuscar" runat="server" CssClass="input"
                     Placeholder="Buscar usuario por nombre..."
@@ -48,7 +44,6 @@
                 </asp:TextBox>
             </div>
 
-            <!-- GRID -->
             <asp:GridView
                 ID="gvUsuarios"
                 runat="server"
@@ -74,7 +69,6 @@
                     <asp:TemplateField HeaderText="Acciones">
                         <ItemTemplate>
 
-                            <%-- Editar datos (abre panel) --%>
                             <asp:LinkButton ID="btnEditar" runat="server"
                                 CommandName="Editar"
                                 CommandArgument='<%# Eval("UsuarioId") %>'
@@ -83,7 +77,6 @@
                                 <i class="fa-solid fa-user-pen"></i>
                             </asp:LinkButton>
 
-                            <%-- Cambiar Rol --%>
                             <asp:LinkButton ID="btnCambiarRol" runat="server"
                                 CommandName="CambiarRol"
                                 CommandArgument='<%# Eval("UsuarioId") + "|" + Eval("Rol") %>'
@@ -92,7 +85,6 @@
                                 <i class="fa-solid fa-user-shield"></i>
                             </asp:LinkButton>
 
-                            <%-- Cambiar Estado --%>
                             <asp:LinkButton ID="btnCambiarEstado" runat="server"
                                 CommandName="Estado"
                                 CommandArgument='<%# Eval("UsuarioId") + "|" + Eval("Estado") %>'
@@ -106,7 +98,6 @@
                 </Columns>
             </asp:GridView>
 
-            <!-- PANEL DE EDICIÓN (se muestra al pulsar Editar) -->
             <asp:Panel ID="pnlEditar" runat="server" Visible="false" CssClass="panel-editar">
 
                 <h3 class="title">Editar Usuario</h3>

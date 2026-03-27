@@ -47,5 +47,26 @@ namespace ProyectoSistemaCotizacion.Vistas
             gvCotizaciones.DataSource = ctr.ListarCotizaciones(usuarioId);
             gvCotizaciones.DataBind();
         }
+
+        protected void btnVolver_Click(object sender, EventArgs e)
+        {
+            if (Session["Rol"] != null)
+            {
+                string rol = Session["Rol"].ToString().ToUpper();
+
+                if (rol == "ADMIN")
+                {
+                    Response.Redirect("~/Vistas/DashboardAdministrador.aspx");
+                }
+                else
+                {
+                    Response.Redirect("~/Vistas/DashboardUsuario.aspx");
+                }
+            }
+            else
+            {
+                Response.Redirect("~/Login.aspx");
+            }
+        }
     }
 }

@@ -38,7 +38,12 @@ namespace ProyectoSistemaCotizacion.Controladores
 
                 cmd.Parameters.AddWithValue("@producto_id", datos.ProductoId);
                 cmd.Parameters.AddWithValue("@plazo_id", datos.PlazoId);
-                cmd.Parameters.AddWithValue("@tasa_anual", datos.TasaAnual);
+
+                var param = cmd.Parameters.Add("@tasa_anual", SqlDbType.Decimal);
+                param.Precision = 6;   // 🔥 ajustado a tu SP
+                param.Scale = 4;       // 🔥 ajustado a tu SP
+                param.Value = datos.TasaAnual;
+
                 cmd.Parameters.AddWithValue("@creado_por", "Sistema");
 
                 conn.Open();

@@ -24,7 +24,6 @@
                 <p class="mi-cuenta-subtitle">Actualiza tu información personal</p>
             </div>
 
-            <%-- Tipo de Identificación --%>
             <div class="form-group">
                 <label class="form-label">Tipo de Identificación <span class="campo-requerido">*</span></label>
                 <asp:DropDownList ID="ddlTipoIdentificacion" runat="server"
@@ -39,7 +38,6 @@
                     ValidationGroup="GuardarDatos" />
             </div>
 
-            <%-- Identificación --%>
             <div class="form-group">
                 <label class="form-label">
                     Identificación <span class="campo-requerido">*</span>
@@ -56,7 +54,6 @@
                     ErrorMessage="La identificación es requerida."
                     CssClass="text-danger" Display="Dynamic"
                     ValidationGroup="GuardarDatos" />
-                <%-- El revIdentificacion se desactiva: la validacion es dinamica en JS y servidor --%>
                 <asp:RegularExpressionValidator ID="revIdentificacion" runat="server"
                     ControlToValidate="txtIdentificacion"
                     ErrorMessage="Formato inválido. Revise el tipo de identificación seleccionado."
@@ -66,7 +63,6 @@
                 <span id="spanErrId" style="color:red; font-size:0.85em; display:none;"></span>
             </div>
 
-            <%-- Nombre Completo --%>
             <div class="form-group">
                 <label class="form-label">Nombre Completo <span class="campo-requerido">*</span></label>
                 <asp:TextBox ID="txtNombre" runat="server"
@@ -84,7 +80,6 @@
                     ValidationGroup="GuardarDatos" />
             </div>
 
-            <%-- Teléfono --%>
             <div class="form-group">
                 <label class="form-label">
                     Teléfono <span class="campo-requerido">*</span>
@@ -108,7 +103,6 @@
                     ValidationGroup="GuardarDatos" />
             </div>
 
-            <%-- Correo --%>
             <div class="form-group">
                 <label class="form-label">Correo <span class="campo-requerido">*</span></label>
                 <asp:TextBox ID="txtCorreo" runat="server"
@@ -196,12 +190,9 @@
 
 <script type="text/javascript">
 
-    // ── Diccionario JSON generado desde el servidor, indexado por ID numerico ──
-    // configTipos["1"] => { placeholder, hint, maxLength, longitudMin, soloNumerico, patronRegex }
-    // configTipos["2"] => Juridica, etc.
+
     var configTipos = <%= TiposIdentificacionJson %>;
 
-    // ── Al cambiar el tipo: actualiza placeholder, hint, maxlength y limpia campo ──
     function actualizarPlaceholderIdentificacion(ddl) {
         var val = ddl.value;
         var txtId = document.getElementById('<%= txtIdentificacion.ClientID %>');
@@ -210,7 +201,6 @@
 
         if (!txtId) return;
 
-        // Limpiar campo y error
         txtId.value = '';
         if (errId) { errId.style.display = 'none'; errId.textContent = ''; }
 
@@ -228,7 +218,6 @@
         txtId.focus();
     }
 
-    // ── Filtrar teclas segun soloNumerico del tipo ────────────────────────────
     function filtrarTeclaId(e) {
         var ddl = document.getElementById('<%= ddlTipoIdentificacion.ClientID %>');
         if (!ddl) return true;
@@ -236,28 +225,23 @@
         var cfg = configTipos[ddl.value];
         if (!cfg) return true;
 
-        // Permitir teclas de control
         var charCode = (typeof e.which === 'undefined') ? e.keyCode : e.which;
         if (charCode < 32) return true;
 
         if (cfg.soloNumerico) {
-            // Solo digitos 0-9
             return charCode >= 48 && charCode <= 57;
         }
 
-        // Alfanumerico (Pasaporte): letras y digitos
         var char = String.fromCharCode(charCode);
         return /^[A-Za-z0-9]$/.test(char);
     }
 
-    // ── Solo numeros para telefono ────────────────────────────────────────────
     function soloNumero(e) {
         var charCode = (typeof e.which === 'undefined') ? e.keyCode : e.which;
         if (charCode < 32) return true;
         return charCode >= 48 && charCode <= 57;
     }
 
-    // ── Validar identificacion en vivo mientras se escribe ────────────────────
     function validarIdEnVivo(txt) {
         var ddl   = document.getElementById('<%= ddlTipoIdentificacion.ClientID %>');
         var errId = document.getElementById('spanErrId');

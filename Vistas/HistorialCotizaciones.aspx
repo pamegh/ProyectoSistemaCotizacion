@@ -16,20 +16,30 @@
 
         <div class="card">
 
-            <!-- HEADER -->
             <div class="page-header">
+                <div class="page-header">
+
+    <asp:Button 
+        ID="btnAtras"
+        runat="server"
+        Text="←"
+        CssClass="btn-back-icon"
+        OnClick="btnVolver_Click" />
+
+    <h2 class="page-title">Historial de Cotizaciones</h2>
+
+</div>
 
                 <h2 class="page-title">Historial de Cotizaciones</h2>
 
             </div>
 
-            <!-- TÍTULO CARD -->
             <div class="card-header card-header-primary">
                 Cotizaciones Registradas
             </div>
 
-            <!-- CONTENIDO -->
             <div class="card-body">
+
 
                 <asp:GridView 
                     ID="gvCotizaciones" 
@@ -37,6 +47,7 @@
                     AutoGenerateColumns="false"
                     CssClass="tabla"
                     OnRowCommand="gvCotizaciones_RowCommand">
+
 
                     <Columns>
 

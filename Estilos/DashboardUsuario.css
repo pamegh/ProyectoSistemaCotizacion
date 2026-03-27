@@ -176,6 +176,22 @@ body {
     font-weight: 600;
 }
 
+.card-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1693A5;
+}
+
     .btn-logout:hover {
         background-color: #000000;
+    }
+
+.clickable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .clickable:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
     }

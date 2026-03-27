@@ -64,22 +64,41 @@
 
             <div class="cards-grid">
 
-                <div class="card">
-                    <h2>Realizar Nueva Cotización</h2>
-                    <p class="card-number">APF</p>
-                </div>
+    <div class="card clickable" onclick="location.href='CrearCotizacion.aspx'">
+    <h2>Realizar Nueva Cotización</h2>
 
-                <div class="card">
-                    <h2>Consultar Historial</h2>
-                    <p class="card-number">Mis Cotizaciones</p>
-                </div>
+    <p class="card-number">
+        <asp:Label ID="lblUltimaCotizacion" runat="server" />
+    </p>
 
-                <div class="card">
-                    <h2>Administrar Perfil</h2>
-                    <p class="card-number">Mi Cuenta</p>
-                </div>
+    <span style="font-size:14px;">
+        <asp:Label ID="lblProducto" runat="server" />
+        <br />
+        <asp:Label ID="lblPlazo" runat="server" />
+    </span>
+</div>
 
-            </div>
+    <div class="card clickable" onclick="location.href='HistorialCotizaciones.aspx'">
+        <h2>Consultar Historial</h2>
+
+        <p class="card-number">
+            <asp:Label ID="lblTotalCotizaciones" runat="server" />
+            <br />
+            <span style="font-size:14px;">cotizaciones</span>
+        </p>
+    </div>
+
+    <div class="card clickable" onclick="location.href='MiCuenta.aspx'">
+        <h2>Administrar Perfil</h2>
+
+        <p class="card-number">
+    <asp:Label ID="lblNombreCorto" runat="server" />
+    <br />
+    <span style="font-size:14px;">mi cuenta</span>
+</p>
+    </div>
+
+</div>
 
         </main>
 
