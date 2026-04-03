@@ -160,6 +160,8 @@ namespace ProyectoSistemaCotizacion.Vistas
             gvDetalleCotizacion.DataSource = detalleMensual;
             gvDetalleCotizacion.DataBind();
 
+            ViewState["DetalleMensual"] = detalleMensual;
+
             List<mdlDetalleFila> resumen = new List<mdlDetalleFila>();
 
             resumen.Add(new mdlDetalleFila { Campo = "Número", Valor = lblNumero.Text });
@@ -301,7 +303,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             GuardarDetalleCotizacion(cotizacionId);
 
-            lblMensaje.Text = "Cotización guardada correctamente: " + cotizacionId;
+            lblMensaje.Text = "Cotización guardada correctamente con número: " + numero;
             lblMensaje.CssClass = "mensaje mensaje-exito";
             lblMensaje.Visible = true;
 
@@ -309,19 +311,21 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         private void GuardarDetalleCotizacion(int cotizacionId)
         {
-            foreach (GridViewRow row in gvDetalleCotizacion.Rows)
-            {
-                int mes = Convert.ToInt32(row.Cells[0].Text);
-                decimal interesBruto = Convert.ToDecimal(row.Cells[1].Text.Replace("$", "").Replace("C", "").Trim());
-                decimal impuesto = Convert.ToDecimal(row.Cells[2].Text.Replace("$", "").Replace("C", "").Trim());
-                decimal interesNeto = Convert.ToDecimal(row.Cells[3].Text.Replace("$", "").Replace("C", "").Trim());
+            var detalleMensual = (List<mdlDetalleCotizacion>)ViewState["DetalleMensual"];
 
+            if (detalleMensual == null || detalleMensual.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var item in detalleMensual)
+            {
                 ctrCot.InsertarDetalleCotizacion(
                     cotizacionId,
-                    mes,
-                    interesBruto,
-                    impuesto,
-                    interesNeto
+                    item.Mes,
+                    item.InteresBruto,
+                    item.Impuesto,
+                    item.InteresNeto
                 );
             }
         }
@@ -347,6 +351,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             gvDetalleCotizacion.DataSource = null;
             gvDetalleCotizacion.DataBind();
 
+            ViewState["DetalleMensual"] = null;
             ViewState["TotalBruto"] = null;
             ViewState["TotalImpuesto"] = null;
             ViewState["TotalNeto"] = null;

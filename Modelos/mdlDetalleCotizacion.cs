@@ -5,6 +5,7 @@ using System.Web;
 
 namespace ProyectoSistemaCotizacion.Modelos
 {
+    [Serializable]
     public class mdlDetalleCotizacion
     {
         public int Mes { get; set; }

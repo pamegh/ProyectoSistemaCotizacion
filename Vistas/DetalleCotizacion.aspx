@@ -34,6 +34,22 @@
 
             <div class="card-body">
 
+                <div style="margin-bottom: 15px; text-align: center;">
+                    <asp:Button 
+                        ID="btnExportarExcel"
+                        runat="server"
+                        Text="Exportar a Excel"
+                        CssClass="btn-export btn-export-excel"
+                        OnClick="btnExportarExcel_Click" />
+                    
+                    <asp:Button 
+                        ID="btnExportarPDF"
+                        runat="server"
+                        Text="Exportar a PDF"
+                        CssClass="btn-export btn-export-pdf"
+                        OnClick="btnExportarPDF_Click" />
+                </div>
+
                 <asp:GridView 
                     ID="gvResumenCotizacion" 
                     runat="server"
