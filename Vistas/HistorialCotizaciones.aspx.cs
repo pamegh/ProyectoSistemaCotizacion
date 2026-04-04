@@ -54,8 +54,13 @@ namespace ProyectoSistemaCotizacion.Vistas
                     usuarioId = Convert.ToInt32(Session["UsuarioId"]);
             }
 
-            gvCotizaciones.DataSource = ctrCot.ListarCotizaciones(usuarioId);
+            DataTable dt = ctrCot.ListarCotizaciones(usuarioId);
+            gvCotizaciones.DataSource = dt;
             gvCotizaciones.DataBind();
+
+            bool tieneCotizaciones = dt != null && dt.Rows.Count > 0;
+            btnExportarExcel.Enabled = tieneCotizaciones;
+            btnExportarPDF.Enabled = tieneCotizaciones;
         }
 
         protected void btnVolver_Click(object sender, EventArgs e)

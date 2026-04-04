@@ -2,14 +2,17 @@
 -- BASE DE DATOS : Apf_cotizaciones
 -- PROYECTO      : Sistema de Cotizacion APF
 -- ESTANDARES    : Tatiana Brenes Campos
--- VERSION       : 9.1 - FINAL DEFINITIVO
--- FECHA         : 2026-03-19
+-- VERSION       : 9.4 - FINAL DEFINITIVO
+-- FECHA         : 2026-03-25
 -- AUTORES       : Allison Naomi
 --                 Hazel Pamela Gonzalez
 --                 Anthony Mora Aguilera
 -- SOLUCION      : Cada SP en su propio lote con USE explicito.
 --                 Sin rutas de instancia. Compatible con cualquier
 --                 maquina sin modificaciones.
+-- NOTA          : El campo estado de Parametros acepta tanto
+--                 'Activo'/'Inactivo' (sistema) como 'ACTIVO'/'INACTIVO'
+--                 (logica de impuestos). El CHECK se ajusta en consecuencia.
 -- ============================================================
 
 USE [master]
@@ -152,6 +155,8 @@ CREATE TABLE [dbo].[Tasas] (
 )
 GO
 
+-- NOTA: Parametros acepta 'Activo'/'Inactivo' del sistema Y 'ACTIVO'/'INACTIVO'
+-- de la logica de impuestos. El CHECK cubre ambos casos.
 CREATE TABLE [dbo].[Parametros] (
     [parametro_id]       INT          IDENTITY(1,1) NOT NULL,
     [clave]              VARCHAR(50)  NOT NULL,
@@ -162,9 +167,8 @@ CREATE TABLE [dbo].[Parametros] (
     [creado_por]         VARCHAR(50)  NOT NULL,
     [fecha_modificacion] DATETIME     NULL,
     [modificado_por]     VARCHAR(50)  NULL,
-    CONSTRAINT PK_Parametros        PRIMARY KEY CLUSTERED ([parametro_id] ASC),
-    CONSTRAINT UQ_Parametros_clave  UNIQUE ([clave]),
-    CONSTRAINT CK_Parametros_estado CHECK ([estado] IN ('Activo','Inactivo'))
+    CONSTRAINT PK_Parametros       PRIMARY KEY CLUSTERED ([parametro_id] ASC),
+    CONSTRAINT CK_Parametros_estado CHECK ([estado] IN ('Activo','Inactivo','ACTIVO','INACTIVO'))
 )
 GO
 
@@ -218,8 +222,9 @@ GO
 
 SET IDENTITY_INSERT [dbo].[Monedas] ON
 INSERT [dbo].[Monedas] ([moneda_id],[codigo],[nombre],[simbolo],[creado_por]) VALUES
-(1,N'COL',N'Colon Costarricense',N'C',N'Sistema'),
-(2,N'USD',N'Dolar Estadounidense',N'$',N'Sistema')
+(1,N'COL',N'Colon Costarricense',N'C',  N'Sistema'),
+(2,N'USD',N'Dolar Estadounidense',N'$', N'Sistema'),
+(3,N'MXN',N'Peso mexicano',       N'$', N'Sistema')
 SET IDENTITY_INSERT [dbo].[Monedas] OFF
 GO
 
@@ -236,14 +241,15 @@ SET IDENTITY_INSERT [dbo].[Tipos_identificacion] OFF
 GO
 
 SET IDENTITY_INSERT [dbo].[Parametros] ON
-INSERT [dbo].[Parametros] ([parametro_id],[clave],[valor],[descripcion],[creado_por])
-VALUES (1,N'IMPUESTO_RENTA',N'13',N'Porcentaje de impuesto sobre intereses bancarios (%)',N'Sistema')
+INSERT [dbo].[Parametros] ([parametro_id],[clave],[valor],[descripcion],[estado],[creado_por])
+VALUES (1,N'IMPUESTO',N'15',N'Porcentaje de impuesto sobre intereses bancarios (%)',N'INACTIVO',N'Sistema'),
+       (2,N'IMPUESTO',N'25',N'CAPAA',N'ACTIVO',N'Sistema')
 SET IDENTITY_INSERT [dbo].[Parametros] OFF
 GO
 
 SET IDENTITY_INSERT [dbo].[Productos] ON
 INSERT [dbo].[Productos] ([producto_id],[moneda_id],[codigo],[nombre],[estado],[creado_por]) VALUES
-(1,1,N'CC',N'Colon Crece',      N'Activo',N'Sistema'),
+(1,2,N'CC',N'Colon Aumento',    N'Activo',N'Sistema'),
 (2,1,N'CF',N'Colon Futuro Plus',N'Activo',N'Sistema'),
 (3,2,N'DS',N'Dolar Seguro',     N'Activo',N'Sistema'),
 (4,2,N'DV',N'Dolar Vision',     N'Activo',N'Sistema')
@@ -252,64 +258,71 @@ GO
 
 SET IDENTITY_INSERT [dbo].[Plazos] ON
 INSERT [dbo].[Plazos] ([plazo_id],[meses],[dias],[estado],[creado_por]) VALUES
-( 3, 2,0,N'Activo',N'Sistema'),( 4, 3,0,N'Activo',N'Sistema'),( 5, 4,0,N'Activo',N'Sistema'),
-( 6, 5,0,N'Activo',N'Sistema'),( 7, 6,0,N'Activo',N'Sistema'),( 8, 7,0,N'Activo',N'Sistema'),
-( 9, 8,0,N'Activo',N'Sistema'),(10, 9,0,N'Activo',N'Sistema'),(11,10,0,N'Activo',N'Sistema'),
-(12,11,0,N'Activo',N'Sistema'),(13,12,0,N'Activo',N'Sistema'),(14,13,0,N'Activo',N'Sistema'),
-(15,14,0,N'Activo',N'Sistema'),(16,15,0,N'Activo',N'Sistema'),(17,16,0,N'Activo',N'Sistema'),
-(18,17,0,N'Activo',N'Sistema'),(19,18,0,N'Activo',N'Sistema'),(20,19,0,N'Activo',N'Sistema'),
-(21,20,0,N'Activo',N'Sistema'),(22,21,0,N'Activo',N'Sistema'),(23,22,0,N'Activo',N'Sistema'),
-(24,23,0,N'Activo',N'Sistema'),(25,24,0,N'Activo',N'Sistema')
+( 3, 2,0,N'Activo',  N'Sistema'),( 4, 3,0,N'Activo',  N'Sistema'),( 5, 4,0,N'Activo',  N'Sistema'),
+( 6, 5,0,N'Activo',  N'Sistema'),( 7, 6,0,N'Activo',  N'Sistema'),( 8, 7,0,N'Activo',  N'Sistema'),
+( 9, 8,0,N'Activo',  N'Sistema'),(10, 9,0,N'Activo',  N'Sistema'),(11,10,0,N'Activo',  N'Sistema'),
+(12,11,0,N'Activo',  N'Sistema'),(13,12,0,N'Activo',  N'Sistema'),(14,13,0,N'Activo',  N'Sistema'),
+(15,14,0,N'Activo',  N'Sistema'),(16,15,0,N'Activo',  N'Sistema'),(17,16,0,N'Activo',  N'Sistema'),
+(18,17,0,N'Activo',  N'Sistema'),(19,18,0,N'Activo',  N'Sistema'),(20,19,0,N'Activo',  N'Sistema'),
+(21,20,0,N'Activo',  N'Sistema'),(22,21,0,N'Activo',  N'Sistema'),(23,22,0,N'Activo',  N'Sistema'),
+(24,23,0,N'Activo',  N'Sistema'),(25,24,0,N'Activo',  N'Sistema'),
+(26, 1,15,N'Inactivo',N'Sistema'),
+(27, 1, 5,N'Activo',  N'Sistema')
 SET IDENTITY_INSERT [dbo].[Plazos] OFF
 GO
 
 SET IDENTITY_INSERT [dbo].[Tasas] ON
 INSERT [dbo].[Tasas] ([tasa_id],[producto_id],[plazo_id],[tasa_anual],[estado],[creado_por]) VALUES
-(48,1, 3,3.4000,N'Activo',N'Sistema'),(49,1, 4,3.6000,N'Activo',N'Sistema'),
-(50,1, 5,3.7500,N'Activo',N'Sistema'),(51,1, 6,3.9000,N'Activo',N'Sistema'),
-(52,1, 7,4.1000,N'Activo',N'Sistema'),(53,1, 8,4.2500,N'Activo',N'Sistema'),
-(54,1, 9,4.4000,N'Activo',N'Sistema'),(55,1,10,4.5500,N'Activo',N'Sistema'),
-(56,1,11,4.7000,N'Activo',N'Sistema'),(57,1,12,4.8500,N'Activo',N'Sistema'),
-(58,1,13,5.0000,N'Activo',N'Sistema'),(59,1,14,5.1000,N'Activo',N'Sistema'),
-(60,1,15,5.2000,N'Activo',N'Sistema'),(61,1,16,5.3000,N'Activo',N'Sistema'),
-(62,1,17,5.4000,N'Activo',N'Sistema'),(63,1,18,5.5000,N'Activo',N'Sistema'),
-(64,1,19,5.6500,N'Activo',N'Sistema'),(65,1,20,5.8000,N'Activo',N'Sistema'),
-(66,1,21,5.9500,N'Activo',N'Sistema'),(67,1,22,6.1000,N'Activo',N'Sistema'),
-(68,1,23,6.2500,N'Activo',N'Sistema'),(69,1,24,6.4000,N'Activo',N'Sistema'),
-(98,1,25,6.5500,N'Activo',N'Sistema'),
-( 6,2, 6,4.0000,N'Activo',N'Sistema'),( 7,2, 7,4.1500,N'Activo',N'Sistema'),
-( 8,2, 8,4.3500,N'Activo',N'Sistema'),( 9,2, 9,4.5000,N'Activo',N'Sistema'),
-(10,2,10,4.6500,N'Activo',N'Sistema'),(11,2,11,4.8000,N'Activo',N'Sistema'),
-(12,2,12,4.9500,N'Activo',N'Sistema'),(13,2,13,5.1000,N'Activo',N'Sistema'),
-(14,2,14,5.3000,N'Activo',N'Sistema'),(15,2,15,5.4000,N'Activo',N'Sistema'),
-(16,2,16,5.5000,N'Activo',N'Sistema'),(17,2,17,5.6000,N'Activo',N'Sistema'),
-(18,2,18,5.7000,N'Activo',N'Sistema'),(19,2,19,5.8000,N'Activo',N'Sistema'),
-(20,2,20,5.9500,N'Activo',N'Sistema'),(21,2,21,6.1000,N'Activo',N'Sistema'),
-(22,2,22,6.2500,N'Activo',N'Sistema'),(23,2,23,6.4000,N'Activo',N'Sistema'),
-(24,2,24,6.5500,N'Activo',N'Sistema'),(99,2,25,6.9000,N'Activo',N'Sistema'),
-(71,3, 3,1.2500,N'Activo',N'Sistema'),(72,3, 4,1.5000,N'Activo',N'Sistema'),
-(73,3, 5,1.6500,N'Activo',N'Sistema'),(74,3, 6,1.8000,N'Activo',N'Sistema'),
-(75,3, 7,2.0000,N'Activo',N'Sistema'),(76,3, 8,2.1500,N'Activo',N'Sistema'),
-(77,3, 9,2.3000,N'Activo',N'Sistema'),(78,3,10,2.4500,N'Activo',N'Sistema'),
-(79,3,11,2.6000,N'Activo',N'Sistema'),(80,3,12,2.7500,N'Activo',N'Sistema'),
-(81,3,13,2.9000,N'Activo',N'Sistema'),(82,3,14,3.0000,N'Activo',N'Sistema'),
-(83,3,15,3.1000,N'Activo',N'Sistema'),(84,3,16,3.2000,N'Activo',N'Sistema'),
-(85,3,17,3.3000,N'Activo',N'Sistema'),(86,3,18,3.4000,N'Activo',N'Sistema'),
-(87,3,19,3.5500,N'Activo',N'Sistema'),(88,3,20,3.7000,N'Activo',N'Sistema'),
-(89,3,21,3.8500,N'Activo',N'Sistema'),(90,3,22,4.0000,N'Activo',N'Sistema'),
-(91,3,23,4.1500,N'Activo',N'Sistema'),(92,3,24,4.3000,N'Activo',N'Sistema'),
+-- Producto 1 (CC)
+(48,1, 3, 4.0000,N'Activo',N'Sistema'),(49,1, 4, 3.6000,N'Activo',N'Sistema'),
+(50,1, 5, 3.7500,N'Activo',N'Sistema'),(51,1, 6, 3.9000,N'Activo',N'Sistema'),
+(52,1, 7,10.0000,N'Activo',N'Sistema'),(53,1, 8, 4.2500,N'Activo',N'Sistema'),
+(54,1, 9, 4.4000,N'Activo',N'Sistema'),(55,1,10, 4.5500,N'Activo',N'Sistema'),
+(56,1,11, 4.7000,N'Activo',N'Sistema'),(57,1,12, 4.8500,N'Activo',N'Sistema'),
+(58,1,13, 5.0000,N'Activo',N'Sistema'),(59,1,14, 5.1000,N'Activo',N'Sistema'),
+(60,1,15, 5.2000,N'Activo',N'Sistema'),(61,1,16, 5.3000,N'Activo',N'Sistema'),
+(62,1,17, 5.4000,N'Activo',N'Sistema'),(63,1,18, 5.5000,N'Activo',N'Sistema'),
+(64,1,19, 5.6500,N'Activo',N'Sistema'),(65,1,20, 5.8000,N'Activo',N'Sistema'),
+(66,1,21, 5.9500,N'Activo',N'Sistema'),(67,1,22, 6.1000,N'Activo',N'Sistema'),
+(68,1,23, 6.2500,N'Activo',N'Sistema'),(69,1,24, 6.4000,N'Activo',N'Sistema'),
+(98,1,25, 6.5500,N'Activo',N'Sistema'),(102,1,27,1.0000,N'Activo',N'Sistema'),
+-- Producto 2 (CF)
+( 6,2, 6, 4.0000,N'Activo',N'Sistema'),( 7,2, 7, 4.1500,N'Activo',N'Sistema'),
+( 8,2, 8, 4.3500,N'Activo',N'Sistema'),( 9,2, 9, 4.5000,N'Activo',N'Sistema'),
+(10,2,10, 4.6500,N'Activo',N'Sistema'),(11,2,11, 4.8000,N'Activo',N'Sistema'),
+(12,2,12, 4.9500,N'Activo',N'Sistema'),(13,2,13, 5.1000,N'Activo',N'Sistema'),
+(14,2,14, 5.3000,N'Activo',N'Sistema'),(15,2,15, 5.4000,N'Activo',N'Sistema'),
+(16,2,16, 5.5000,N'Activo',N'Sistema'),(17,2,17, 5.6000,N'Activo',N'Sistema'),
+(18,2,18, 5.7000,N'Activo',N'Sistema'),(19,2,19, 5.8000,N'Activo',N'Sistema'),
+(20,2,20, 5.9500,N'Activo',N'Sistema'),(21,2,21, 6.1000,N'Activo',N'Sistema'),
+(22,2,22, 6.2500,N'Activo',N'Sistema'),(23,2,23, 6.4000,N'Activo',N'Sistema'),
+(24,2,24, 6.5500,N'Activo',N'Sistema'),(99,2,25, 6.9000,N'Activo',N'Sistema'),
+(103,2,27,3.5000,N'Activo',N'Sistema'),
+-- Producto 3 (DS)
+(71,3, 3, 1.2500,N'Activo',N'Sistema'),(72,3, 4, 1.5000,N'Activo',N'Sistema'),
+(73,3, 5, 1.6500,N'Activo',N'Sistema'),(74,3, 6, 1.8000,N'Activo',N'Sistema'),
+(75,3, 7, 2.0000,N'Activo',N'Sistema'),(76,3, 8, 2.1500,N'Activo',N'Sistema'),
+(77,3, 9, 2.3000,N'Activo',N'Sistema'),(78,3,10, 2.4500,N'Activo',N'Sistema'),
+(79,3,11, 2.6000,N'Activo',N'Sistema'),(80,3,12, 2.7500,N'Activo',N'Sistema'),
+(81,3,13, 2.9000,N'Activo',N'Sistema'),(82,3,14, 3.0000,N'Activo',N'Sistema'),
+(83,3,15, 3.1000,N'Activo',N'Sistema'),(84,3,16, 3.2000,N'Activo',N'Sistema'),
+(85,3,17, 3.3000,N'Activo',N'Sistema'),(86,3,18, 3.4000,N'Activo',N'Sistema'),
+(87,3,19, 3.5500,N'Activo',N'Sistema'),(88,3,20, 3.7000,N'Activo',N'Sistema'),
+(89,3,21, 3.8500,N'Activo',N'Sistema'),(90,3,22, 4.0000,N'Activo',N'Sistema'),
+(91,3,23, 4.1500,N'Activo',N'Sistema'),(92,3,24, 4.3000,N'Activo',N'Sistema'),
 (100,3,25,4.4500,N'Activo',N'Sistema'),
-(27,4, 4,2.7500,N'Activo',N'Sistema'),(28,4, 5,2.9000,N'Activo',N'Sistema'),
-(29,4, 6,3.0500,N'Activo',N'Sistema'),(30,4, 7,3.2500,N'Activo',N'Sistema'),
-(31,4, 8,3.4000,N'Activo',N'Sistema'),(32,4, 9,3.5500,N'Activo',N'Sistema'),
-(33,4,10,3.7000,N'Activo',N'Sistema'),(34,4,11,3.8500,N'Activo',N'Sistema'),
-(35,4,12,4.0000,N'Activo',N'Sistema'),(36,4,13,4.2000,N'Activo',N'Sistema'),
-(37,4,14,4.3000,N'Activo',N'Sistema'),(38,4,15,4.4000,N'Activo',N'Sistema'),
-(39,4,16,4.5000,N'Activo',N'Sistema'),(40,4,17,4.6000,N'Activo',N'Sistema'),
-(41,4,18,4.7000,N'Activo',N'Sistema'),(42,4,19,4.8500,N'Activo',N'Sistema'),
-(43,4,20,5.0000,N'Activo',N'Sistema'),(44,4,21,5.1500,N'Activo',N'Sistema'),
-(45,4,22,5.3000,N'Activo',N'Sistema'),(46,4,23,5.4500,N'Activo',N'Sistema'),
-(47,4,24,5.6000,N'Activo',N'Sistema'),(101,4,25,6.8500,N'Activo',N'Sistema')
+-- Producto 4 (DV)
+(27,4, 4, 2.7500,N'Activo',N'Sistema'),(28,4, 5, 2.9000,N'Activo',N'Sistema'),
+(29,4, 6, 3.0500,N'Activo',N'Sistema'),(30,4, 7, 3.2500,N'Activo',N'Sistema'),
+(31,4, 8, 3.4000,N'Activo',N'Sistema'),(32,4, 9, 3.5500,N'Activo',N'Sistema'),
+(33,4,10, 3.7000,N'Activo',N'Sistema'),(34,4,11, 3.8500,N'Activo',N'Sistema'),
+(35,4,12, 4.0000,N'Activo',N'Sistema'),(36,4,13, 4.2000,N'Activo',N'Sistema'),
+(37,4,14, 4.3000,N'Activo',N'Sistema'),(38,4,15, 4.4000,N'Activo',N'Sistema'),
+(39,4,16, 4.5000,N'Activo',N'Sistema'),(40,4,17, 4.6000,N'Activo',N'Sistema'),
+(41,4,18, 4.7000,N'Activo',N'Sistema'),(42,4,19, 4.8500,N'Activo',N'Sistema'),
+(43,4,20, 5.0000,N'Activo',N'Sistema'),(44,4,21, 5.1500,N'Activo',N'Sistema'),
+(45,4,22, 5.3000,N'Activo',N'Sistema'),(46,4,23, 5.4500,N'Activo',N'Sistema'),
+(47,4,24, 5.6000,N'Activo',N'Sistema'),(101,4,25,6.8500,N'Activo',N'Sistema')
 SET IDENTITY_INSERT [dbo].[Tasas] OFF
 GO
 
@@ -317,17 +330,23 @@ SET IDENTITY_INSERT [dbo].[Usuarios] ON
 INSERT [dbo].[Usuarios]
     ([usuario_id],[tipo_identificacion_id],[identificacion],[nombre_completo],
      [telefono],[correo],[contrasena],[rol],[estado],[creado_por])
-VALUES (4,1,N'123456789',N'ADMINISTRADOR',N'85555555',N'admin@sistema.com',
-        N'3eb3fe66b31e3b4d10fa70b5cad49c7112294af6ae4e476a1c405155d45aa121',
-        N'ADMIN',N'Activo',N'Sistema')
+VALUES
+(4,1,N'123456789', N'ADMINISTRADOR',     N'85888888',N'admin@sistema.com',
+ N'3eb3fe66b31e3b4d10fa70b5cad49c7112294af6ae4e476a1c405155d45aa121',N'ADMIN',  N'Activo',N'Sistema'),
+(5,1,N'604490050', N'HAZEL PAMELA GONZALEZ',N'88054751',N'pam@gmail.com',
+ N'5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5',N'NORMAL', N'Activo',N'Sistema'),
+(6,1,N'704560456', N'JUANITA PEREZ',     N'62854674',N'juana@gmail.com',
+ N'5e026d60d4f0f507116e10f3cd0e676f0b4687cc1320382360932957c3699f94',N'NORMAL', N'Activo',N'Sistema'),
+(7,3,N'11256478932',N'CARLOS ARIAS',     N'41111111',N'carlos@gmail.com',
+ N'1a4fc95fa572bd535a12cec9db0377cad32666af15265ffb95de13e44bb7b099',N'NORMAL', N'Activo',N'Sistema'),
+(8,1,N'116700608', N'KARLA BRENES',      N'87213232',N'karla@gmail.com',
+ N'5f3ccb45b80c0114f234f672b7b4fba499ab973d66dded35b0efca59d48c7e2f',N'NORMAL', N'Activo',N'Sistema')
 SET IDENTITY_INSERT [dbo].[Usuarios] OFF
 GO
 
 -- ============================================================
 -- SECCION 3: STORED PROCEDURES
 -- Cada SP tiene su propio: USE [Apf_cotizaciones] GO
--- Esto garantiza el contexto correcto independientemente de
--- la configuracion de SSMS en cada maquina.
 -- ============================================================
 
 -- ------------------------------------------------------------
@@ -356,17 +375,30 @@ GO
 USE [Apf_cotizaciones]
 GO
 CREATE PROCEDURE [dbo].[sp_ActualizarParametro]
-    @clave VARCHAR(50), @valor VARCHAR(100), @modificado_por VARCHAR(50)
+    @parametro_id   INT,
+    @clave          VARCHAR(50),
+    @valor          VARCHAR(100),
+    @descripcion    VARCHAR(200) = NULL,
+    @estado         VARCHAR(20),
+    @modificado_por VARCHAR(50)
 AS
 BEGIN
     SET NOCOUNT ON;
-    IF NOT EXISTS (SELECT 1 FROM Parametros WHERE clave = @clave AND estado = 'Activo')
-    BEGIN SELECT 0 AS resultado, 'Parametro no encontrado.' AS mensaje; RETURN; END
+    IF NOT EXISTS (SELECT 1 FROM Parametros WHERE parametro_id = @parametro_id)
+    BEGIN SELECT 0 AS resultado, 'El parametro no existe.' AS mensaje; RETURN; END
     IF (@valor IS NULL OR LTRIM(RTRIM(@valor)) = '')
     BEGIN SELECT 0 AS resultado, 'El valor no puede estar vacio.' AS mensaje; RETURN; END
+    IF @clave <> 'IMPUESTO' AND
+       EXISTS (SELECT 1 FROM Parametros WHERE clave = @clave AND parametro_id <> @parametro_id)
+    BEGIN SELECT 0 AS resultado, 'La clave ya esta registrada en otro parametro.' AS mensaje; RETURN; END
     UPDATE Parametros
-    SET valor = @valor, fecha_modificacion = GETDATE(), modificado_por = @modificado_por
-    WHERE clave = @clave AND estado = 'Activo';
+    SET clave              = @clave,
+        valor              = @valor,
+        descripcion        = @descripcion,
+        estado             = @estado,
+        fecha_modificacion = GETDATE(),
+        modificado_por     = @modificado_por
+    WHERE parametro_id = @parametro_id;
     SELECT 1 AS resultado, 'Parametro actualizado correctamente.' AS mensaje;
 END
 GO
@@ -465,6 +497,23 @@ BEGIN
     SET NOCOUNT ON;
     SELECT moneda_id, codigo, nombre, simbolo, estado
     FROM Monedas WHERE moneda_id = @moneda_id;
+END
+GO
+
+-- ------------------------------------------------------------
+-- SP: sp_ObtenerMonedaPorProducto
+-- ------------------------------------------------------------
+USE [Apf_cotizaciones]
+GO
+CREATE PROCEDURE [dbo].[sp_ObtenerMonedaPorProducto]
+    @producto_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT m.simbolo
+    FROM Productos p
+    INNER JOIN Monedas m ON p.moneda_id = m.moneda_id
+    WHERE p.producto_id = @producto_id;
 END
 GO
 
@@ -641,7 +690,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM Usuarios WHERE usuario_id = @usuario_id)
     BEGIN SELECT 0 AS resultado, 'Usuario no encontrado.' AS mensaje; RETURN; END
     IF @rol NOT IN ('ADMIN', 'NORMAL')
-    BEGIN SELECT 0 AS resultado, 'Rol invalido.' AS mensaje; RETURN; END
+    BEGIN SELECT 0 AS resultado, 'Rol invalido. Use ADMIN o NORMAL.' AS mensaje; RETURN; END
     UPDATE Usuarios
     SET rol = @rol, fecha_modificacion = GETDATE(), modificado_por = @modificado_por
     WHERE usuario_id = @usuario_id;
@@ -1012,35 +1061,88 @@ END
 GO
 
 -- ------------------------------------------------------------
--- SP: sp_InsertarCotizacion
+-- SP: sp_ObtenerSiguienteNumeroCotizacion
 -- ------------------------------------------------------------
 USE [Apf_cotizaciones]
 GO
-CREATE PROCEDURE [dbo].[sp_InsertarCotizacion]
-    @usuario_id INT, @producto_id INT, @plazo_id INT,
-    @monto DECIMAL(18,2), @tasa_anual DECIMAL(6,4), @impuesto DECIMAL(5,2),
-    @total_interes_bruto DECIMAL(18,2), @total_impuesto DECIMAL(18,2),
-    @total_interes_neto DECIMAL(18,2), @creado_por VARCHAR(50)
+CREATE PROCEDURE [dbo].[sp_ObtenerSiguienteNumeroCotizacion]
 AS
 BEGIN
     SET NOCOUNT ON;
-    DECLARE @nuevo_id INT;
-    DECLARE @num_cot  VARCHAR(20);
+    DECLARE @ultimoNumero INT;
+    SELECT @ultimoNumero = MAX(
+        CAST(SUBSTRING(numero_cotizacion, 5, LEN(numero_cotizacion)) AS INT)
+    )
+    FROM Cotizaciones
+    WHERE numero_cotizacion LIKE 'COT-%'
+      AND ISNUMERIC(SUBSTRING(numero_cotizacion, 5, LEN(numero_cotizacion))) = 1;
+    IF @ultimoNumero IS NULL SET @ultimoNumero = 0;
+    SET @ultimoNumero = @ultimoNumero + 1;
+    SELECT 'COT-' + RIGHT('0000' + CAST(@ultimoNumero AS VARCHAR), 4) AS numero_cotizacion;
+END
+GO
+
+-- ------------------------------------------------------------
+-- SP: sp_InsertarCotizaciones
+-- (recibe numero_cotizacion ya generado; usado por ctrCotizacion.InsertarCotizacion)
+-- ------------------------------------------------------------
+USE [Apf_cotizaciones]
+GO
+CREATE PROCEDURE [dbo].[sp_InsertarCotizaciones]
+    @numero_cotizacion   VARCHAR(20),
+    @usuario_id          INT,
+    @producto_id         INT,
+    @plazo_id            INT,
+    @monto               DECIMAL(18,2),
+    @tasa_anual          DECIMAL(6,4),
+    @impuesto            DECIMAL(5,2),
+    @total_interes_bruto DECIMAL(18,2),
+    @total_impuesto      DECIMAL(18,2),
+    @total_interes_neto  DECIMAL(18,2),
+    @creado_por          VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
     INSERT INTO Cotizaciones
-        (numero_cotizacion, usuario_id, producto_id, plazo_id, monto, tasa_anual, impuesto,
-         total_interes_bruto, total_impuesto, total_interes_neto, estado, fecha_creacion, creado_por)
+    (
+        numero_cotizacion, usuario_id, producto_id, plazo_id,
+        monto, tasa_anual, impuesto,
+        total_interes_bruto, total_impuesto, total_interes_neto,
+        estado, fecha_creacion, creado_por
+    )
     VALUES
-        ('', @usuario_id, @producto_id, @plazo_id, @monto, @tasa_anual, @impuesto,
-         @total_interes_bruto, @total_impuesto, @total_interes_neto, 'Activo', GETDATE(), @creado_por);
-    SET @nuevo_id = SCOPE_IDENTITY();
-    SET @num_cot  = 'COT-' + RIGHT('00000' + CAST(@nuevo_id AS VARCHAR), 5);
-    UPDATE Cotizaciones SET numero_cotizacion = @num_cot WHERE cotizacion_id = @nuevo_id;
-    SELECT @num_cot AS numero_cotizacion, @nuevo_id AS cotizacion_id;
+    (
+        @numero_cotizacion, @usuario_id, @producto_id, @plazo_id,
+        @monto, @tasa_anual, @impuesto,
+        @total_interes_bruto, @total_impuesto, @total_interes_neto,
+        'Activo', GETDATE(), @creado_por
+    );
+    SELECT CAST(SCOPE_IDENTITY() AS INT) AS cotizacion_id;
+END
+GO
+
+-- ------------------------------------------------------------
+-- SP: sp_InsertarDetalleCotizacion
+-- (usado por ctrCotizacion.InsertarDetalleCotizacion via ExecuteNonQuery)
+-- ------------------------------------------------------------
+USE [Apf_cotizaciones]
+GO
+CREATE PROCEDURE [dbo].[sp_InsertarDetalleCotizacion]
+    @cotizacion_id INT, @mes INT, @interes_bruto DECIMAL(18,2),
+    @impuesto DECIMAL(18,2), @interes_neto DECIMAL(18,2), @creado_por VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT OFF; -- OFF para que ExecuteNonQuery retorne filas afectadas
+    INSERT INTO Cotizaciones_detalle
+        (cotizacion_id, mes, interes_bruto, impuesto, interes_neto, estado, fecha_creacion, creado_por)
+    VALUES
+        (@cotizacion_id, @mes, @interes_bruto, @impuesto, @interes_neto, 'Activo', GETDATE(), @creado_por);
 END
 GO
 
 -- ------------------------------------------------------------
 -- SP: sp_InsertarCotizacionDetalle
+-- (version alternativa con SET NOCOUNT ON; compatible con ambos controladores)
 -- ------------------------------------------------------------
 USE [Apf_cotizaciones]
 GO
@@ -1054,6 +1156,39 @@ BEGIN
         (cotizacion_id, mes, interes_bruto, impuesto, interes_neto, estado, fecha_creacion, creado_por)
     VALUES
         (@cotizacion_id, @mes, @interes_bruto, @impuesto, @interes_neto, 'Activo', GETDATE(), @creado_por);
+END
+GO
+
+-- ------------------------------------------------------------
+-- SP: sp_ListarCotizaciones
+-- (usado por ctrCotizacion.ListarCotizaciones; @usuario_id=NULL retorna todas)
+-- ------------------------------------------------------------
+USE [Apf_cotizaciones]
+GO
+CREATE PROCEDURE [dbo].[sp_ListarCotizaciones]
+    @usuario_id INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT c.cotizacion_id, c.numero_cotizacion,
+           u.nombre_completo AS cliente,
+           p.nombre AS producto,
+           c.monto, c.total_interes_neto, c.fecha_creacion,
+           CASE
+               WHEN pl.meses > 0 AND pl.dias > 0 THEN
+                   CAST(pl.meses AS VARCHAR) + ' meses y ' + CAST(pl.dias AS VARCHAR) + ' dias'
+               WHEN pl.meses > 0 THEN
+                   CAST(pl.meses AS VARCHAR) + ' meses'
+               ELSE
+                   CAST(pl.dias AS VARCHAR) + ' dias'
+           END AS plazo
+    FROM Cotizaciones c
+    INNER JOIN Usuarios  u  ON c.usuario_id  = u.usuario_id
+    INNER JOIN Productos p  ON c.producto_id = p.producto_id
+    INNER JOIN Plazos    pl ON c.plazo_id    = pl.plazo_id
+    WHERE c.estado <> 'Eliminado'
+      AND (@usuario_id IS NULL OR c.usuario_id = @usuario_id)
+    ORDER BY c.fecha_creacion DESC;
 END
 GO
 
@@ -1081,6 +1216,7 @@ GO
 
 -- ------------------------------------------------------------
 -- SP: sp_ObtenerCotizacionPorId
+-- Alias alineados con ctrCotizacion: cliente, producto, plazo (PlazoDescripcion)
 -- ------------------------------------------------------------
 USE [Apf_cotizaciones]
 GO
@@ -1089,12 +1225,26 @@ CREATE PROCEDURE [dbo].[sp_ObtenerCotizacionPorId]
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT c.cotizacion_id, c.numero_cotizacion,
-           u.nombre_completo AS nombre_cliente, u.telefono, u.correo,
-           p.nombre AS nombre_producto, pl.meses, pl.dias,
-           c.monto, c.tasa_anual, c.impuesto,
-           c.total_interes_bruto, c.total_impuesto, c.total_interes_neto,
-           c.estado, c.fecha_creacion
+    SELECT
+        c.cotizacion_id,
+        c.numero_cotizacion,
+        c.producto_id,
+        u.nombre_completo               AS cliente,
+        u.telefono,
+        u.correo,
+        p.nombre                        AS producto,
+        c.monto,
+        c.tasa_anual,
+        c.impuesto,
+        c.total_interes_neto,
+        CASE
+            WHEN pl.meses > 0 AND pl.dias > 0 THEN
+                CAST(pl.meses AS VARCHAR) + ' meses y ' + CAST(pl.dias AS VARCHAR) + ' dias'
+            WHEN pl.meses > 0 THEN
+                CAST(pl.meses AS VARCHAR) + ' meses'
+            ELSE
+                CAST(pl.dias AS VARCHAR) + ' dias'
+        END                             AS plazo
     FROM Cotizaciones c
     INNER JOIN Usuarios  u  ON c.usuario_id  = u.usuario_id
     INNER JOIN Productos p  ON c.producto_id = p.producto_id
@@ -1223,16 +1373,8 @@ CREATE PROCEDURE [dbo].[sp_ListarParametros]
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT
-        parametro_id,
-        clave,
-        valor,
-        descripcion,
-        estado,
-        fecha_creacion,
-        creado_por,
-        fecha_modificacion,
-        modificado_por
+    SELECT parametro_id, clave, valor, descripcion, estado,
+           fecha_creacion, creado_por, fecha_modificacion, modificado_por
     FROM Parametros;
 END
 GO
@@ -1253,10 +1395,15 @@ CREATE PROCEDURE [dbo].[sp_InsertarParametro]
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO Parametros
-        (clave, valor, descripcion, estado, fecha_creacion, creado_por)
-    VALUES
-        (@clave, @valor, @descripcion, @estado, GETDATE(), @creado_por);
+    IF @clave = 'IMPUESTO' AND @estado = 'ACTIVO'
+    BEGIN
+        UPDATE Parametros SET estado = 'INACTIVO' WHERE clave = 'IMPUESTO';
+    END
+    IF EXISTS (SELECT 1 FROM Parametros WHERE clave = @clave AND valor = @valor)
+    BEGIN SELECT 0 AS resultado, 'Ya existe un parametro con ese valor.' AS mensaje; RETURN; END
+    INSERT INTO Parametros (clave, valor, descripcion, estado, fecha_creacion, creado_por)
+    VALUES (@clave, @valor, @descripcion, @estado, GETDATE(), @creado_por);
+    SELECT 1 AS resultado, 'Parametro insertado correctamente.' AS mensaje;
 END
 GO
 
@@ -1274,14 +1421,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
     IF NOT EXISTS (SELECT 1 FROM Parametros WHERE parametro_id = @parametro_id)
-    BEGIN
-        SELECT 0 AS resultado, 'El parametro no existe.' AS mensaje;
-        RETURN;
-    END
+    BEGIN SELECT 0 AS resultado, 'El parametro no existe.' AS mensaje; RETURN; END
     UPDATE Parametros
-    SET estado             = 'INACTIVO',
-        fecha_modificacion = GETDATE(),
-        modificado_por     = @modificado_por
+    SET estado = 'INACTIVO', fecha_modificacion = GETDATE(), modificado_por = @modificado_por
     WHERE parametro_id = @parametro_id;
     SELECT 1 AS resultado, 'Parametro eliminado correctamente.' AS mensaje;
 END
@@ -1300,16 +1442,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
     IF NOT EXISTS (SELECT 1 FROM Parametros WHERE parametro_id = @impuesto_id)
-    BEGIN
-        SELECT 0 AS resultado, 'El impuesto no existe.' AS mensaje;
-        RETURN;
-    END
-    -- Inactiva todos los parametros de impuesto
+    BEGIN SELECT 0 AS resultado, 'El impuesto no existe.' AS mensaje; RETURN; END
     UPDATE Parametros SET estado = 'INACTIVO';
-    -- Activa solo el seleccionado
-    UPDATE Parametros
-    SET estado = 'ACTIVO'
-    WHERE parametro_id = @impuesto_id;
+    UPDATE Parametros SET estado = 'ACTIVO' WHERE parametro_id = @impuesto_id;
     SELECT 1 AS resultado, 'Impuesto activado correctamente.' AS mensaje;
 END
 GO
@@ -1323,14 +1458,8 @@ CREATE PROCEDURE [dbo].[sp_ImpuestoActivo]
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT TOP 1
-        parametro_id,
-        clave,
-        valor,
-        descripcion,
-        estado
-    FROM Parametros
-    WHERE estado = 'ACTIVO';
+    SELECT TOP 1 parametro_id, clave, valor, descripcion, estado
+    FROM Parametros WHERE estado = 'ACTIVO';
 END
 GO
 
@@ -1346,92 +1475,14 @@ CREATE PROCEDURE [dbo].[sp_ObtenerParametroPorId]
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT
-        parametro_id,
-        clave,
-        valor,
-        descripcion,
-        estado,
-        fecha_creacion,
-        creado_por,
-        fecha_modificacion,
-        modificado_por
-    FROM Parametros
-    WHERE parametro_id = @parametro_id;
+    SELECT parametro_id, clave, valor, descripcion, estado,
+           fecha_creacion, creado_por, fecha_modificacion, modificado_por
+    FROM Parametros WHERE parametro_id = @parametro_id;
 END
 GO
 
 -- ============================================================
--- SECCION 5: SPs DE COTIZACIONES (version extendida)
--- ============================================================
-
--- ------------------------------------------------------------
--- SP: sp_InsertarCotizaciones
--- (recibe numero_cotizacion ya generado externamente)
--- ------------------------------------------------------------
-USE [Apf_cotizaciones]
-GO
-CREATE PROCEDURE [dbo].[sp_InsertarCotizaciones]
-(
-    @numero_cotizacion   VARCHAR(20),
-    @usuario_id          INT,
-    @producto_id         INT,
-    @plazo_id            INT,
-    @monto               DECIMAL(18,2),
-    @tasa_anual          DECIMAL(6,4),
-    @impuesto            DECIMAL(5,2),
-    @total_interes_bruto DECIMAL(18,2),
-    @total_impuesto      DECIMAL(18,2),
-    @total_interes_neto  DECIMAL(18,2),
-    @creado_por          VARCHAR(50)
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
-    INSERT INTO Cotizaciones
-    (
-        numero_cotizacion, usuario_id, producto_id, plazo_id,
-        monto, tasa_anual, impuesto,
-        total_interes_bruto, total_impuesto, total_interes_neto,
-        estado, fecha_creacion, creado_por
-    )
-    VALUES
-    (
-        @numero_cotizacion, @usuario_id, @producto_id, @plazo_id,
-        @monto, @tasa_anual, @impuesto,
-        @total_interes_bruto, @total_impuesto, @total_interes_neto,
-        'Activo', GETDATE(), @creado_por
-    );
-    SELECT @numero_cotizacion AS numero_cotizacion;
-END
-GO
-
--- ------------------------------------------------------------
--- SP: sp_ObtenerSiguienteNumeroCotizacion
--- (genera el siguiente numero COT-XXXX antes de insertar)
--- ------------------------------------------------------------
-USE [Apf_cotizaciones]
-GO
-CREATE PROCEDURE [dbo].[sp_ObtenerSiguienteNumeroCotizacion]
-AS
-BEGIN
-    SET NOCOUNT ON;
-    DECLARE @ultimoNumero INT;
-    SELECT @ultimoNumero = MAX(
-        CAST(SUBSTRING(numero_cotizacion, 5, LEN(numero_cotizacion)) AS INT)
-    )
-    FROM Cotizaciones
-    WHERE numero_cotizacion LIKE 'COT-%'
-      AND ISNUMERIC(SUBSTRING(numero_cotizacion, 5, LEN(numero_cotizacion))) = 1;
-    IF @ultimoNumero IS NULL
-        SET @ultimoNumero = 0;
-    SET @ultimoNumero = @ultimoNumero + 1;
-    SELECT 'COT-' + RIGHT('0000' + CAST(@ultimoNumero AS VARCHAR), 4) AS numero_cotizacion;
-END
-GO
-
--- ============================================================
--- VERIFICACION FINAL  (9 tablas | 49 SPs)
+-- VERIFICACION FINAL  (9 tablas | 52 SPs)
 -- ============================================================
 USE [Apf_cotizaciones]
 GO
@@ -1454,7 +1505,7 @@ GO
 --   * Cotizaciones_detalle
 --
 -- ------------------------------------------------------------
--- RESUMEN: 49 Stored Procedures
+-- RESUMEN: 52 Stored Procedures
 -- ------------------------------------------------------------
 --   * sp_ObtenerParametro
 --   * sp_ActualizarParametro
@@ -1463,6 +1514,7 @@ GO
 --   * sp_ActualizarMoneda
 --   * sp_EliminarMoneda
 --   * sp_ObtenerMonedaPorId
+--   * sp_ObtenerMonedaPorProducto
 --   * sp_TipoIdentificacion_Obtener
 --   * sp_Login
 --   * sp_RegistrarUsuario
@@ -1489,8 +1541,11 @@ GO
 --   * sp_EliminarTasa
 --   * sp_ObtenerTasaPorId
 --   * sp_ObtenerTasaPorProductoYPlazo
---   * sp_InsertarCotizacion
+--   * sp_ObtenerSiguienteNumeroCotizacion
+--   * sp_InsertarCotizaciones
+--   * sp_InsertarDetalleCotizacion
 --   * sp_InsertarCotizacionDetalle
+--   * sp_ListarCotizaciones
 --   * sp_ListarCotizacionesPorUsuario
 --   * sp_ObtenerCotizacionPorId
 --   * sp_ObtenerDetalleCotizacion
@@ -1503,8 +1558,7 @@ GO
 --   * sp_ActivarImpuesto
 --   * sp_ImpuestoActivo
 --   * sp_ObtenerParametroPorId
---   * sp_InsertarCotizaciones
---   * sp_ObtenerSiguienteNumeroCotizacion
+--   * sp_InsertarCotizacion  [ELIMINADO - no utilizado por controladores]
 --
 -- ============================================================
 
