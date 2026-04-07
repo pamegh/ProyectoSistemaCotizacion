@@ -408,6 +408,14 @@ body {
     border: 1px solid #a5d6a7;
 }
 
+.validator-error {
+    display: block;
+    color: #c62828;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
 .panel-resultado {
     background-color: #F7F7F2;
     border: 1px solid #D8D8C0;
@@ -417,6 +425,96 @@ body {
     font-size: 0.95rem;
     line-height: 1.9;
     color: #222222;
+}
+
+/* =============================================
+   ESTILOS DE PAGINACIÓN
+   ============================================= */
+
+.pager-style {
+    padding: 20px 0 !important;
+    background-color: #FAFAF5 !important;
+    border-top: 2px solid #D8D8C0 !important;
+}
+
+.pager-style table {
+    margin: 0 auto !important;
+}
+
+.pager-style td {
+    padding: 5px !important;
+}
+
+/* Estilos para enlaces y números de página */
+.pager-style a,
+.pager-style span {
+    display: inline-block !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    text-align: center !important;
+    padding: 0 12px !important;
+    margin: 0 4px !important;
+    border-radius: 8px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    font-family: 'Times New Roman', Times, serif !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Botones de navegación (Primera, Última, números) */
+.pager-style a {
+    background-color: #FFFFFF !important;
+    color: #1693A5 !important;
+    border: 2px solid #1693A5 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+.pager-style a:hover {
+    background-color: #1693A5 !important;
+    color: #FFFFFF !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(22, 147, 165, 0.3) !important;
+}
+
+/* Página actual (número seleccionado) */
+.pager-style span {
+    background-color: #1693A5 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #1693A5 !important;
+    box-shadow: 0 4px 8px rgba(22, 147, 165, 0.3) !important;
+    font-weight: 700 !important;
+    cursor: default !important;
+}
+
+/* Efecto especial para Primera y Última página */
+.pager-style td:first-child a,
+.pager-style td:last-child a {
+    background-color: #F7F7F2 !important;
+    color: #222222 !important;
+    border: 2px solid #D8D8C0 !important;
+    font-weight: 700 !important;
+}
+
+.pager-style td:first-child a:hover,
+.pager-style td:last-child a:hover {
+    background-color: #222222 !important;
+    color: #FFFFFF !important;
+    border-color: #222222 !important;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .pager-style a,
+    .pager-style span {
+        min-width: 35px !important;
+        height: 35px !important;
+        line-height: 35px !important;
+        padding: 0 8px !important;
+        margin: 0 2px !important;
+        font-size: 0.85rem !important;
+    }
 }
 
 @media (max-width: 900px) {

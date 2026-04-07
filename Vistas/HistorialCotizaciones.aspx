@@ -56,8 +56,17 @@
                     runat="server"
                     AutoGenerateColumns="false"
                     CssClass="tabla"
+                    AllowPaging="true"
+                    PageSize="10"
+                    OnPageIndexChanging="gvCotizaciones_PageIndexChanging"
                     OnRowCommand="gvCotizaciones_RowCommand">
 
+                    <PagerStyle CssClass="pager-style" HorizontalAlign="Center" />
+                    <PagerSettings Mode="NumericFirstLast" 
+                                   FirstPageText="Primera" 
+                                   LastPageText="Última" 
+                                   PageButtonCount="5" 
+                                   Position="Bottom" />
 
                     <Columns>
 
@@ -65,10 +74,11 @@
                         <asp:BoundField DataField="cliente" HeaderText="Cliente" />
                         <asp:BoundField DataField="producto" HeaderText="Producto" />
 
-                        <asp:BoundField 
-                            DataField="monto" 
-                            HeaderText="Monto" 
-                            DataFormatString="{0:C}" />
+                        <asp:TemplateField HeaderText="Monto">
+                            <ItemTemplate>
+                                <%# Eval("simbolo_moneda") %> <%# String.Format("{0:N2}", Eval("monto")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="Acción">
                             <ItemTemplate>

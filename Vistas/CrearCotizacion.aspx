@@ -144,8 +144,26 @@
     ID="txtMonto" 
     runat="server" 
     CssClass="form-input"
-    oninput="limpiarMensaje()">
+    oninput="limpiarMensaje()"
+    onkeypress="return validarSoloNumeros(event)">
 </asp:TextBox>
+                    <asp:RequiredFieldValidator 
+                        ID="rfvMonto" 
+                        runat="server" 
+                        ControlToValidate="txtMonto"
+                        ErrorMessage="El monto es requerido"
+                        CssClass="validator-error"
+                        Display="Dynamic">
+                    </asp:RequiredFieldValidator>
+                    <asp:RegularExpressionValidator 
+                        ID="revMonto" 
+                        runat="server" 
+                        ControlToValidate="txtMonto"
+                        ValidationExpression="^\d+(\.\d{1,2})?$"
+                        ErrorMessage="Ingrese un monto válido (solo números, máximo 2 decimales)"
+                        CssClass="validator-error"
+                        Display="Dynamic">
+                    </asp:RegularExpressionValidator>
                 </div>
 
                 <asp:Button ID="btnCalcular" runat="server"
@@ -179,6 +197,27 @@
             if (lbl) {
                 lbl.style.display = 'none';
             }
+        }
+
+        function validarSoloNumeros(event) {
+            var charCode = (event.which) ? event.which : event.keyCode;
+            
+            // Permitir: números (0-9), punto decimal (46), y teclas de control
+            if (charCode == 46) {
+                var input = event.target || event.srcElement;
+                // Solo permitir un punto decimal
+                if (input.value.indexOf('.') !== -1) {
+                    return false;
+                }
+                return true;
+            }
+            
+            // Permitir solo números (0-9)
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            
+            return true;
         }
     </script>
 </body>

@@ -63,6 +63,12 @@ namespace ProyectoSistemaCotizacion.Vistas
             btnExportarPDF.Enabled = tieneCotizaciones;
         }
 
+        protected void gvCotizaciones_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvCotizaciones.PageIndex = e.NewPageIndex;
+            CargarCotizaciones();
+        }
+
         protected void btnVolver_Click(object sender, EventArgs e)
         {
             if (Session["Rol"] != null)

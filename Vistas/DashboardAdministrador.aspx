@@ -37,7 +37,6 @@
                 <li><a href="ConfiguracionProductos.aspx">Configuraciones de Productos</a></li>
                 <li><a href="MantenimientoUsuarios.aspx">Administración de Usuarios</a></li>
                 <li><a href="MiCuenta.aspx">Mi Cuenta</a></li>
-                <li><a href="#">Reportes del Sistema</a></li>
             </ul>
         </aside>
 

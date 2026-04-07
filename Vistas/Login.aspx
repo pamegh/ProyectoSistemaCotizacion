@@ -100,15 +100,6 @@
     Regístrate aquí
 </asp:HyperLink>
 
-
-                    <div class="test-users">
-                        <p class="test-title">👤 Usuarios de prueba:</p>
-                        <div class="test-user-grid">
-                            <div class="test-user-item">
-                                <strong>Admin:</strong> admin@sistema.com / Admin123!
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

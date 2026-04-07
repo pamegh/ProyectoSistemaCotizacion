@@ -93,7 +93,23 @@ namespace ProyectoSistemaCotizacion.Vistas
                 return;
             }
 
-            decimal monto = Convert.ToDecimal(txtMonto.Text);
+            decimal monto;
+            if (!decimal.TryParse(txtMonto.Text, out monto))
+            {
+                lblMensaje.Text = "El monto ingresado no es válido. Debe ingresar solo números.";
+                lblMensaje.CssClass = "mensaje mensaje-error";
+                lblMensaje.Visible = true;
+                return;
+            }
+
+            if (monto <= 0)
+            {
+                lblMensaje.Text = "El monto debe ser mayor a cero.";
+                lblMensaje.CssClass = "mensaje mensaje-error";
+                lblMensaje.Visible = true;
+                return;
+            }
+
             decimal tasa = ObtenerTasaProducto();
 
             
