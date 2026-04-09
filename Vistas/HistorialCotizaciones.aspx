@@ -112,6 +112,12 @@
 
                 </asp:GridView>
 
+                <asp:Label ID="lblSinCotizaciones" 
+    runat="server" 
+    Visible="false" 
+    Text="No tiene cotizaciones registradas." 
+    CssClass="text-center text-muted d-block mt-3" />
+
             </div>
 
         </div>

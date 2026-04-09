@@ -28,7 +28,7 @@ OnClientClick="window.close(); return false;" />
 <asp:Label ID="lblMensaje"
 runat="server"
 CssClass="mensaje"
-Visible="false"></asp:Label>
+Visible="true"></asp:Label>
 
 <div class="form-group">
 <label>Moneda</label>
@@ -98,4 +98,4 @@ OnClick="btnNuevo_Click"/>
 </form>
 
 </body>
-</html></html>
+</html>

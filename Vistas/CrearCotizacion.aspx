@@ -120,10 +120,12 @@
 
                 <div class="form-group">
                     <label class="form-label">Producto</label>
-                    <asp:DropDownList 
+                   <asp:DropDownList 
     ID="ddlProducto" 
     runat="server" 
     CssClass="form-select"
+    AutoPostBack="true"
+    OnSelectedIndexChanged="ddlProducto_SelectedIndexChanged"
     onchange="limpiarMensaje()">
 </asp:DropDownList>
                 </div>
@@ -139,7 +141,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Monto a invertir</label>
+                   <label class="form-label">
+        Monto a invertir
+        <asp:Label ID="lblMonedaMonto" runat="server" 
+            CssClass="text-muted" 
+            Text="" 
+            style="font-weight: normal; font-size: 0.85em; margin-left: 5px;">
+        </asp:Label>
+    </label>
                    <asp:TextBox 
     ID="txtMonto" 
     runat="server" 
@@ -202,17 +211,14 @@
         function validarSoloNumeros(event) {
             var charCode = (event.which) ? event.which : event.keyCode;
             
-            // Permitir: números (0-9), punto decimal (46), y teclas de control
             if (charCode == 46) {
                 var input = event.target || event.srcElement;
-                // Solo permitir un punto decimal
                 if (input.value.indexOf('.') !== -1) {
                     return false;
                 }
                 return true;
             }
             
-            // Permitir solo números (0-9)
             if (charCode > 31 && (charCode < 48 || charCode > 57)) {
                 return false;
             }

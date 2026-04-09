@@ -132,6 +132,15 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected global::System.Web.UI.WebControls.DropDownList ddlPlazo;
 
         /// <summary>
+        /// Control lblMonedaMonto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMonedaMonto;
+
+        /// <summary>
         /// Control txtMonto.
         /// </summary>
         /// <remarks>
@@ -139,6 +148,24 @@ namespace ProyectoSistemaCotizacion.Vistas
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMonto;
+
+        /// <summary>
+        /// Control rfvMonto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvMonto;
+
+        /// <summary>
+        /// Control revMonto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revMonto;
 
         /// <summary>
         /// Control btnCalcular.

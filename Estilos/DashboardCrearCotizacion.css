@@ -259,47 +259,9 @@ body {
         box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
     }
 
-.btn-export-excel {
-    background-color: #1693A5;
-    color: #FFFFFF;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-    .btn-export-excel:hover {
-        background-color: #127a8a;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-    }
-
-.btn-export-pdf {
-    background-color: #1693A5;
-    color: #FFFFFF;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-    .btn-export-pdf:hover {
-        background-color: #127a8a;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-    }
-
 .btn-export {
     color: #FFFFFF;
-    padding: 10px 20px;
+    padding: 10px 24px;
     border: none;
     border-radius: 8px;
     font-size: 0.9rem;
@@ -307,27 +269,83 @@ body {
     cursor: pointer;
     margin-right: 10px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.3px;
 }
 
 .btn-export-excel {
-    background-color: #2e7d32;
+    background-color: #1693A5;
+    border: 2px solid #127a8a;
 }
 
     .btn-export-excel:hover {
-        background-color: #1b5e20;
+        background-color: #127a8a;
         transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 6px 14px rgba(22, 147, 165, 0.4);
     }
 
 .btn-export-pdf {
-    background-color: #c62828;
+    background-color: #FFFFFF;
+    color: #1693A5;
+    border: 2px solid #1693A5;
 }
 
     .btn-export-pdf:hover {
-        background-color: #b71c1c;
+        background-color: #1693A5;
+        color: #FFFFFF;
         transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 6px 14px rgba(22, 147, 165, 0.4);
+    }
+
+.btn-accion {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.80rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    letter-spacing: 0.2px;
+}
+
+.btn-accion-ver {
+    background-color: #1693A5;
+    color: #FFFFFF;
+    border: 2px solid #127a8a;
+}
+
+    .btn-accion-ver:hover {
+        background-color: #127a8a;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(22, 147, 165, 0.3);
+    }
+
+.btn-accion-excel {
+    background-color: #FFFFFF;
+    color: #1693A5;
+    border: 2px solid #1693A5;
+}
+
+    .btn-accion-excel:hover {
+        background-color: #1693A5;
+        color: #FFFFFF;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(22, 147, 165, 0.3);
+    }
+
+.btn-accion-pdf {
+    background-color: #222222;
+    color: #FFFFFF;
+    border: 2px solid #111111;
+}
+
+    .btn-accion-pdf:hover {
+        background-color: #444444;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
 .btn-accion {
@@ -366,25 +384,26 @@ body {
     }
 
 .btn-accion-excel {
-    background-color: #2e7d32;
+    background-color: #1693A5;
     color: #FFFFFF;
 }
 
     .btn-accion-excel:hover {
-        background-color: #1b5e20;
+        background-color: #127a8a;
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
 .btn-accion-pdf {
-    background-color: #c62828;
+    background-color: #222222;
     color: #FFFFFF;
 }
 
     .btn-accion-pdf:hover {
-        background-color: #b71c1c;
+        background-color: #111111;
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }x-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
 .mensaje {

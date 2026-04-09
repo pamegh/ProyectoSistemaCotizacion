@@ -36,6 +36,7 @@ namespace ProyectoSistemaCotizacion.Vistas
             {
                 InicializarPantalla();
             }
+
         }
 
         private void MostrarMensaje(string texto, string tipo)
@@ -883,17 +884,23 @@ namespace ProyectoSistemaCotizacion.Vistas
             var productos = ctrProducto.ListarProductos();
 
             ddlProductoBuscar.DataSource = productos;
+            ddlProductoBuscar.DataTextField = "nombre";
+            ddlProductoBuscar.DataValueField = "producto_id";
             ddlProductoBuscar.DataBind();
             ddlProductoBuscar.Items.Insert(0, new ListItem("-- Seleccione --", ""));
+            ddlProductoBuscar.SelectedIndex = 0;
 
             ddlProductoTasa.DataSource = productos;
+            ddlProductoTasa.DataTextField = "nombre";
+            ddlProductoTasa.DataValueField = "producto_id";
             ddlProductoTasa.DataBind();
             ddlProductoTasa.Items.Insert(0, new ListItem("-- Seleccione --", ""));
 
             chkProductosPlazo.DataSource = productos;
+            chkProductosPlazo.DataTextField = "nombre";
+            chkProductosPlazo.DataValueField = "producto_id";
             chkProductosPlazo.DataBind();
 
-            
             CargarMonedas();
         }
 
@@ -978,6 +985,12 @@ namespace ProyectoSistemaCotizacion.Vistas
                 bool resultado = ctrProducto.EliminarProducto(id, out mensaje);
 
                 MostrarMensaje(mensaje, resultado ? "success" : "error");
+
+                if (resultado)
+                {
+                    RecargarCombos();
+                    LimpiarFormulario();
+                }
             }
 
             else if (ddlEntidad.SelectedValue == "Plazo")
@@ -1343,6 +1356,12 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             ModoOperacion = "";
             ModoNuevo = false;
+
+            if (Session["MensajeMoneda"] != null)
+            {
+                MostrarMensaje(Session["MensajeMoneda"].ToString(), "success");
+                Session.Remove("MensajeMoneda");
+            }
         }
 
         private void ResetDropDown(DropDownList ddl)

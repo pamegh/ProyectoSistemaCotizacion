@@ -56,7 +56,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
 
             mdlMoneda moneda = new mdlMoneda();
-
             moneda.Codigo = txtCodigo.Text;
             moneda.Nombre = txtNombre.Text;
             moneda.Simbolo = txtSimbolo.Text;
@@ -73,11 +72,18 @@ namespace ProyectoSistemaCotizacion.Vistas
                 resultado = ctrMoneda.ActualizarMoneda(moneda);
             }
 
-            lblMensaje.Text = moneda.Mensaje;
-            lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
-
-            CargarMonedas();
-            LimpiarFormulario();
+            if (resultado)
+            {
+                Session["MensajeMoneda"] = moneda.Mensaje;
+                Response.Redirect("~/Vistas/ConfiguracionProductos.aspx");
+            }
+            else
+            {
+                lblMensaje.Text = moneda.Mensaje;
+                lblMensaje.CssClass = "text-danger";
+                CargarMonedas();
+                LimpiarFormulario();
+            }
         }
 
         protected void btnEliminar_Click(object sender, EventArgs e)
@@ -90,18 +96,22 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
 
             int id = Convert.ToInt32(ddlMoneda.SelectedValue);
-
             string mensaje;
-
             bool resultado = ctrMoneda.EliminarMoneda(id, out mensaje);
 
-            lblMensaje.Text = mensaje;
-            lblMensaje.CssClass = resultado ? "text-success" : "text-danger";
-
-            CargarMonedas();
-            LimpiarFormulario();
+            if (resultado)
+            {
+                Session["MensajeMoneda"] = mensaje;
+                Response.Redirect("~/Vistas/ConfiguracionProductos.aspx");
+            }
+            else
+            {
+                lblMensaje.Text = mensaje;
+                lblMensaje.CssClass = "text-danger";
+                CargarMonedas();
+                LimpiarFormulario();
+            }
         }
-
         protected void btnNuevo_Click(object sender, EventArgs e)
         {
             ddlMoneda.SelectedIndex = 0;

@@ -59,8 +59,12 @@ namespace ProyectoSistemaCotizacion.Vistas
             gvCotizaciones.DataBind();
 
             bool tieneCotizaciones = dt != null && dt.Rows.Count > 0;
+
             btnExportarExcel.Enabled = tieneCotizaciones;
             btnExportarPDF.Enabled = tieneCotizaciones;
+
+            gvCotizaciones.Visible = tieneCotizaciones;
+            lblSinCotizaciones.Visible = !tieneCotizaciones;
         }
 
         protected void gvCotizaciones_PageIndexChanging(object sender, GridViewPageEventArgs e)

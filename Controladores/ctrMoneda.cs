@@ -162,6 +162,23 @@ namespace ProyectoSistemaCotizacion.Controladores
 
             return false;
         }
-    
-}
+
+        public string ObtenerNombreMoneda(int productoId)
+        {
+            using (SqlConnection conn = new SqlConnection(_SQLConnection))
+            using (SqlCommand cmd = new SqlCommand("sp_ObtenerMonedaPorProductoNombre", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@producto_id", productoId);
+                conn.Open();
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                        return $"{dr["nombre"]} ({dr["simbolo"]})";
+                }
+            }
+            return "";
+        }
+
+    }
 }

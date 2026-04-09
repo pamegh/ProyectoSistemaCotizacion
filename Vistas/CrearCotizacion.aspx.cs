@@ -46,6 +46,21 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
         }
 
+        protected void ddlProducto_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlProducto.SelectedIndex == 0)
+            {
+                lblMonedaMonto.Text = "";
+                return;
+            }
+
+            int productoId = Convert.ToInt32(ddlProducto.SelectedValue);
+            string simbolo = ctrMoneda.ObtenerSimboloMoneda(productoId);
+            string nombreMoneda = ctrMoneda.ObtenerNombreMoneda(productoId);
+
+            lblMonedaMonto.Text = $"({nombreMoneda})";
+        }
+
         protected void btnSalir_Click(object sender, EventArgs e)
         {
             Session.Clear();
