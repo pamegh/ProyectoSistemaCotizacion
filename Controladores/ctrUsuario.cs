@@ -159,7 +159,8 @@ namespace ProyectoSistemaCotizacion.Controladores
             return usuario;
         }
 
-        public bool ActualizarUsuario(mdlUsuario datos, string contrasenaActual = null, string contrasenaNueva = null)
+        public bool ActualizarUsuario(mdlUsuario datos, string contrasenaActual = null,
+    string contrasenaNueva = null, string usuarioActual = "Sistema")
         {
             if (datos == null)
             {
@@ -243,7 +244,7 @@ namespace ProyectoSistemaCotizacion.Controladores
                     cmd.Parameters.Add("@contrasena_nueva", SqlDbType.VarChar, 255).Value =
                         string.IsNullOrEmpty(contrasenaNueva) ? (object)DBNull.Value : contrasenaNueva;
 
-                    cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "Sistema";
+                    cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = usuarioActual;
 
                     conn.Open();
 
@@ -264,7 +265,7 @@ namespace ProyectoSistemaCotizacion.Controladores
             return false;
         }
 
-        public bool CambiarEstadoUsuario(int usuarioId, string estado)
+        public bool CambiarEstadoUsuario(int usuarioId, string estado, string usuarioActual = "Sistema")
         {
             try
             {
@@ -276,7 +277,7 @@ namespace ProyectoSistemaCotizacion.Controladores
 
                     cmd.Parameters.Add("@usuario_id", SqlDbType.Int).Value = usuarioId;
                     cmd.Parameters.Add("@estado", SqlDbType.VarChar, 20).Value = estado;
-                    cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = "Sistema";
+                    cmd.Parameters.Add("@modificado_por", SqlDbType.VarChar, 50).Value = usuarioActual;
 
                     conn.Open();
 

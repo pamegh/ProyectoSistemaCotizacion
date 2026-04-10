@@ -177,20 +177,19 @@ namespace ProyectoSistemaCotizacion.Controladores
             return cot;
         }
 
-        public bool InsertarDetalleCotizacion(int cotizacionId, int mes, decimal interesBruto, decimal impuesto, decimal interesNeto)
+        public bool InsertarDetalleCotizacion(int cotizacionId, int mes, decimal interesBruto,
+    decimal impuesto, decimal interesNeto, string usuarioActual = "Sistema")
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_InsertarDetalleCotizacion", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@cotizacion_id", cotizacionId);
                 cmd.Parameters.AddWithValue("@mes", mes);
                 cmd.Parameters.AddWithValue("@interes_bruto", interesBruto);
                 cmd.Parameters.AddWithValue("@impuesto", impuesto);
                 cmd.Parameters.AddWithValue("@interes_neto", interesNeto);
-                cmd.Parameters.AddWithValue("@creado_por", "admin");
-
+                cmd.Parameters.AddWithValue("@creado_por", usuarioActual); // ✅
                 conn.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }

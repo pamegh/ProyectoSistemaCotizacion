@@ -29,25 +29,22 @@ namespace ProyectoSistemaCotizacion.Controladores
             }
         }
 
-        public bool InsertarTasa(mdlTasa datos)
+        public bool InsertarTasa(mdlTasa datos, string usuarioActual = "Sistema")
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_InsertarTasa", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@producto_id", datos.ProductoId);
                 cmd.Parameters.AddWithValue("@plazo_id", datos.PlazoId);
 
                 var param = cmd.Parameters.Add("@tasa_anual", SqlDbType.Decimal);
-                param.Precision = 6;   // 🔥 ajustado a tu SP
-                param.Scale = 4;       // 🔥 ajustado a tu SP
+                param.Precision = 6;
+                param.Scale = 4;
                 param.Value = datos.TasaAnual;
 
-                cmd.Parameters.AddWithValue("@creado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@creado_por", usuarioActual);
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -57,23 +54,19 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
 
-        public bool ActualizarTasa(mdlTasa datos)
+        public bool ActualizarTasa(mdlTasa datos, string usuarioActual = "Sistema")
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_ActualizarTasa", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@tasa_id", datos.TasaId);
                 cmd.Parameters.AddWithValue("@tasa_anual", datos.TasaAnual);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@modificado_por", usuarioActual);
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -83,34 +76,25 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
 
-        public bool EliminarTasa(int tasaId)
+        public bool EliminarTasa(int tasaId, string usuarioActual = "Sistema")
         {
-            bool eliminado = false;
-
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_EliminarTasa", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@tasa_id", tasaId);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@modificado_por", usuarioActual);
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
-                    {
-                        eliminado = Convert.ToInt32(dr["resultado"]) == 1;
-                    }
+                        return Convert.ToInt32(dr["resultado"]) == 1;
                 }
             }
-
-            return eliminado;
+            return false;
         }
 
         public DataTable ObtenerTablaFinanciera()

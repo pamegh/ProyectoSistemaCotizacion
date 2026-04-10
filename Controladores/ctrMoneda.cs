@@ -52,21 +52,17 @@ namespace ProyectoSistemaCotizacion.Controladores
             return simbolo;
         }
 
-
-        public bool InsertarMoneda(mdlMoneda datos)
+        public bool InsertarMoneda(mdlMoneda datos, string usuarioActual = "Sistema")
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_InsertarMoneda", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@codigo", datos.Codigo);
                 cmd.Parameters.AddWithValue("@nombre", datos.Nombre);
                 cmd.Parameters.AddWithValue("@simbolo", datos.Simbolo);
-                cmd.Parameters.AddWithValue("@creado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@creado_por", usuarioActual); // ✅
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -76,9 +72,9 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
+
 
         public mdlMoneda ObtenerMonedaPorId(int monedaId)
         {
@@ -108,21 +104,18 @@ namespace ProyectoSistemaCotizacion.Controladores
             return moneda;
         }
 
-        public bool ActualizarMoneda(mdlMoneda datos)
+        public bool ActualizarMoneda(mdlMoneda datos, string usuarioActual = "Sistema")
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_ActualizarMoneda", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@moneda_id", datos.MonedaId);
                 cmd.Parameters.AddWithValue("@codigo", datos.Codigo);
                 cmd.Parameters.AddWithValue("@nombre", datos.Nombre);
                 cmd.Parameters.AddWithValue("@simbolo", datos.Simbolo);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@modificado_por", usuarioActual); // ✅
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -132,24 +125,19 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
 
-        public bool EliminarMoneda(int monedaId, out string mensaje)
+        public bool EliminarMoneda(int monedaId, out string mensaje, string usuarioActual = "Sistema")
         {
             mensaje = "";
-
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_EliminarMoneda", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@moneda_id", monedaId);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@modificado_por", usuarioActual); // ✅
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -159,7 +147,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
 

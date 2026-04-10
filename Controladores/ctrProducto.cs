@@ -29,52 +29,42 @@ namespace ProyectoSistemaCotizacion.Controladores
             }
         }
 
-        public int InsertarProducto(mdlProducto datos)
+        public int InsertarProducto(mdlProducto datos, string usuarioActual = "Sistema")
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_InsertarProducto", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@codigo", datos.Codigo);
                 cmd.Parameters.AddWithValue("@nombre", datos.Nombre);
                 cmd.Parameters.AddWithValue("@moneda_id", datos.MonedaId);
-                cmd.Parameters.AddWithValue("@creado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@creado_por", usuarioActual); // ✅
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
                     {
                         datos.Mensaje = dr["mensaje"].ToString();
-
                         if (Convert.ToInt32(dr["resultado"]) == 1)
                             return Convert.ToInt32(dr["producto_id"]);
                     }
                 }
             }
-
             return 0;
         }
 
-        public bool ActualizarProducto(mdlProducto datos)
+        public bool ActualizarProducto(mdlProducto datos, string usuarioActual = "Sistema")
         {
-            if (datos == null || datos.ProductoId <= 0)
-                return false;
-
+            if (datos == null || datos.ProductoId <= 0) return false;
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_ActualizarProducto", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@producto_id", datos.ProductoId);
                 cmd.Parameters.AddWithValue("@nombre", datos.Nombre);
                 cmd.Parameters.AddWithValue("@moneda_id", datos.MonedaId);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@modificado_por", usuarioActual); // ✅
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -84,28 +74,20 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
 
-
-        public bool EliminarProducto(int productoId, out string mensaje)
+        public bool EliminarProducto(int productoId, out string mensaje, string usuarioActual = "Sistema")
         {
             mensaje = "";
-
-            if (productoId <= 0)
-                return false;
-
+            if (productoId <= 0) return false;
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_EliminarProducto", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@producto_id", productoId);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@modificado_por", usuarioActual); // ✅
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -115,7 +97,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
 

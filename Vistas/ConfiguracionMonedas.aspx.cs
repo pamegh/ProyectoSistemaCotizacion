@@ -20,6 +20,11 @@ namespace ProyectoSistemaCotizacion.Vistas
                 ddlMoneda.Visible = true;
             }
         }
+        private string ObtenerUsuarioActual()
+        {
+            return Session["Nombre"] != null ? Session["Nombre"].ToString() : "Sistema";
+        }
+
         private void CargarMonedas()
         {
             ddlMoneda.DataSource = ctrMoneda.ListarMonedas();
@@ -64,12 +69,12 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             if (string.IsNullOrEmpty(ddlMoneda.SelectedValue))
             {
-                resultado = ctrMoneda.InsertarMoneda(moneda);
+                resultado = ctrMoneda.InsertarMoneda(moneda, ObtenerUsuarioActual());
             }
             else
             {
                 moneda.MonedaId = Convert.ToInt32(ddlMoneda.SelectedValue);
-                resultado = ctrMoneda.ActualizarMoneda(moneda);
+                resultado = ctrMoneda.ActualizarMoneda(moneda, ObtenerUsuarioActual());
             }
 
             if (resultado)
@@ -97,7 +102,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             int id = Convert.ToInt32(ddlMoneda.SelectedValue);
             string mensaje;
-            bool resultado = ctrMoneda.EliminarMoneda(id, out mensaje);
+            bool resultado = ctrMoneda.EliminarMoneda(id, out mensaje, ObtenerUsuarioActual());
 
             if (resultado)
             {

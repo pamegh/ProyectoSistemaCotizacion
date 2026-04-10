@@ -309,45 +309,29 @@ namespace ProyectoSistemaCotizacion.Vistas
             int plazoId = Convert.ToInt32(ddlPlazo.SelectedValue);
             decimal monto = Convert.ToDecimal(txtMonto.Text);
             decimal tasa = ObtenerTasaProducto();
-
             decimal impuesto = Convert.ToDecimal(ViewState["Impuesto"]);
-
             decimal totalBruto = Convert.ToDecimal(ViewState["TotalBruto"]);
             decimal totalImpuesto = Convert.ToDecimal(ViewState["TotalImpuesto"]);
             decimal totalNeto = Convert.ToDecimal(ViewState["TotalNeto"]);
 
-            string creadoPor = "admin";
-
             int cotizacionId = ctrCot.InsertarCotizacion(
-    numero,
-    usuarioId,
-    productoId,
-    plazoId,
-    monto,
-    tasa,
-    impuesto,
-    totalBruto,
-    totalImpuesto,
-    totalNeto,
-    creadoPor
-);
+                numero, usuarioId, productoId, plazoId,
+                monto, tasa, impuesto, totalBruto, totalImpuesto, totalNeto,
+                ObtenerUsuarioActual()
+            );
 
             GuardarDetalleCotizacion(cotizacionId);
 
             lblMensaje.Text = "Cotización guardada correctamente con número: " + numero;
             lblMensaje.CssClass = "mensaje mensaje-exito";
             lblMensaje.Visible = true;
-
         }
 
         private void GuardarDetalleCotizacion(int cotizacionId)
         {
             var detalleMensual = (List<mdlDetalleCotizacion>)ViewState["DetalleMensual"];
 
-            if (detalleMensual == null || detalleMensual.Count == 0)
-            {
-                return;
-            }
+            if (detalleMensual == null || detalleMensual.Count == 0) return;
 
             foreach (var item in detalleMensual)
             {
@@ -356,9 +340,15 @@ namespace ProyectoSistemaCotizacion.Vistas
                     item.Mes,
                     item.InteresBruto,
                     item.Impuesto,
-                    item.InteresNeto
+                    item.InteresNeto,
+                    ObtenerUsuarioActual()
                 );
             }
+        }
+
+        private string ObtenerUsuarioActual()
+        {
+            return Session["Nombre"] != null ? Session["Nombre"].ToString() : "Sistema";
         }
 
         private void LimpiarFormulario()

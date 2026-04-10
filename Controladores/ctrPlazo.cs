@@ -55,10 +55,9 @@ namespace ProyectoSistemaCotizacion.Controladores
             return plazo;
         }
 
-        public int InsertarPlazo(mdlPlazo datos)
+        public int InsertarPlazo(mdlPlazo datos, string usuarioActual = "Sistema")
         {
-            if (datos == null)
-                return 0;
+            if (datos == null) return 0;
 
             if (datos.Meses < 0 || datos.Dias < 0)
             {
@@ -76,44 +75,34 @@ namespace ProyectoSistemaCotizacion.Controladores
             using (SqlCommand cmd = new SqlCommand("sp_InsertarPlazo", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@meses", datos.Meses);
                 cmd.Parameters.AddWithValue("@dias", datos.Dias);
-                cmd.Parameters.AddWithValue("@creado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@creado_por", usuarioActual);
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
                     {
                         datos.Mensaje = dr["mensaje"].ToString();
-
                         if (Convert.ToInt32(dr["resultado"]) == 1)
-                        {
                             return Convert.ToInt32(dr["plazo_id"]);
-                        }
                     }
                 }
             }
-
             return 0;
         }
 
-        public bool ActualizarPlazo(mdlPlazo datos)
+        public bool ActualizarPlazo(mdlPlazo datos, string usuarioActual = "Sistema")
         {
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_ActualizarPlazo", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@plazo_id", datos.PlazoId);
                 cmd.Parameters.AddWithValue("@meses", datos.Meses);
                 cmd.Parameters.AddWithValue("@dias", datos.Dias);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@modificado_por", usuarioActual);
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -123,27 +112,21 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
 
-        public bool EliminarPlazo(int plazoId, out string mensaje)
+        public bool EliminarPlazo(int plazoId, out string mensaje, string usuarioActual = "Sistema")
         {
             mensaje = "";
-
-            if (plazoId <= 0)
-                return false;
+            if (plazoId <= 0) return false;
 
             using (SqlConnection conn = new SqlConnection(_SQLConnection))
             using (SqlCommand cmd = new SqlCommand("sp_EliminarPlazo", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@plazo_id", plazoId);
-                cmd.Parameters.AddWithValue("@modificado_por", "Sistema");
-
+                cmd.Parameters.AddWithValue("@modificado_por", usuarioActual);
                 conn.Open();
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
@@ -153,7 +136,6 @@ namespace ProyectoSistemaCotizacion.Controladores
                     }
                 }
             }
-
             return false;
         }
     }

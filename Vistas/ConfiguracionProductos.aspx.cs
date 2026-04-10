@@ -39,6 +39,11 @@ namespace ProyectoSistemaCotizacion.Vistas
 
         }
 
+        private string ObtenerUsuarioActual()
+        {
+            return Session["Nombre"] != null ? Session["Nombre"].ToString() : "Sistema";
+        }
+
         private void MostrarMensaje(string texto, string tipo)
         {
             pnlMensaje.Visible = true;
@@ -506,7 +511,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                     prod.Nombre = txtNombreProducto.Text;
                     prod.MonedaId = Convert.ToInt32(ddlMonedaProducto.SelectedValue);
 
-                    int productoId = ctrProducto.InsertarProducto(prod);
+                    int productoId = ctrProducto.InsertarProducto(prod, ObtenerUsuarioActual());
 
                     if (productoId == 0)
                     {
@@ -551,7 +556,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                         if (tasaExistente != null && tasaExistente.TasaId > 0)
                         {
                             tasaObj.TasaId = tasaExistente.TasaId;
-                            ctrTasa.ActualizarTasa(tasaObj);
+                            ctrTasa.ActualizarTasa(tasaObj, ObtenerUsuarioActual());
                         }
                         else
                         {
@@ -560,7 +565,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                                 MostrarMensaje("ERROR REAL: tasa enviada es " + tasaObj.TasaAnual, "error");
                                 return;
                             }
-                            ctrTasa.InsertarTasa(tasaObj);
+                            ctrTasa.InsertarTasa(tasaObj, ObtenerUsuarioActual());
                         }
                     }
 
@@ -580,7 +585,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                     prod.Nombre = txtNombreProducto.Text;
                     prod.MonedaId = Convert.ToInt32(ddlMonedaProducto.SelectedValue);
 
-                    bool resultado = ctrProducto.ActualizarProducto(prod);
+                    bool resultado = ctrProducto.ActualizarProducto(prod, ObtenerUsuarioActual());
 
                     foreach (GridViewRow row in gvTasasProducto.Rows)
                     {
@@ -617,11 +622,11 @@ namespace ProyectoSistemaCotizacion.Vistas
                         if (tasaExistente != null && tasaExistente.TasaId > 0)
                         {
                             tasaObj.TasaId = tasaExistente.TasaId;
-                            ctrTasa.ActualizarTasa(tasaObj);
+                            ctrTasa.ActualizarTasa(tasaObj, ObtenerUsuarioActual());
                         }
                         else
                         {
-                            ctrTasa.InsertarTasa(tasaObj);
+                            ctrTasa.InsertarTasa(tasaObj, ObtenerUsuarioActual());
                         }
                     }
 
@@ -686,7 +691,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                         return;
                     }
 
-                    int plazoId = ctrPlazo.InsertarPlazo(plazo);
+                    int plazoId = ctrPlazo.InsertarPlazo(plazo, ObtenerUsuarioActual());
 
                     if (plazoId == 0)
                     {
@@ -723,7 +728,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                             TasaAnual = tasa
                         };
 
-                        ctrTasa.InsertarTasa(tasaObj);
+                        ctrTasa.InsertarTasa(tasaObj, ObtenerUsuarioActual());
                     }
 
                     MostrarMensaje("Plazo creado correctamente.", "success"); ;
@@ -739,7 +744,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                         ? 0
                         : Convert.ToInt32(ddlDiasPlazo.SelectedValue);
 
-                    bool resultado = ctrPlazo.ActualizarPlazo(plazo);
+                    bool resultado = ctrPlazo.ActualizarPlazo(plazo, ObtenerUsuarioActual());
 
                     foreach (GridViewRow row in gvTasasPlazo.Rows)
                     {
@@ -776,11 +781,11 @@ namespace ProyectoSistemaCotizacion.Vistas
                         if (tasaExistente != null && tasaExistente.TasaId > 0)
                         {
                             tasaObj.TasaId = tasaExistente.TasaId;
-                            ctrTasa.ActualizarTasa(tasaObj);
+                            ctrTasa.ActualizarTasa(tasaObj, ObtenerUsuarioActual());
                         }
                         else
                         {
-                            ctrTasa.InsertarTasa(tasaObj);
+                            ctrTasa.InsertarTasa(tasaObj, ObtenerUsuarioActual());
                         }
                     }
 
@@ -828,7 +833,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 if (ViewState["TasaId"] != null && Convert.ToInt32(ViewState["TasaId"]) > 0)
                 {
                     tasa.TasaId = Convert.ToInt32(ViewState["TasaId"]);
-                    resultado = ctrTasa.ActualizarTasa(tasa);
+                    resultado = ctrTasa.ActualizarTasa(tasa, ObtenerUsuarioActual());
 
                     ModoOperacion = "Editar";
                     MostrarMensaje(
@@ -838,7 +843,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 }
                 else
                 {
-                    resultado = ctrTasa.InsertarTasa(tasa);
+                    resultado = ctrTasa.InsertarTasa(tasa, ObtenerUsuarioActual());
 
                     MostrarMensaje(
            resultado ? "Tasa guardada correctamente." : "Error al guardar la tasa.",
@@ -860,22 +865,17 @@ namespace ProyectoSistemaCotizacion.Vistas
                 }
             }
 
-            CargarTablaFinanciera();
-            RecargarCombos();
+            string mensajeGuardado = lblMensaje.Text;
+            string tipoGuardado = pnlMensaje.Visible ? lblMensaje.CssClass : "";
 
-            string mensaje = lblMensaje.Text;
-            string css = lblMensaje.CssClass;
-            
-                LimpiarFormulario();
-            ddlProductoBuscar.ClearSelection();
+            InicializarPantalla();
 
-            if (ddlProductoBuscar.Items.Count > 0)
-                ddlProductoBuscar.SelectedIndex = 0;
-
-            if (ddlPlazoBuscar.Items.Count > 0)
-                ddlPlazoBuscar.SelectedIndex = 0;
-
-
+            if (!string.IsNullOrEmpty(mensajeGuardado))
+            {
+                pnlMensaje.Visible = true;
+                lblMensaje.Text = mensajeGuardado;
+                lblMensaje.CssClass = tipoGuardado;
+            }
 
         }
 
@@ -982,7 +982,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 int id = Convert.ToInt32(ddlProductoBuscar.SelectedValue);
                 string mensaje;
 
-                bool resultado = ctrProducto.EliminarProducto(id, out mensaje);
+                bool resultado = ctrProducto.EliminarProducto(id, out mensaje, ObtenerUsuarioActual());
 
                 MostrarMensaje(mensaje, resultado ? "success" : "error");
 
@@ -1005,7 +1005,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 int id = Convert.ToInt32(ddlPlazoBuscar.SelectedValue);
                 string mensaje;
 
-                bool resultado = ctrPlazo.EliminarPlazo(id, out mensaje);
+                bool resultado = ctrPlazo.EliminarPlazo(id, out mensaje, ObtenerUsuarioActual());
 
                 MostrarMensaje(mensaje, resultado ? "success" : "error");
             }
@@ -1029,17 +1029,24 @@ namespace ProyectoSistemaCotizacion.Vistas
                     return;
                 }
 
-                bool resultado = ctrTasa.EliminarTasa(tasa.TasaId);
+                bool resultado = ctrTasa.EliminarTasa(tasa.TasaId, ObtenerUsuarioActual());
 
                 MostrarMensaje(
           resultado ? "Tasa eliminada correctamente." : "Error al eliminar la tasa.",
           resultado ? "success" : "error"
       );
             }
+            string mensajeGuardado = lblMensaje.Text;
+            string tipoGuardado = lblMensaje.CssClass;
 
-            CargarTablaFinanciera();
+            InicializarPantalla();
 
-            LimpiarFormulario();
+            if (!string.IsNullOrEmpty(mensajeGuardado))
+            {
+                pnlMensaje.Visible = true;
+                lblMensaje.Text = mensajeGuardado;
+                lblMensaje.CssClass = tipoGuardado;
+            }
         }
 
         private void MostrarModoEliminar()
@@ -1058,7 +1065,7 @@ namespace ProyectoSistemaCotizacion.Vistas
                 ddlProductoBuscar.DataValueField = "producto_id";
                 ddlProductoBuscar.DataBind();
                 ddlProductoBuscar.Items.Insert(0, new ListItem("-- Seleccione --", ""));
-
+                ddlProductoBuscar.Visible = true;
                 pnlNombreProducto.Visible = false;
                 pnlMonedaProducto.Visible = false;
                 pnlPlazosProducto.Visible = false;

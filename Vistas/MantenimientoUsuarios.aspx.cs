@@ -26,6 +26,12 @@ namespace ProyectoSistemaCotizacion.Vistas
                 CargarUsuarios();
         }
 
+        private string ObtenerUsuarioActual()
+        {
+            return Session["Nombre"] != null ? Session["Nombre"].ToString() : "Sistema";
+        }
+
+
         private void CargarUsuarios()
         {
             gvUsuarios.DataSource = ctr.ListarUsuarios();
@@ -36,7 +42,6 @@ namespace ProyectoSistemaCotizacion.Vistas
         {
             mdlUsuario usuarioSesion = (mdlUsuario)Session["Usuario"];
 
-            // ── EDITAR: abrir panel con datos del usuario ─────────────────
             if (e.CommandName == "Editar")
             {
                 int usuarioId = Convert.ToInt32(e.CommandArgument);
@@ -56,14 +61,12 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 pnlEditar.Visible = true;
 
-                // Scroll al panel
                 ScriptManager.RegisterStartupScript(this, GetType(), "scroll",
                     "window.setTimeout(function(){ document.getElementById('" +
                     pnlEditar.ClientID + "').scrollIntoView({behavior:'smooth'}); }, 100);",
                     true);
             }
 
-            // ── CAMBIAR ROL ───────────────────────────────────────────────
             if (e.CommandName == "CambiarRol")
             {
                 string[] partes = e.CommandArgument.ToString().Split('|');
@@ -87,7 +90,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                 CargarUsuarios();
             }
 
-            // ── CAMBIAR ESTADO ────────────────────────────────────────────
             if (e.CommandName == "Estado")
             {
                 string[] datos = e.CommandArgument.ToString().Split('|');
@@ -102,7 +104,7 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 string nuevoEstado = estadoActual == "Activo" ? "Inactivo" : "Activo";
 
-                bool ok = ctr.CambiarEstadoUsuario(usuarioId, nuevoEstado);
+                bool ok = ctr.CambiarEstadoUsuario(usuarioId, nuevoEstado, ObtenerUsuarioActual());
 
                 MostrarMensaje(
                     ok ? "Usuario " + nuevoEstado.ToLower() + " correctamente."
@@ -112,7 +114,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
         }
 
-        // ── GUARDAR EDICIÓN ───────────────────────────────────────────────
         protected void btnGuardarEdicion_Click(object sender, EventArgs e)
         {
             mdlUsuario usuarioSesion = (mdlUsuario)Session["Usuario"];
@@ -131,24 +132,20 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             int usuarioId = Convert.ToInt32(hfUsuarioId.Value);
 
-            // Obtener datos actuales para conservar identificacion, tipo y rol
             mdlUsuario actual = ctr.ObtenerUsuarioPorId(usuarioId);
 
             mdlUsuario datos = new mdlUsuario
             {
                 UsuarioId = usuarioId,
-                // Identificacion y tipo NO cambian desde administración
                 Identificacion = actual.Identificacion,
                 TipoIdentificacionId = actual.TipoIdentificacionId,
-                // Rol NO se cambia desde este panel (se cambia con el botón de rol)
                 Rol = actual.Rol,
-                // Datos editables
                 NombreCompleto = txtNombreEdit.Text.Trim(),
                 Telefono = txtTelefonoEdit.Text.Trim(),
                 Correo = txtCorreoEdit.Text.Trim()
             };
 
-            bool ok = ctr.ActualizarUsuario(datos, null, null);
+            bool ok = ctr.ActualizarUsuario(datos, null, null, ObtenerUsuarioActual());
 
             if (ok)
             {
@@ -162,14 +159,12 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
         }
 
-        // ── CANCELAR EDICIÓN ──────────────────────────────────────────────
         protected void btnCancelarEdicion_Click(object sender, EventArgs e)
         {
             pnlEditar.Visible = false;
             lblMensaje.Visible = false;
         }
 
-        // ── ROW DATA BOUND ────────────────────────────────────────────────
         protected void gvUsuarios_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType != DataControlRowType.DataRow)
@@ -178,7 +173,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             mdlUsuario usuarioSesion = (mdlUsuario)Session["Usuario"];
             mdlUsuario usuario = (mdlUsuario)e.Row.DataItem;
 
-            // Colorear label estado
             Label lblEstado = (Label)e.Row.FindControl("lblEstado");
             if (lblEstado != null)
                 lblEstado.CssClass = lblEstado.Text == "Activo"
@@ -189,7 +183,6 @@ namespace ProyectoSistemaCotizacion.Vistas
 
             if (usuario == null) return;
 
-            // Deshabilitar botones para el propio usuario logueado
             if (usuario.UsuarioId == usuarioSesion.UsuarioId)
             {
                 if (btnRol != null)
@@ -209,7 +202,6 @@ namespace ProyectoSistemaCotizacion.Vistas
                 return;
             }
 
-            // Icono del botón de rol según el rol actual
             if (btnRol != null)
             {
                 if (usuario.Rol != null && usuario.Rol.ToUpper() == "ADMIN")
@@ -227,7 +219,6 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
         }
 
-        // ── BUSCAR ────────────────────────────────────────────────────────
         protected void txtBuscar_TextChanged(object sender, EventArgs e)
         {
             string nombre = txtBuscar.Text.Trim().ToLower();
