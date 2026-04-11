@@ -35,20 +35,41 @@
 
             <div class="card-body">
 
-                <div style="margin-bottom: 15px; text-align: center;">
-                    <asp:Button 
-                        ID="btnExportarExcel"
-                        runat="server"
-                        Text="Exportar Todo a Excel"
-                        CssClass="btn-export btn-export-excel"
-                        OnClick="btnExportarExcel_Click" />
+                <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     
-                    <asp:Button 
-                        ID="btnExportarPDF"
-                        runat="server"
-                        Text="Exportar Todo a PDF"
-                        CssClass="btn-export btn-export-pdf"
-                        OnClick="btnExportarPDF_Click" />
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <asp:Label ID="lblFiltroMoneda" runat="server" Text="Filtrar por Moneda:" style="font-weight: bold;" />
+                        <asp:DropDownList 
+                            ID="ddlMoneda" 
+                            runat="server" 
+                            CssClass="form-control" 
+                            style="width: 200px; display: inline-block;"
+                            AutoPostBack="true"
+                            OnSelectedIndexChanged="ddlMoneda_SelectedIndexChanged">
+                        </asp:DropDownList>
+                        <asp:Button 
+                            ID="btnLimpiarFiltro"
+                            runat="server"
+                            Text="Limpiar Filtro"
+                            CssClass="btn-filtro"
+                            OnClick="btnLimpiarFiltro_Click" />
+                    </div>
+
+                    <div style="text-align: center;">
+                        <asp:Button 
+                            ID="btnExportarExcel"
+                            runat="server"
+                            Text="Exportar a Excel"
+                            CssClass="btn-export btn-export-excel"
+                            OnClick="btnExportarExcel_Click" />
+                        
+                        <asp:Button 
+                            ID="btnExportarPDF"
+                            runat="server"
+                            Text="Exportar a PDF"
+                            CssClass="btn-export btn-export-pdf"
+                            OnClick="btnExportarPDF_Click" />
+                    </div>
                 </div>
 
                 <asp:GridView 

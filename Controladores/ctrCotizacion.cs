@@ -87,7 +87,7 @@ namespace ProyectoSistemaCotizacion.Controladores
             return cotizacionId;
         }
 
-        public DataTable ListarCotizaciones(int? usuarioId)
+        public DataTable ListarCotizaciones(int? usuarioId, int? monedaId = null)
         {
             DataTable dt = new DataTable();
 
@@ -100,6 +100,11 @@ namespace ProyectoSistemaCotizacion.Controladores
                     cmd.Parameters.AddWithValue("@usuario_id", usuarioId.Value);
                 else
                     cmd.Parameters.AddWithValue("@usuario_id", DBNull.Value);
+
+                if (monedaId.HasValue)
+                    cmd.Parameters.AddWithValue("@moneda_id", monedaId.Value);
+                else
+                    cmd.Parameters.AddWithValue("@moneda_id", DBNull.Value);
 
                 conn.Open();
 

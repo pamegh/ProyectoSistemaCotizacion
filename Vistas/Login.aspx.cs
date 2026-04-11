@@ -17,17 +17,21 @@ namespace SistemaCotizacionAPF.Vistas
             if (!Page.IsValid)
                 return;
 
-            mdlUsuario datos = new mdlUsuario();
+            string correo = txtUsuario.Text.Trim();
+            string claveSesionIntentos = "IntentosLogin_" + correo;
 
-            datos.Correo = txtUsuario.Text.Trim();
+            mdlUsuario datos = new mdlUsuario();
+            datos.Correo = correo;
             datos.Contrasena = txtContrasena.Text.Trim();
 
             ctrUsuario controlador = new ctrUsuario();
-
+    
             if (controlador.ValidarIngreso(datos))
             {
-                Session["Usuario"] = datos;
+                // Login exitoso - Limpiar intentos fallidos
+                Session.Remove(claveSesionIntentos);
 
+                Session["Usuario"] = datos;
                 Session["UsuarioId"] = datos.UsuarioId;
                 Session["Nombre"] = datos.NombreCompleto;
                 Session["Identificacion"] = datos.Identificacion;
@@ -46,14 +50,64 @@ namespace SistemaCotizacionAPF.Vistas
             }
             else
             {
-                MostrarMensaje(datos.Mensaje, "error");
-
-                if (datos.Mensaje != null && datos.Mensaje.ToLower().Contains("usuario"))
+                // Verificar si la cuenta está desactivada
+                if (datos.Mensaje != null && datos.Mensaje.ToLower().Contains("desactivada"))
                 {
+                    MostrarMensaje(datos.Mensaje, "error");
                     txtUsuario.Focus();
+                    return;
+                }
+
+                // Verificar si el usuario no existe
+                if (datos.Mensaje != null && datos.Mensaje.ToLower().Contains("no existe"))
+                {
+                    MostrarMensaje(datos.Mensaje, "error");
+                    txtUsuario.Focus();
+                    return;
+                }
+
+                // Contar intentos fallidos si el error es de contraseña incorrecta
+                if (datos.Mensaje != null && 
+                    (datos.Mensaje.ToLower().Contains("contrasena") || 
+                     datos.Mensaje.ToLower().Contains("contraseña") ||
+                     datos.Mensaje.ToLower().Contains("incorrecta")))
+                {
+                    int intentos = Session[claveSesionIntentos] != null 
+                        ? (int)Session[claveSesionIntentos] 
+                        : 0;
+                    
+                    intentos++;
+                    Session[claveSesionIntentos] = intentos;
+
+                    if (intentos >= 3)
+                    {
+                        // Desactivar usuario en la base de datos
+                        mdlUsuario usuarioBloqueado = controlador.ObtenerUsuarioPorCorreo(correo);
+                        
+                        if (usuarioBloqueado != null && usuarioBloqueado.UsuarioId > 0)
+                        {
+                            controlador.CambiarEstadoUsuario(usuarioBloqueado.UsuarioId, "Inactivo", "Sistema");
+                        }
+                        
+                        Session.Remove(claveSesionIntentos);
+                        
+                        MostrarMensaje("Su cuenta ha sido desactivada por múltiples intentos fallidos. " +
+                                       "Contacte al administrador para reactivarla.", "error");
+                    }
+                    else
+                    {
+                        int intentosRestantes = 3 - intentos;
+                        MostrarMensaje("Usuario o contraseña incorrectos. Le quedan " + intentosRestantes + " intento(s) " +
+                                       "antes de que su cuenta sea desactivada.", "error");
+                    }
+                    
+                    txtContrasena.Text = "";
+                    txtContrasena.Focus();
                 }
                 else
                 {
+                    // Para cualquier otro error
+                    MostrarMensaje(datos.Mensaje, "error");
                     txtContrasena.Text = "";
                     txtContrasena.Focus();
                 }

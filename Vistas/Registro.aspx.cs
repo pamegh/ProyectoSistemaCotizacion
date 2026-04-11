@@ -229,11 +229,23 @@ namespace ProyectoSistemaCotizacion.Vistas
                 MostrarMensaje("La contraseña es obligatoria.", false);
                 return;
             }
+            if (!esEdicion && txtContrasena.Text.Trim().Length < 6)
+            {
+                MostrarMensaje("La contraseña debe tener al menos 6 caracteres.", false);
+                return;
+            }
 
             // 8. Construir modelo
+            string identificacion = txtIdentificacion.Text.Trim();
+            // Si es pasaporte (alfanumérico), convertir a mayúsculas
+            if (tipo != null && !tipo.SoloNumerico)
+            {
+                identificacion = identificacion.ToUpper();
+            }
+
             mdlUsuario datos = new mdlUsuario
             {
-                Identificacion = txtIdentificacion.Text.Trim(),
+                Identificacion = identificacion,
                 NombreCompleto = txtNombre.Text.Trim(),
                 Telefono = txtTelefono.Text.Trim(),
                 Correo = txtCorreo.Text.Trim(),

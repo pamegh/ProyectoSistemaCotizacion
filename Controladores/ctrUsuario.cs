@@ -159,6 +159,45 @@ namespace ProyectoSistemaCotizacion.Controladores
             return usuario;
         }
 
+        public mdlUsuario ObtenerUsuarioPorCorreo(string correo)
+        {
+            mdlUsuario usuario = new mdlUsuario();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_SQLConnection))
+                using (SqlCommand cmd = new SqlCommand("SELECT usuario_id, tipo_identificacion_id, identificacion, nombre_completo, telefono, correo, rol, estado FROM Usuarios WHERE correo = @correo", conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandTimeout = 60;
+                    cmd.Parameters.AddWithValue("@correo", correo);
+
+                    conn.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            usuario.UsuarioId = dr["usuario_id"] != DBNull.Value ? Convert.ToInt32(dr["usuario_id"]) : 0;
+                            usuario.TipoIdentificacionId = dr["tipo_identificacion_id"] != DBNull.Value ? Convert.ToInt32(dr["tipo_identificacion_id"]) : 0;
+                            usuario.Identificacion = dr["identificacion"] != DBNull.Value ? dr["identificacion"].ToString() : "";
+                            usuario.NombreCompleto = dr["nombre_completo"] != DBNull.Value ? dr["nombre_completo"].ToString() : "";
+                            usuario.Telefono = dr["telefono"] != DBNull.Value ? dr["telefono"].ToString() : "";
+                            usuario.Correo = dr["correo"] != DBNull.Value ? dr["correo"].ToString() : "";
+                            usuario.Rol = dr["rol"] != DBNull.Value ? dr["rol"].ToString() : "";
+                            usuario.Estado = dr["estado"] != DBNull.Value ? dr["estado"].ToString() : "";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error en ObtenerUsuarioPorCorreo: " + ex.Message);
+            }
+
+            return usuario;
+        }
+
         public bool ActualizarUsuario(mdlUsuario datos, string contrasenaActual = null,
     string contrasenaNueva = null, string usuarioActual = "Sistema")
         {

@@ -232,8 +232,9 @@
             return charCode >= 48 && charCode <= 57;
         }
 
+        // Alfanumerico (Pasaporte) - permitir letras y números
         var char = String.fromCharCode(charCode);
-        return /^[A-Za-z0-9]$/.test(char);
+        return /^[A-Z0-9]$/i.test(char);
     }
 
     function soloNumero(e) {
@@ -249,6 +250,11 @@
 
         var cfg = configTipos[ddl.value];
         if (!cfg) { errId.style.display = 'none'; return; }
+
+        // Convertir a mayúsculas automáticamente para pasaporte (tipo alfanumérico)
+        if (!cfg.soloNumerico && txt.value) {
+            txt.value = txt.value.toUpperCase();
+        }
 
         var val = txt.value.trim();
 

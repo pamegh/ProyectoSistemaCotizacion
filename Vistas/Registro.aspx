@@ -79,7 +79,10 @@
 
                 <%-- Contraseña --%>
                 <div class="form-group">
-                    <label>Contraseña <span style="color:red">*</span></label>
+                    <label>
+                        Contraseña <span style="color:red">*</span>
+                        <small style="font-weight:normal; color:#888; font-size:0.82em;">Mínimo 6 caracteres</small>
+                    </label>
                     <asp:TextBox ID="txtContrasena" runat="server" CssClass="input" TextMode="Password" MaxLength="50" />
                 </div>
 
@@ -141,8 +144,9 @@
         if (cfg.soloNumerico) {
             return charCode >= 48 && charCode <= 57; // solo digitos
         }
-        // Alfanumerico (Pasaporte)
-        return /^[A-Za-z0-9]$/.test(String.fromCharCode(charCode));
+        // Alfanumerico (Pasaporte) - solo mayúsculas y números
+        var char = String.fromCharCode(charCode);
+        return /^[A-Z0-9]$/i.test(char);
     }
 
     // ── Solo numeros para telefono ────────────────────────────────────────────
@@ -160,6 +164,11 @@
 
         var cfg = configTipos[ddl.value];
         if (!cfg) { errId.style.display = 'none'; return; }
+
+        // Convertir a mayúsculas automáticamente para pasaporte (tipo alfanumérico)
+        if (!cfg.soloNumerico && txt.value) {
+            txt.value = txt.value.toUpperCase();
+        }
 
         var val = txt.value.trim();
 

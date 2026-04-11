@@ -21,6 +21,7 @@ namespace ProyectoSistemaCotizacion.Vistas
         {
             if (!IsPostBack)
             {
+                CargarMonedas();
                 CargarCotizaciones();
             }
         }
@@ -43,9 +44,23 @@ namespace ProyectoSistemaCotizacion.Vistas
             }
         }
 
+        private void CargarMonedas()
+        {
+            DataTable dtMonedas = ctrMoneda.ListarMonedas();
+            
+            ddlMoneda.DataSource = dtMonedas;
+            ddlMoneda.DataTextField = "nombre";
+            ddlMoneda.DataValueField = "moneda_id";
+            ddlMoneda.DataBind();
+
+            ddlMoneda.Items.Insert(0, new ListItem("Todas las monedas", "0"));
+            ddlMoneda.SelectedIndex = 0;
+        }
+
         private void CargarCotizaciones()
         {
             int? usuarioId = null;
+            int? monedaId = null;
 
             if (Session["Rol"] != null)
             {
@@ -54,7 +69,12 @@ namespace ProyectoSistemaCotizacion.Vistas
                     usuarioId = Convert.ToInt32(Session["UsuarioId"]);
             }
 
-            DataTable dt = ctrCot.ListarCotizaciones(usuarioId);
+            if (ddlMoneda.SelectedValue != "0")
+            {
+                monedaId = Convert.ToInt32(ddlMoneda.SelectedValue);
+            }
+
+            DataTable dt = ctrCot.ListarCotizaciones(usuarioId, monedaId);
             gvCotizaciones.DataSource = dt;
             gvCotizaciones.DataBind();
 
@@ -70,6 +90,19 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected void gvCotizaciones_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvCotizaciones.PageIndex = e.NewPageIndex;
+            CargarCotizaciones();
+        }
+
+        protected void ddlMoneda_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gvCotizaciones.PageIndex = 0;
+            CargarCotizaciones();
+        }
+
+        protected void btnLimpiarFiltro_Click(object sender, EventArgs e)
+        {
+            ddlMoneda.SelectedIndex = 0;
+            gvCotizaciones.PageIndex = 0;
             CargarCotizaciones();
         }
 
@@ -92,6 +125,7 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected void btnExportarExcel_Click(object sender, EventArgs e)
         {
             int? usuarioId = null;
+            int? monedaId = null;
 
             if (Session["Rol"] != null)
             {
@@ -100,7 +134,12 @@ namespace ProyectoSistemaCotizacion.Vistas
                     usuarioId = Convert.ToInt32(Session["UsuarioId"]);
             }
 
-            DataTable dt = ctrCot.ListarCotizaciones(usuarioId);
+            if (ddlMoneda.SelectedValue != "0")
+            {
+                monedaId = Convert.ToInt32(ddlMoneda.SelectedValue);
+            }
+
+            DataTable dt = ctrCot.ListarCotizaciones(usuarioId, monedaId);
 
             Response.Clear();
             Response.Buffer = true;
@@ -174,6 +213,7 @@ namespace ProyectoSistemaCotizacion.Vistas
         protected void btnExportarPDF_Click(object sender, EventArgs e)
         {
             int? usuarioId = null;
+            int? monedaId = null;
 
             if (Session["Rol"] != null)
             {
@@ -182,7 +222,12 @@ namespace ProyectoSistemaCotizacion.Vistas
                     usuarioId = Convert.ToInt32(Session["UsuarioId"]);
             }
 
-            DataTable dt = ctrCot.ListarCotizaciones(usuarioId);
+            if (ddlMoneda.SelectedValue != "0")
+            {
+                monedaId = Convert.ToInt32(ddlMoneda.SelectedValue);
+            }
+
+            DataTable dt = ctrCot.ListarCotizaciones(usuarioId, monedaId);
 
             Response.Clear();
             Response.Buffer = true;

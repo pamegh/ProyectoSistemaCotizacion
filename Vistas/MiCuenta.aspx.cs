@@ -251,11 +251,18 @@ namespace ProyectoSistemaCotizacion.Vistas
 
                 mdlUsuario usuarioSesion = (mdlUsuario)Session["Usuario"];
 
+                string identificacion = txtIdentificacion.Text.Trim();
+                // Si es pasaporte (alfanumérico), convertir a mayúsculas
+                if (tipo != null && !tipo.SoloNumerico)
+                {
+                    identificacion = identificacion.ToUpper();
+                }
+
                 mdlUsuario usuario = new mdlUsuario
                 {
                     UsuarioId = usuarioSesion.UsuarioId,
                     TipoIdentificacionId = tipoId,
-                    Identificacion = txtIdentificacion.Text.Trim(),
+                    Identificacion = identificacion,
                     NombreCompleto = txtNombre.Text.Trim(),
                     Telefono = txtTelefono.Text.Trim(),
                     Correo = txtCorreo.Text.Trim()

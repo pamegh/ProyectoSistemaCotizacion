@@ -297,6 +297,43 @@ body {
         box-shadow: 0 6px 14px rgba(22, 147, 165, 0.4);
     }
 
+.btn-filtro {
+    background-color: #6c757d;
+    color: #FFFFFF;
+    padding: 8px 16px;
+    border: 2px solid #5a6268;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.3px;
+}
+
+    .btn-filtro:hover {
+        background-color: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    }
+
+.form-control {
+    padding: 8px 12px;
+    border: 2px solid #D8D8C0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Times New Roman', Times, serif;
+    color: #000000;
+    background-color: #FFFFFF;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: #1693A5;
+        box-shadow: 0 0 0 3px rgba(22, 147, 165, 0.1);
+    }
+
 .btn-accion {
     padding: 6px 14px;
     border: none;
