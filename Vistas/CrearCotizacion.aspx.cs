@@ -187,6 +187,15 @@ namespace ProyectoSistemaCotizacion.Vistas
                     Simbolo = simbolo
                 });
             }
+            //agregando Fila de totales
+            detalleMensual.Add(new mdlDetalleCotizacion
+            {
+                Mes = 0, // luego lo mostramos como TOTAL
+                InteresBruto = totalInteresBruto,
+                Impuesto = totalImpuesto,
+                InteresNeto = totalNeto,
+                Simbolo = simbolo
+            });
 
             gvDetalleCotizacion.DataSource = detalleMensual;
             gvDetalleCotizacion.DataBind();

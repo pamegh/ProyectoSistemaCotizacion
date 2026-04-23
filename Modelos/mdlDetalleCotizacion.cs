@@ -18,6 +18,14 @@ namespace ProyectoSistemaCotizacion.Modelos
         public string InteresBrutoFmt => $"{Simbolo} {InteresBruto:N2}";
         public string ImpuestoFmt => $"{Simbolo} {Impuesto:N2}";
         public string InteresNetoFmt => $"{Simbolo} {InteresNeto:N2}";
+
+        public string MesTexto
+        {
+            get
+            {
+                return Mes == 0 ? "TOTAL" : Mes.ToString();
+            }
+        }
     }
 
 }

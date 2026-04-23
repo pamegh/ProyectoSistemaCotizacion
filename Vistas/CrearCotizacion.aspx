@@ -63,10 +63,46 @@
                     AutoGenerateColumns="false" 
                     CssClass="tabla">
                     <Columns>
-                        <asp:BoundField DataField="Mes"          HeaderText="Mes" />
-                        <asp:BoundField DataField="InteresBrutoFmt" HeaderText="Interés Bruto" />
-<asp:BoundField DataField="ImpuestoFmt" HeaderText="Impuesto" />
-<asp:BoundField DataField="InteresNetoFmt" HeaderText="Interés Neto" />
+                        <asp:TemplateField HeaderText="Mes">
+    <ItemTemplate>
+        <asp:Literal ID="litMes" runat="server"
+            Text='<%# Eval("Mes").ToString() == "0" 
+            ? "<strong>TOTAL</strong>" 
+            : Eval("Mes").ToString() %>'>
+        </asp:Literal>
+    </ItemTemplate>
+</asp:TemplateField>
+
+                        <asp:TemplateField HeaderText="Interés Bruto">
+                            <ItemTemplate>
+                                <asp:Literal ID="litBruto" runat="server"
+                                    Text='<%# Eval("Mes").ToString() == "0" 
+                                    ? "<strong>" + Eval("InteresBrutoFmt") + "</strong>" 
+                                    : Eval("InteresBrutoFmt").ToString() %>'>
+                                </asp:Literal>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
+                        <asp:TemplateField HeaderText="Impuesto">
+                            <ItemTemplate>
+                                <asp:Literal ID="litImpuesto" runat="server"
+                                    Text='<%# Eval("Mes").ToString() == "0" 
+                                    ? "<strong>" + Eval("ImpuestoFmt") + "</strong>" 
+                                    : Eval("ImpuestoFmt").ToString() %>'>
+                                </asp:Literal>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
+                        <asp:TemplateField HeaderText="Interés Neto">
+                            <ItemTemplate>
+                                <asp:Literal ID="litInteresNeto" runat="server"
+                                    Text='<%# Eval("Mes").ToString() == "0" 
+                                    ? "<strong>" + Eval("InteresNetoFmt") + "</strong>" 
+                                    : Eval("InteresNetoFmt").ToString() %>'>
+                                </asp:Literal>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
                     </Columns>
                 </asp:GridView>
 

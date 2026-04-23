@@ -71,7 +71,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BaseDatos\Apf_cotizaciones_V9.sql" />
+    <Content Include="BaseDatos\Apf_cotizaciones_V14.sql" />
     <Content Include="Content\Site.css" />
     <Content Include="Estilos\Configuracion.css" />
     <Content Include="Estilos\DashboardAdmin.css" />
