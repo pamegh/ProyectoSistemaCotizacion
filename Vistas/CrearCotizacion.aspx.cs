@@ -211,10 +211,10 @@ namespace ProyectoSistemaCotizacion.Vistas
             resumen.Add(new mdlDetalleFila { Campo = "Producto", Valor = ddlProducto.SelectedItem.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Monto", Valor = $"{simbolo} {monto:N2}" });
             resumen.Add(new mdlDetalleFila { Campo = "Plazo", Valor = ddlPlazo.SelectedItem.Text });
-            resumen.Add(new mdlDetalleFila { Campo = "", Valor = "" });
+            //resumen.Add(new mdlDetalleFila { Campo = "", Valor = "" });
             resumen.Add(new mdlDetalleFila { Campo = "Tasa", Valor = tasa.ToString("N2") + " %" });
             resumen.Add(new mdlDetalleFila { Campo = "Impuesto", Valor = (impuestoPorcentaje * 100) + " %" });
-            resumen.Add(new mdlDetalleFila { Campo = "Interés Neto", Valor = $"{simbolo} {totalNeto:N2}" });
+            //resumen.Add(new mdlDetalleFila { Campo = "Interés Neto", Valor = $"{simbolo} {totalNeto:N2}" });
 
             
 
