@@ -65,13 +65,13 @@
                     <Columns>
                         <asp:TemplateField HeaderText="Mes">
     <ItemTemplate>
-                <asp:Literal ID="litMes" runat="server"
-                    Text='<%# Eval("Mes").ToString() == "0" 
-                    ? "<strong>TOTAL</strong>" 
-                    : Eval("Mes").ToString() %>'>
-                </asp:Literal>
-            </ItemTemplate>
-        </asp:TemplateField>
+        <asp:Literal ID="litMes" runat="server"
+            Text='<%# Eval("Mes").ToString() == "0" 
+            ? "<strong>TOTAL</strong>" 
+            : Eval("Mes").ToString() %>'>
+        </asp:Literal>
+    </ItemTemplate>
+</asp:TemplateField>
 
                         <asp:TemplateField HeaderText="Interés Bruto">
                             <ItemTemplate>

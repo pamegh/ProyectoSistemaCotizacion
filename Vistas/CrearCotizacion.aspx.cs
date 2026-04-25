@@ -190,38 +190,34 @@ namespace ProyectoSistemaCotizacion.Vistas
             //agregando Fila de totales
             detalleMensual.Add(new mdlDetalleCotizacion
             {
-                Mes = 0, 
+                Mes = 0, // luego lo mostramos como TOTAL
                 InteresBruto = totalInteresBruto,
                 Impuesto = totalImpuesto,
                 InteresNeto = totalNeto,
                 Simbolo = simbolo
             });
-            
+
             gvDetalleCotizacion.DataSource = detalleMensual;
             gvDetalleCotizacion.DataBind();
 
             ViewState["DetalleMensual"] = detalleMensual;
 
             List<mdlDetalleFila> resumen = new List<mdlDetalleFila>();
-            int usuarioId = Convert.ToInt32(hfUsuarioId.Value);
-            var usuario = ctrUsuario.ObtenerUsuarioPorId(usuarioId);
-            string clienteFormato = $"({usuario.Identificacion}) {usuario.NombreCompleto}";
 
             resumen.Add(new mdlDetalleFila { Campo = "Número", Valor = lblNumero.Text });
-            resumen.Add(new mdlDetalleFila
-            {
-                Campo = "Cliente",
-                Valor = clienteFormato
-            });
-
+            resumen.Add(new mdlDetalleFila { Campo = "Cliente", Valor = lblCliente.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Teléfono", Valor = lblTelefono.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Correo", Valor = lblCorreo.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Producto", Valor = ddlProducto.SelectedItem.Text });
             resumen.Add(new mdlDetalleFila { Campo = "Monto", Valor = $"{simbolo} {monto:N2}" });
             resumen.Add(new mdlDetalleFila { Campo = "Plazo", Valor = ddlPlazo.SelectedItem.Text });
+            resumen.Add(new mdlDetalleFila { Campo = "", Valor = "" });
             resumen.Add(new mdlDetalleFila { Campo = "Tasa", Valor = tasa.ToString("N2") + " %" });
             resumen.Add(new mdlDetalleFila { Campo = "Impuesto", Valor = (impuestoPorcentaje * 100) + " %" });
-                      
+            resumen.Add(new mdlDetalleFila { Campo = "Interés Neto", Valor = $"{simbolo} {totalNeto:N2}" });
+
+            
+
             gvResumenCotizacion.DataSource = resumen;
             gvResumenCotizacion.DataBind();
 
